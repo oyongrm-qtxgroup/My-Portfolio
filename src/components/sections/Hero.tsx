@@ -22,14 +22,13 @@ const fadeUp = {
 };
 
 const globeVariants = {
-  hidden: { opacity: 0, scale: 0.6 },
+  hidden: { opacity: 0, scale: 1 },
   visible: {
     opacity: 1,
     scale: 1,
     transition: {
-      type: "spring" as const,
-      stiffness: 60,
-      damping: 15,
+      duration: 0.8,
+      ease: "easeOut" as const,
       delay: 0.1,
     },
   },
@@ -184,7 +183,6 @@ export function Hero() {
             <div className="flex flex-wrap justify-center gap-3 lg:justify-start">
               <PillBadge label="Freelance" variant="green" dot />
               <PillBadge label="Consulting" variant="green" dot />
-              <PillBadge label="Full-Time" variant="green" dot />
             </div>
           </motion.div>
         </motion.div>

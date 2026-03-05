@@ -53,6 +53,29 @@ export interface Skill {
   is_featured: boolean;
 }
 
+export interface Certification {
+  id: string;
+  name: string;
+  issuer: string;
+  credential_id: string | null;
+  certification_number: string | null;
+  earned_date: string | null;
+  expiry_date: string | null;
+  status: string | null;
+  verification_url: string | null;
+  badge_level: string | null;
+  order_index: number;
+}
+
+export interface Award {
+  id: string;
+  title: string;
+  issuer: string;
+  description: string | null;
+  highlights: string[];
+  order_index: number;
+}
+
 export interface ContactSubmission {
   name: string;
   email: string;
