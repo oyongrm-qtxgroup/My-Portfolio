@@ -1,0 +1,563 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource/space-grotesk/400.css";
+@import "@fontsource/space-grotesk/600.css";
+@import "@fontsource/space-grotesk/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ═══════════════════════════════════════════════════════
+   THEME TOKENS — Tailwind v4 CSS-first configuration
+   All tokens auto-generate utility classes:
+     bg-bg-primary, text-accent-cyan, font-display,
+     shadow-glow-cyan, animate-glow-pulse, etc.
+   ═══════════════════════════════════════════════════════ */
+@theme inline {
+  /* ── Radii (shadcn) ────────────────────────────── */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  /* ── shadcn color tokens ───────────────────────── */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* ── Portfolio: Surface Colors ─────────────────── */
+  --color-bg-primary: #0a0c10;
+  --color-bg-secondary: #0f1117;
+  --color-bg-elevated: #161b22;
+  --color-bg-overlay: rgb(10 12 16 / 0.85);
+
+  /* ── Portfolio: Border Colors ──────────────────── */
+  --color-border-custom: #21262d;
+  --color-border-glow: #30363d;
+  --color-border-subtle: #161b22;
+
+  /* ── Portfolio: Accent Palette ─────────────────── */
+  --color-accent-cyan: #00d4ff;
+  --color-accent-green: #00ff88;
+  --color-accent-orange: #ff6b35;
+  --color-accent-purple: #7c3aed;
+  --color-accent-pink: #ff2d78;
+  --color-accent-yellow: #ffd60a;
+
+  /* ── Portfolio: Text Colors ────────────────────── */
+  --color-text-primary: #e6edf3;
+  --color-text-secondary: #8b949e;
+  --color-text-muted: #484f58;
+  --color-text-link: #00d4ff;
+
+  /* ── Typography ────────────────────────────────── */
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* ── Shadows ───────────────────────────────────── */
+  --shadow-glow-cyan: 0 0 20px color-mix(in oklch, #00d4ff 30%, transparent);
+  --shadow-glow-green: 0 0 20px color-mix(in oklch, #00ff88 25%, transparent);
+  --shadow-glow-orange: 0 0 20px color-mix(in oklch, #ff6b35 25%, transparent);
+  --shadow-glow-purple: 0 0 20px color-mix(in oklch, #7c3aed 25%, transparent);
+  --shadow-glow-pink: 0 0 20px color-mix(in oklch, #ff2d78 25%, transparent);
+  --shadow-glow-card: 0 8px 32px rgb(0 0 0 / 0.6);
+  --shadow-glow-card-lg:
+    0 12px 48px rgb(0 0 0 / 0.7),
+    0 0 24px color-mix(in oklch, #00d4ff 10%, transparent);
+
+  /* ── Custom Animations ─────────────────────────── */
+  --animate-glow-pulse: glow-pulse 2s ease-in-out infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-fade-up: fade-up 0.5s ease-out forwards;
+  --animate-gradient-shift: gradient-shift 8s ease infinite;
+  --animate-draw-line: draw-line 1.5s ease-out forwards;
+  --animate-shimmer: shimmer 2s linear infinite;
+  --animate-typing-cursor: typing-cursor 1s step-end infinite;
+}
+
+/* ═══════════════════════════════════════════════════════
+   KEYFRAME ANIMATIONS
+   ═══════════════════════════════════════════════════════ */
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes draw-line {
+  from {
+    stroke-dashoffset: 1000;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes typing-cursor {
+  0%,
+  100% {
+    border-color: var(--color-accent-cyan);
+  }
+  50% {
+    border-color: transparent;
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes count-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Dark theme as default (always dark) ──────────── */
+:root {
+  --radius: 0.625rem;
+  --background: #0a0c10;
+  --foreground: #e6edf3;
+  --card: #161b22;
+  --card-foreground: #e6edf3;
+  --popover: #0f1117;
+  --popover-foreground: #e6edf3;
+  --primary: #00d4ff;
+  --primary-foreground: #0a0c10;
+  --secondary: #161b22;
+  --secondary-foreground: #e6edf3;
+  --muted: #0f1117;
+  --muted-foreground: #8b949e;
+  --accent: #161b22;
+  --accent-foreground: #e6edf3;
+  --destructive: #ff2d78;
+  --border: #21262d;
+  --input: #21262d;
+  --ring: #00d4ff;
+  --chart-1: #00d4ff;
+  --chart-2: #00ff88;
+  --chart-3: #ff6b35;
+  --chart-4: #7c3aed;
+  --chart-5: #ff2d78;
+  --sidebar: #0f1117;
+  --sidebar-foreground: #e6edf3;
+  --sidebar-primary: #00d4ff;
+  --sidebar-primary-foreground: #0a0c10;
+  --sidebar-accent: #161b22;
+  --sidebar-accent-foreground: #e6edf3;
+  --sidebar-border: #21262d;
+  --sidebar-ring: #00d4ff;
+}
+
+/* ═══════════════════════════════════════════════════════
+   BASE LAYER — Resets, scrollbar, selection, focus
+   ═══════════════════════════════════════════════════════ */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scrollbar-color: var(--color-border-glow) var(--color-bg-primary);
+    scrollbar-width: thin;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-display);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* ── Custom cursor (hide default on pointer-fine) ── */
+  @media (pointer: fine) {
+    body,
+    a,
+    button,
+    [role="button"] {
+      cursor: none !important;
+    }
+  }
+
+  /* ── Selection highlight ───────────────────────── */
+  ::selection {
+    background: color-mix(in oklch, var(--color-accent-cyan) 30%, transparent);
+    color: var(--color-text-primary);
+  }
+  ::-moz-selection {
+    background: color-mix(in oklch, var(--color-accent-cyan) 30%, transparent);
+    color: var(--color-text-primary);
+  }
+
+  /* ── Webkit scrollbar (Chrome, Edge, Safari) ───── */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-bg-primary);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border-glow);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-muted);
+  }
+
+  /* ── Focus-visible — accessible glow ring ──────── */
+  :focus-visible {
+    outline: 2px solid var(--color-accent-cyan);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* ── Anchor defaults ───────────────────────────── */
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* ── Code blocks base styling ──────────────────── */
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+  }
+  pre {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.7;
+    overflow-x: auto;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border-custom);
+    background: var(--color-bg-secondary) !important;
+    padding: 1.25rem;
+  }
+  pre code {
+    background: transparent;
+    padding: 0;
+    font-size: inherit;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   UTILITY LAYER — Reusable design-system utilities
+   ═══════════════════════════════════════════════════════ */
+@layer utilities {
+  /* ── Decorative glow lines ─────────────────────── */
+  .glow-line-h {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--color-accent-cyan),
+      transparent
+    );
+  }
+  .glow-line-v {
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--color-accent-cyan),
+      transparent
+    );
+  }
+  .glow-line-left {
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      var(--color-accent-cyan),
+      transparent
+    );
+  }
+
+  /* ── Gradient text helper ──────────────────────── */
+  .text-gradient-cyan {
+    background: linear-gradient(
+      135deg,
+      var(--color-accent-cyan),
+      var(--color-accent-green)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .text-gradient-warm {
+    background: linear-gradient(
+      135deg,
+      var(--color-accent-orange),
+      var(--color-accent-pink)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .text-gradient-purple {
+    background: linear-gradient(
+      135deg,
+      var(--color-accent-purple),
+      var(--color-accent-pink)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Animated gradient background ──────────────── */
+  .bg-gradient-animated {
+    background-size: 200% 200%;
+    animation: gradient-shift 8s ease infinite;
+  }
+
+  /* ── Noise / grain overlay ─────────────────────── */
+  .noise-overlay::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 1;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 256px 256px;
+  }
+
+  /* ── Glass morphism ────────────────────────────── */
+  .glass {
+    background: color-mix(in oklch, var(--color-bg-elevated) 60%, transparent);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid
+      color-mix(in oklch, var(--color-border-glow) 50%, transparent);
+  }
+
+  /* ── Scroll progress bar (attach to fixed div) ─── */
+  .scroll-progress {
+    height: 2px;
+    background: linear-gradient(
+      to right,
+      var(--color-accent-cyan),
+      var(--color-accent-green),
+      var(--color-accent-purple)
+    );
+    transform-origin: left;
+  }
+
+  /* ── Slow spin (for 3D globe rings) ────────────── */
+  .animate-spin-slow {
+    animation: spin-slow 20s linear infinite;
+  }
+  .animate-spin-slower {
+    animation: spin-slow 30s linear infinite reverse;
+  }
+
+  /* ── Hide scrollbar (for horizontal scroll areas) ─ */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   COMPONENT LAYER — Design-system component patterns
+   ═══════════════════════════════════════════════════════ */
+@layer components {
+  /* ── Blog / Markdown prose styling ─────────────── */
+  .prose-portfolio {
+    max-width: 42rem;
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+  }
+  .prose-portfolio h1,
+  .prose-portfolio h2,
+  .prose-portfolio h3,
+  .prose-portfolio h4 {
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-weight: 700;
+    margin-top: 2em;
+    margin-bottom: 0.75em;
+  }
+  .prose-portfolio h1 {
+    font-size: 2rem;
+  }
+  .prose-portfolio h2 {
+    font-size: 1.5rem;
+  }
+  .prose-portfolio h3 {
+    font-size: 1.25rem;
+  }
+  .prose-portfolio p {
+    margin-bottom: 1.25em;
+  }
+  .prose-portfolio a {
+    color: var(--color-accent-cyan);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s;
+  }
+  .prose-portfolio a:hover {
+    color: var(--color-accent-green);
+  }
+  .prose-portfolio code:not(pre code) {
+    background: var(--color-bg-elevated);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    font-size: 0.85em;
+    color: var(--color-accent-cyan);
+    border: 1px solid var(--color-border-custom);
+  }
+  .prose-portfolio blockquote {
+    border-left: 3px solid var(--color-accent-cyan);
+    padding-left: 1em;
+    margin: 1.5em 0;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+  .prose-portfolio ul,
+  .prose-portfolio ol {
+    padding-left: 1.5em;
+    margin-bottom: 1.25em;
+  }
+  .prose-portfolio li {
+    margin-bottom: 0.5em;
+  }
+  .prose-portfolio ul li::marker {
+    color: var(--color-accent-cyan);
+  }
+  .prose-portfolio ol li::marker {
+    color: var(--color-accent-cyan);
+    font-family: var(--font-mono);
+  }
+  .prose-portfolio hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--color-border-glow),
+      transparent
+    );
+    margin: 2em 0;
+  }
+  .prose-portfolio img {
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-border-custom);
+    margin: 1.5em 0;
+  }
+  .prose-portfolio table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    font-size: 0.9em;
+  }
+  .prose-portfolio th {
+    background: var(--color-bg-elevated);
+    color: var(--color-text-primary);
+    font-family: var(--font-mono);
+    font-weight: 600;
+    text-align: left;
+    padding: 0.75em 1em;
+    border-bottom: 2px solid var(--color-border-custom);
+  }
+  .prose-portfolio td {
+    padding: 0.75em 1em;
+    border-bottom: 1px solid var(--color-border-custom);
+  }
+}

@@ -1,0 +1,67 @@
+export interface Project {
+  id: string;
+  title: string;
+  tagline: string | null;
+  description: string | null;
+  industry: string | null;
+  tags: string[];
+  impact: string | null;
+  difficulty: string | null;
+  build_time: string | null;
+  demo_url: string | null;
+  github_url: string | null;
+  thumbnail_url: string | null;
+  featured: boolean;
+  is_new: boolean;
+  order_index: number;
+  created_at: string;
+}
+
+export interface Experience {
+  id: string;
+  company: string;
+  role: string;
+  period: string;
+  location: string | null;
+  description: string | null;
+  highlights: string[];
+  tech_stack: string[];
+  company_logo_url: string | null;
+  order_index: number;
+}
+
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  content: string | null;
+  tags: string[];
+  cover_image_url: string | null;
+  is_published: boolean;
+  views: number;
+  read_time_minutes: number | null;
+  published_at: string | null;
+}
+
+export interface Skill {
+  id: string;
+  name: string;
+  category: string;
+  proficiency: number | null;
+  icon_url: string | null;
+  is_featured: boolean;
+}
+
+export interface ContactSubmission {
+  name: string;
+  email: string;
+  message: string;
+  turnstileToken?: string;
+}
+
+export type IndustryFilter = "All" | string;
+
+export type ImpactLevel = "Very High" | "High" | "Medium";
+
+export type DifficultyLevel = "Advanced" | "Intermediate" | "Beginner";
