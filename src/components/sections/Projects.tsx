@@ -22,11 +22,12 @@ import type { Project } from "@/types";
 /* ── Industry → accent color mapping ─────────────── */
 const industryColors: Record<string, string> = {
   "AI/ML": "border-l-accent-cyan",
-  Healthcare: "border-l-accent-green",
-  Finance: "border-l-accent-orange",
-  NLP: "border-l-accent-purple",
-  Vision: "border-l-accent-pink",
-  Education: "border-l-accent-yellow",
+  "Enterprise AI": "border-l-accent-cyan",
+  FinTech: "border-l-accent-green",
+  Enterprise: "border-l-accent-orange",
+  "E-Commerce": "border-l-accent-purple",
+  DevOps: "border-l-accent-yellow",
+  "Real Estate": "border-l-accent-pink",
 };
 
 const impactVariant: Record<string, "green" | "cyan" | "orange" | "muted"> = {
@@ -439,7 +440,7 @@ export function Projects() {
         <SectionHeader
           label="Projects"
           title="Featured Work"
-          subtitle="A curated collection of AI/ML projects — from LLM orchestration to computer vision pipelines."
+          subtitle="A curated collection of enterprise and AI projects — from payment gateways and RPA automation to intelligent document processing."
         />
 
         {/* Filter bar */}
