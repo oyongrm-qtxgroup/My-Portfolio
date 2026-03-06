@@ -193,7 +193,7 @@ function CertFrontContent({
 
 function CertBackContent({
   cert,
-  meta,
+  meta: _meta,
 }: {
   cert: Certification;
   meta: (typeof badgeLevelMeta)[string];

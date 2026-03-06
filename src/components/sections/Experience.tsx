@@ -1,11 +1,5 @@
-import { useRef, useMemo } from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useMotionValueEvent,
-  useSpring,
-} from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { MapPin, Briefcase } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useExperience } from "@/hooks/useExperience";

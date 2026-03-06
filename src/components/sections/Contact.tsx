@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Github, Linkedin, Facebook, Mail, Radio } from "lucide-react";
+import { Github, Linkedin, Facebook, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useDeviceTier } from "@/contexts/DeviceCapabilityContext";
 import { SectionHeader } from "@/components/ui/SectionHeader";

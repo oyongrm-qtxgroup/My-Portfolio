@@ -256,7 +256,6 @@ function BlogError({
 /* ── Blog section ────────────────────────────────── */
 export function Blog() {
   const { posts, loading, error, refetch } = useBlog();
-  const tier = useDeviceTier();
 
   // Parallax offsets — each card drifts at a different scroll speed
   const parallaxSpeeds = useMemo(

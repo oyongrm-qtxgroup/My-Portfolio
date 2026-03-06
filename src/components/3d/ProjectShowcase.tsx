@@ -11,7 +11,7 @@ function ProjectCard3D({
   position,
   isActive,
   onClick,
-  index,
+  index: _index,
 }: {
   project: Project;
   position: [number, number, number];

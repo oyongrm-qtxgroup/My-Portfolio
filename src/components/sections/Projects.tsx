@@ -369,48 +369,6 @@ function EmptyState({ filter }: { filter: string }) {
   );
 }
 
-/* ── Mobile detail overlay ────────────────────────── */
-function MobileDetailOverlay({
-  project,
-  onClose,
-}: {
-  project: Project;
-  onClose: () => void;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-sm lg:hidden"
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ y: "100%" }}
-        animate={{ y: 0 }}
-        exit={{ y: "100%" }}
-        transition={{ type: "spring", damping: 30, stiffness: 300 }}
-        className="w-full max-h-[85vh] overflow-y-auto rounded-t-2xl border-t border-[--color-border-custom] bg-bg-primary"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Close handle */}
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[--color-border-custom] bg-bg-primary/90 backdrop-blur-sm px-4 py-3">
-          <span className="font-mono text-xs text-text-muted uppercase tracking-widest">
-            Project Details
-          </span>
-          <button
-            onClick={onClose}
-            className="rounded-lg p-1.5 text-text-muted transition-colors hover:bg-bg-elevated hover:text-text-primary"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-        <ProjectDetailPanel project={project} />
-      </motion.div>
-    </motion.div>
-  );
-}
-
 /* ── Lazy-load 3D showcase ────────────────────────── */
 const ProjectShowcase = lazy(() =>
   import("@/components/3d/ProjectShowcase").then((m) => ({
