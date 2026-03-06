@@ -351,12 +351,12 @@
     overflow-x: hidden;
   }
 
-  /* ── Custom cursor (hide default on pointer-fine) ── */
+  /* ── Custom cursor (hide default on pointer-fine, public pages only) ── */
   @media (pointer: fine) {
-    body,
-    a,
-    button,
-    [role="button"] {
+    body:has(.custom-cursor),
+    body:has(.custom-cursor) a,
+    body:has(.custom-cursor) button,
+    body:has(.custom-cursor) [role="button"] {
       cursor: none !important;
     }
   }

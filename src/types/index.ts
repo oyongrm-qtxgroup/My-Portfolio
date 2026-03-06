@@ -48,7 +48,6 @@ export interface Skill {
   id: string;
   name: string;
   category: string;
-  proficiency: number | null;
   icon_url: string | null;
   is_featured: boolean;
 }

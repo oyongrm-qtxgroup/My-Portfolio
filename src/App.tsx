@@ -1,5 +1,11 @@
-import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect, useState, lazy, Suspense } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import {
   motion,
   AnimatePresence,
@@ -15,8 +21,25 @@ import { CustomCursor } from "@/components/ui/CustomCursor";
 import { KonamiEasterEgg } from "@/components/ui/KonamiEasterEgg";
 import { AmbientBackground } from "@/components/3d/AmbientBackground";
 import { DeviceCapabilityProvider } from "@/contexts/DeviceCapabilityContext";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 import Home from "@/pages/Home";
 import BlogPostPage from "@/pages/BlogPost";
+
+/* ── Lazy-loaded admin pages ─────────────────────── */
+const AdminLogin = lazy(() => import("@/pages/admin/Login"));
+const AdminResetPassword = lazy(() => import("@/pages/admin/ResetPassword"));
+const AdminLayout = lazy(() => import("@/components/admin/AdminLayout"));
+const AdminDashboard = lazy(() => import("@/pages/admin/Dashboard"));
+const ProjectsManager = lazy(() => import("@/pages/admin/ProjectsManager"));
+const ExperienceManager = lazy(() => import("@/pages/admin/ExperienceManager"));
+const SkillsManager = lazy(() => import("@/pages/admin/SkillsManager"));
+const BlogManager = lazy(() => import("@/pages/admin/BlogManager"));
+const CertificationsManager = lazy(
+  () => import("@/pages/admin/CertificationsManager"),
+);
+const AwardsManager = lazy(() => import("@/pages/admin/AwardsManager"));
+const ContactMessages = lazy(() => import("@/pages/admin/ContactMessages"));
 
 /* ── Scroll progress bar ─────────────────────────── */
 function ScrollProgressBar() {
@@ -53,6 +76,15 @@ const pageTransition = {
   transition: { duration: 0.3, ease: "easeInOut" as const },
 };
 
+/* ── Admin loading fallback ───────────────────────── */
+function AdminLoadingFallback() {
+  return (
+    <div className="flex h-screen items-center justify-center bg-bg-primary">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent-cyan border-t-transparent" />
+    </div>
+  );
+}
+
 function AnimatedRoutes() {
   const location = useLocation();
 
@@ -75,21 +107,130 @@ function AnimatedRoutes() {
 function App() {
   return (
     <MotionConfig reducedMotion="user">
-      <DeviceCapabilityProvider>
-        <BrowserRouter>
-          <AmbientBackground />
-          <div className="relative z-10 flex min-h-screen flex-col">
-            <CustomCursor />
-            <KonamiEasterEgg />
-            <ScrollProgressBar />
-            <Navbar />
-            <AnimatedRoutes />
-            <Footer />
-          </div>
-          <Analytics />
-          <SpeedInsights />
-        </BrowserRouter>
-      </DeviceCapabilityProvider>
+      <AuthProvider>
+        <DeviceCapabilityProvider>
+          <BrowserRouter>
+            <Routes>
+              {/* ── Admin routes (no public chrome) ──── */}
+              <Route
+                path="/admin/login"
+                element={
+                  <Suspense fallback={<AdminLoadingFallback />}>
+                    <AdminLogin />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/admin/reset-password"
+                element={
+                  <Suspense fallback={<AdminLoadingFallback />}>
+                    <AdminResetPassword />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <Suspense fallback={<AdminLoadingFallback />}>
+                    <ProtectedRoute>
+                      <AdminLayout />
+                    </ProtectedRoute>
+                  </Suspense>
+                }
+              >
+                <Route
+                  index
+                  element={<Navigate to="/admin/dashboard" replace />}
+                />
+                <Route
+                  path="dashboard"
+                  element={
+                    <Suspense fallback={<AdminLoadingFallback />}>
+                      <AdminDashboard />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="projects"
+                  element={
+                    <Suspense fallback={<AdminLoadingFallback />}>
+                      <ProjectsManager />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="experience"
+                  element={
+                    <Suspense fallback={<AdminLoadingFallback />}>
+                      <ExperienceManager />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="skills"
+                  element={
+                    <Suspense fallback={<AdminLoadingFallback />}>
+                      <SkillsManager />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="blog"
+                  element={
+                    <Suspense fallback={<AdminLoadingFallback />}>
+                      <BlogManager />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="certifications"
+                  element={
+                    <Suspense fallback={<AdminLoadingFallback />}>
+                      <CertificationsManager />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="awards"
+                  element={
+                    <Suspense fallback={<AdminLoadingFallback />}>
+                      <AwardsManager />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="messages"
+                  element={
+                    <Suspense fallback={<AdminLoadingFallback />}>
+                      <ContactMessages />
+                    </Suspense>
+                  }
+                />
+              </Route>
+
+              {/* ── Public routes (with navbar/footer) ─ */}
+              <Route
+                path="*"
+                element={
+                  <>
+                    <AmbientBackground />
+                    <div className="relative z-10 flex min-h-screen flex-col">
+                      <CustomCursor />
+                      <KonamiEasterEgg />
+                      <ScrollProgressBar />
+                      <Navbar />
+                      <AnimatedRoutes />
+                      <Footer />
+                    </div>
+                    <Analytics />
+                    <SpeedInsights />
+                  </>
+                }
+              />
+            </Routes>
+          </BrowserRouter>
+        </DeviceCapabilityProvider>
+      </AuthProvider>
     </MotionConfig>
   );
 }

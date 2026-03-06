@@ -81,6 +81,8 @@ export function CustomCursor() {
 
   return (
     <>
+      {/* Marker class for CSS cursor:none scoping */}
+      <div className="custom-cursor hidden" />
       {/* Inner dot */}
       <div
         ref={dotRef}

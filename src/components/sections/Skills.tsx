@@ -97,8 +97,6 @@ function SkillChip({
   barFrom: string;
   barTo: string;
 }) {
-  const proficiency = skill.proficiency ?? 0;
-
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.85 }}
@@ -111,11 +109,11 @@ function SkillChip({
       }}
       className="group relative flex items-center gap-2 rounded-lg border border-[--color-border-custom] bg-bg-primary/40 px-3 py-2 hover:border-accent-cyan/30 transition-colors"
     >
-      {/* Proficiency accent bar (left edge) */}
+      {/* Accent bar (left edge) */}
       <div
         className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] rounded-full"
         style={{
-          height: `${Math.max(30, proficiency)}%`,
+          height: "60%",
           background: `linear-gradient(180deg, ${barFrom}, ${barTo})`,
         }}
       />
@@ -128,14 +126,9 @@ function SkillChip({
           loading="lazy"
         />
       )}
-      <span className="text-xs text-text-secondary group-hover:text-text-primary transition-colors truncate">
+      <span className="text-xs text-text-secondary group-hover:text-text-primary transition-colors">
         {skill.name}
       </span>
-      {proficiency > 0 && (
-        <span className="ml-auto font-mono text-[9px] text-text-muted shrink-0">
-          {proficiency}%
-        </span>
-      )}
     </motion.div>
   );
 }
@@ -187,9 +180,9 @@ function SkillCategoryCard({
         </div>
 
         {/* Skill chips */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="flex flex-wrap gap-2">
           {skills
-            .sort((a, b) => (b.proficiency ?? 0) - (a.proficiency ?? 0))
+            .sort((a, b) => a.name.localeCompare(b.name))
             .map((skill, i) => (
               <SkillChip
                 key={skill.id}
