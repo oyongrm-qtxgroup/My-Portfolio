@@ -13,6 +13,8 @@ import {
   LogOut,
   Menu,
   X,
+  User,
+  GraduationCap,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -26,6 +28,8 @@ const navItems = [
   { to: "/admin/certifications", label: "Certifications", icon: Award },
   { to: "/admin/awards", label: "Awards", icon: Trophy },
   { to: "/admin/messages", label: "Messages", icon: Mail },
+  { to: "/admin/profile", label: "Profile / CV", icon: User },
+  { to: "/admin/education", label: "Education", icon: GraduationCap },
 ];
 
 export default function AdminLayout() {

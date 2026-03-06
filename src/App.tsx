@@ -40,6 +40,8 @@ const CertificationsManager = lazy(
 );
 const AwardsManager = lazy(() => import("@/pages/admin/AwardsManager"));
 const ContactMessages = lazy(() => import("@/pages/admin/ContactMessages"));
+const ProfileManager = lazy(() => import("@/pages/admin/ProfileManager"));
+const EducationManager = lazy(() => import("@/pages/admin/EducationManager"));
 
 /* ── Scroll progress bar ─────────────────────────── */
 function ScrollProgressBar() {
@@ -203,6 +205,22 @@ function App() {
                   element={
                     <Suspense fallback={<AdminLoadingFallback />}>
                       <ContactMessages />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="profile"
+                  element={
+                    <Suspense fallback={<AdminLoadingFallback />}>
+                      <ProfileManager />
+                    </Suspense>
+                  }
+                />
+                <Route
+                  path="education"
+                  element={
+                    <Suspense fallback={<AdminLoadingFallback />}>
+                      <EducationManager />
                     </Suspense>
                   }
                 />

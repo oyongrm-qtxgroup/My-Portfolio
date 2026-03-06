@@ -82,6 +82,27 @@ export interface ContactSubmission {
   turnstileToken?: string;
 }
 
+export interface Profile {
+  id: string;
+  full_name: string;
+  title: string;
+  email: string | null;
+  phone: string | null;
+  address: string | null;
+  summary: string | null;
+  updated_at: string;
+}
+
+export interface Education {
+  id: string;
+  degree: string;
+  institution: string;
+  location: string | null;
+  period: string | null;
+  highlights: string[];
+  order_index: number;
+}
+
 export type IndustryFilter = "All" | string;
 
 export type ImpactLevel = "Very High" | "High" | "Medium";

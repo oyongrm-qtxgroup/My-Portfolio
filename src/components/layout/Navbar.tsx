@@ -2,7 +2,9 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Download, Loader2 } from "lucide-react";
+import { useDownloadCV } from "@/hooks/useDownloadCV";
+import { toast } from "sonner";
 
 const navLinks = [
   { label: "Projects", hash: "projects" },
@@ -48,6 +50,15 @@ export function Navbar() {
   const navigate = useNavigate();
   const isHome = location.pathname === "/";
   const activeSection = useActiveSection();
+  const { download: downloadCV, downloading: cvDownloading } = useDownloadCV();
+
+  const handleDownloadCV = useCallback(async () => {
+    try {
+      await downloadCV();
+    } catch {
+      toast.error("Failed to generate CV. Please try again.");
+    }
+  }, [downloadCV]);
 
   // Scroll-based background opacity
   const { scrollY } = useScroll();
@@ -157,6 +168,37 @@ export function Navbar() {
               )}
             </a>
           ))}
+        </div>
+
+        {/* Right side — Download CV + Available */}
+        <div className="hidden md:flex items-center gap-3">
+          {/* Download CV pill — shows "My CV" by default, "Download" on hover */}
+          <button
+            onClick={handleDownloadCV}
+            disabled={cvDownloading}
+            className="group relative flex items-center gap-1.5 rounded-full border border-accent-cyan/40 bg-accent-cyan/5 py-1 px-3 font-mono text-xs text-accent-cyan animate-[cv-beat_2.5s_ease-in-out_infinite] transition-all duration-300 hover:bg-accent-cyan/15 hover:shadow-[0_0_14px_rgba(0,255,255,0.2)] hover:animate-none disabled:opacity-50"
+          >
+            {/* Pulsing glow ring */}
+            <span className="pointer-events-none absolute inset-0 rounded-full border border-accent-cyan/25 animate-[cv-ping_2.5s_ease-in-out_infinite] group-hover:animate-none" />
+
+            {cvDownloading ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin shrink-0" />
+            ) : (
+              <Download className="h-3.5 w-3.5 shrink-0 transition-transform duration-300 group-hover:scale-110" />
+            )}
+
+            {/* Text container with smooth crossfade */}
+            <span className="relative inline-grid overflow-hidden">
+              {/* Default text "My CV" */}
+              <span className="col-start-1 row-start-1 whitespace-nowrap transition-all duration-300 ease-in-out opacity-100 translate-y-0 group-hover:opacity-0 group-hover:-translate-y-2">
+                My CV
+              </span>
+              {/* Hover text "Download" */}
+              <span className="col-start-1 row-start-1 whitespace-nowrap transition-all duration-300 ease-in-out opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0">
+                Download
+              </span>
+            </span>
+          </button>
 
           {/* Availability dot */}
           <div className="flex items-center gap-2 rounded-full border border-accent-green/30 bg-accent-green/5 px-3 py-1">
@@ -209,6 +251,21 @@ export function Navbar() {
               {link.label}
             </a>
           ))}
+          <button
+            onClick={() => {
+              handleDownloadCV();
+              setMobileOpen(false);
+            }}
+            disabled={cvDownloading}
+            className="flex items-center gap-2 rounded-lg px-3 py-2 font-mono text-sm text-accent-cyan transition-colors hover:bg-accent-cyan/10 disabled:opacity-50"
+          >
+            {cvDownloading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Download className="h-4 w-4" />
+            )}
+            Download CV
+          </button>
           <div className="flex items-center gap-2 px-3 py-2">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-green opacity-75" />
