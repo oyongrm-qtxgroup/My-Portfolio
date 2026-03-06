@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { PillBadge } from "@/components/ui/PillBadge";
 import { HeroCanvas } from "@/components/3d/HeroCanvas";
+import { LazyCanvas } from "@/components/3d/LazyCanvas";
 
 /* ── Animation variants ──────────────────────────── */
 const containerVariants = {
@@ -194,9 +195,19 @@ export function Hero() {
           initial="hidden"
           animate="visible"
         >
-          <div className="relative h-72 w-72 sm:h-96 sm:w-96 lg:h-[28rem] lg:w-[28rem]">
+          <LazyCanvas
+            className="relative h-72 w-72 sm:h-96 sm:w-96 lg:h-[28rem] lg:w-[28rem]"
+            rootMargin="400px 0px"
+            fallback={
+              <div className="flex h-full w-full items-center justify-center rounded-full border border-accent-cyan/20 bg-accent-cyan/5">
+                <span className="font-mono text-xs text-accent-cyan/40">
+                  Loading...
+                </span>
+              </div>
+            }
+          >
             <HeroCanvas />
-          </div>
+          </LazyCanvas>
         </motion.div>
       </div>
     </section>

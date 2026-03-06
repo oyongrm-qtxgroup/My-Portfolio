@@ -2,7 +2,7 @@ import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-const PARTICLE_COUNT = 120;
+const PARTICLE_COUNT = 80;
 const SPREAD = 10;
 
 export function FloatingParticles() {

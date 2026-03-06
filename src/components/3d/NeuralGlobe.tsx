@@ -3,9 +3,9 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
 /* ── Config ──────────────────────────────────────── */
-const NODE_COUNT = 220;
+const NODE_COUNT = 150;
 const GLOBE_RADIUS = 2.5;
-const CONNECTION_DISTANCE = 0.75;
+const CONNECTION_DISTANCE = 0.8;
 const ROTATION_SPEED = 0.0015;
 const PULSE_SPEED = 0.8;
 
@@ -163,7 +163,7 @@ export function NeuralGlobe() {
 
       {/* Inner glow sphere */}
       <mesh>
-        <sphereGeometry args={[GLOBE_RADIUS * 0.3, 32, 32]} />
+        <sphereGeometry args={[GLOBE_RADIUS * 0.3, 16, 16]} />
         <meshBasicMaterial
           color="#00d4ff"
           transparent
@@ -174,7 +174,7 @@ export function NeuralGlobe() {
 
       {/* Outer rim ring */}
       <mesh rotation={[Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[GLOBE_RADIUS * 1.05, GLOBE_RADIUS * 1.07, 128]} />
+        <ringGeometry args={[GLOBE_RADIUS * 1.05, GLOBE_RADIUS * 1.07, 64]} />
         <meshBasicMaterial
           color="#00d4ff"
           transparent

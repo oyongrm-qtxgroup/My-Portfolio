@@ -1,22 +1,10 @@
-import { useState, useRef, type FormEvent } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Send,
-  CheckCircle2,
-  AlertCircle,
-  Github,
-  Linkedin,
-  Facebook,
-  Mail,
-  Loader2,
-} from "lucide-react";
+import { motion } from "framer-motion";
+import { Github, Linkedin, Facebook, Mail, Radio } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useContactForm } from "@/hooks/useContactForm";
+import { useDeviceTier } from "@/contexts/DeviceCapabilityContext";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { GlowCard } from "@/components/ui/GlowCard";
-import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
-
-const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || "";
+import { TerminalForm } from "@/components/ui/TerminalForm";
 
 /* ── Social links ────────────────────────────────── */
 const socialLinks = [
@@ -25,338 +13,121 @@ const socialLinks = [
     href: "https://github.com/oyong1926",
     label: "GitHub",
     color: "hover:text-accent-cyan hover:border-accent-cyan/40",
+    floatDelay: 0,
   },
   {
     icon: Linkedin,
     href: "https://www.linkedin.com/in/raymundo-oyong-4ab94321a/",
     label: "LinkedIn",
     color: "hover:text-accent-cyan hover:border-accent-cyan/40",
+    floatDelay: 0.5,
   },
   {
     icon: Facebook,
     href: "https://www.facebook.com/",
     label: "Facebook",
     color: "hover:text-accent-cyan hover:border-accent-cyan/40",
+    floatDelay: 1.0,
   },
   {
     icon: Mail,
     href: "mailto:oyongrm@gmail.com",
     label: "Email",
     color: "hover:text-accent-cyan hover:border-accent-cyan/40",
+    floatDelay: 1.5,
   },
 ];
 
-/* ── Input field ─────────────────────────────────── */
-function InputField({
+/* ── Floating social icon (CSS animated) ─────────── */
+function FloatingSocialIcon({
+  icon: Icon,
+  href,
   label,
-  id,
-  type = "text",
-  required,
-  value,
-  onChange,
-  placeholder,
-  disabled,
+  color,
+  delay,
+  index,
 }: {
+  icon: typeof Github;
+  href: string;
   label: string;
-  id: string;
-  type?: string;
-  required?: boolean;
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  disabled?: boolean;
+  color: string;
+  delay: number;
+  index: number;
 }) {
   return (
-    <div className="space-y-2">
-      <label
-        htmlFor={id}
-        className="block text-sm font-mono text-text-secondary"
-      >
-        {label}
-        {required && <span className="text-accent-pink ml-1">*</span>}
-      </label>
-      <input
-        id={id}
-        name={id}
-        type={type}
-        required={required}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        disabled={disabled}
-        className={cn(
-          "w-full rounded-lg border border-[--color-border-custom] bg-bg-secondary px-4 py-3",
-          "text-sm text-text-primary placeholder:text-text-muted",
-          "font-display outline-none transition-all duration-200",
-          "focus:border-accent-cyan/60 focus:ring-1 focus:ring-accent-cyan/30",
-          "disabled:opacity-50 disabled:cursor-not-allowed",
-        )}
-      />
-    </div>
-  );
-}
-
-/* ── Textarea field ──────────────────────────────── */
-function TextareaField({
-  label,
-  id,
-  required,
-  value,
-  onChange,
-  placeholder,
-  disabled,
-  rows = 5,
-}: {
-  label: string;
-  id: string;
-  required?: boolean;
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  disabled?: boolean;
-  rows?: number;
-}) {
-  return (
-    <div className="space-y-2">
-      <label
-        htmlFor={id}
-        className="block text-sm font-mono text-text-secondary"
-      >
-        {label}
-        {required && <span className="text-accent-pink ml-1">*</span>}
-      </label>
-      <textarea
-        id={id}
-        name={id}
-        required={required}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        disabled={disabled}
-        rows={rows}
-        className={cn(
-          "w-full rounded-lg border border-[--color-border-custom] bg-bg-secondary px-4 py-3",
-          "text-sm text-text-primary placeholder:text-text-muted",
-          "font-display outline-none transition-all duration-200 resize-none",
-          "focus:border-accent-cyan/60 focus:ring-1 focus:ring-accent-cyan/30",
-          "disabled:opacity-50 disabled:cursor-not-allowed",
-        )}
-      />
-    </div>
-  );
-}
-
-/* ── Success message ─────────────────────────────── */
-function SuccessMessage({ onReset }: { onReset: () => void }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      className="flex flex-col items-center justify-center py-12 text-center"
+    <motion.a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      initial={{ opacity: 0, y: 20, scale: 0.8 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true }}
+      transition={{ delay: 0.3 + index * 0.12, duration: 0.5 }}
+      whileHover={{ scale: 1.15, y: -4 }}
+      className={cn(
+        "flex items-center gap-3 rounded-lg border border-[--color-border-custom] bg-bg-elevated/80 px-4 py-3",
+        "text-sm text-text-secondary transition-all duration-300",
+        "backdrop-blur-sm",
+        color,
+      )}
+      style={{
+        animation: `float-tag ${3.5 + delay}s ease-in-out infinite`,
+        animationDelay: `${delay}s`,
+      }}
     >
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
-      >
-        <CheckCircle2 className="h-16 w-16 text-accent-green mb-4" />
-      </motion.div>
-      <h3 className="text-xl font-bold text-text-primary">Message sent!</h3>
-      <p className="mt-2 max-w-sm text-text-secondary">
-        Thanks for reaching out. I'll get back to you within 24 hours.
-      </p>
-      <button
-        onClick={onReset}
-        className="mt-6 text-sm font-mono text-accent-cyan hover:underline transition-colors"
-      >
-        Send another message
-      </button>
-    </motion.div>
+      <Icon className="h-4 w-4 flex-shrink-0" />
+      {label}
+    </motion.a>
+  );
+}
+
+/* ── Radar ping availability indicator ───────────── */
+function RadarPing() {
+  return (
+    <div className="relative flex items-center justify-center w-10 h-10">
+      {/* Outer ping rings */}
+      <span
+        className="absolute h-full w-full rounded-full border border-accent-green/30"
+        style={{ animation: "radar-ping 2s ease-out infinite" }}
+      />
+      <span
+        className="absolute h-full w-full rounded-full border border-accent-green/20"
+        style={{ animation: "radar-ping 2s ease-out 0.5s infinite" }}
+      />
+      <span
+        className="absolute h-full w-full rounded-full border border-accent-green/10"
+        style={{ animation: "radar-ping 2s ease-out 1s infinite" }}
+      />
+      {/* Center dot */}
+      <span className="relative h-3 w-3 rounded-full bg-accent-green shadow-[0_0_12px_rgba(0,255,136,0.5)]" />
+    </div>
   );
 }
 
 /* ── Contact section ─────────────────────────────── */
 export function Contact() {
-  const { submitting, success, error, submit, reset } = useContactForm();
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [honeypot, setHoneypot] = useState("");
-  const [turnstileToken, setTurnstileToken] = useState("");
-  const [turnstileKey, setTurnstileKey] = useState(0);
-  const formStartTime = useRef(Date.now());
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-
-    // Honeypot check — bots fill this hidden field
-    if (honeypot) return;
-
-    // Time-based check — reject if submitted in under 2 seconds (bot speed)
-    if (Date.now() - formStartTime.current < 2000) return;
-
-    // Turnstile check — require token if site key is configured
-    if (TURNSTILE_SITE_KEY && !turnstileToken) {
-      return;
-    }
-
-    await submit({ name, email, message, turnstileToken });
-    if (!error) {
-      setName("");
-      setEmail("");
-      setMessage("");
-      setTurnstileToken("");
-      setTurnstileKey((k) => k + 1); // reset Turnstile widget
-    }
-  };
-
-  const handleReset = () => {
-    reset();
-    setName("");
-    setEmail("");
-    setMessage("");
-    setTurnstileToken("");
-    setTurnstileKey((k) => k + 1);
-    formStartTime.current = Date.now();
-  };
+  const tier = useDeviceTier();
 
   return (
-    <section id="contact" className="relative px-4 py-24 sm:px-6 lg:px-8">
+    <section
+      id="contact"
+      className="section-bg-contact relative px-4 py-24 sm:px-6 lg:px-8"
+    >
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           label="Contact"
           title="Let's Build Something Remarkable"
-          subtitle="Have a project in mind, want to collaborate, or just say hello? Drop me a message."
+          entrance="terminal"
+          subtitle="Have a project in mind, want to collaborate, or just say hello? Drop me a transmission."
         />
 
         <div className="grid gap-10 lg:grid-cols-5">
-          {/* ── Form card ── */}
+          {/* ── Terminal form ── */}
           <div className="lg:col-span-3">
-            <GlowCard glowVariant="cyan" className="p-8">
-              <AnimatePresence mode="wait">
-                {success ? (
-                  <SuccessMessage key="success" onReset={handleReset} />
-                ) : (
-                  <motion.form
-                    key="form"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    onSubmit={handleSubmit}
-                    className="space-y-6"
-                  >
-                    {/* Name + Email row */}
-                    <div className="grid gap-6 sm:grid-cols-2">
-                      <InputField
-                        label="Name"
-                        id="contact-name"
-                        required
-                        value={name}
-                        onChange={setName}
-                        placeholder="John Doe"
-                        disabled={submitting}
-                      />
-                      <InputField
-                        label="Email"
-                        id="contact-email"
-                        type="email"
-                        required
-                        value={email}
-                        onChange={setEmail}
-                        placeholder="john@example.com"
-                        disabled={submitting}
-                      />
-                    </div>
-
-                    {/* Message */}
-                    <TextareaField
-                      label="Message"
-                      id="contact-message"
-                      required
-                      value={message}
-                      onChange={setMessage}
-                      placeholder="Tell me about your project, idea, or just say hi..."
-                      disabled={submitting}
-                      rows={5}
-                    />
-
-                    {/* Honeypot — hidden from humans, bots fill it */}
-                    <div
-                      className="absolute -left-[9999px] opacity-0 h-0 w-0 overflow-hidden"
-                      aria-hidden="true"
-                    >
-                      <label htmlFor="contact-website">Website</label>
-                      <input
-                        id="contact-website"
-                        name="website"
-                        type="text"
-                        tabIndex={-1}
-                        autoComplete="off"
-                        value={honeypot}
-                        onChange={(e) => setHoneypot(e.target.value)}
-                      />
-                    </div>
-
-                    {/* Cloudflare Turnstile CAPTCHA */}
-                    {TURNSTILE_SITE_KEY && (
-                      <TurnstileWidget
-                        key={turnstileKey}
-                        siteKey={TURNSTILE_SITE_KEY}
-                        onVerify={setTurnstileToken}
-                        onExpire={() => setTurnstileToken("")}
-                        onError={() => setTurnstileToken("")}
-                        theme="dark"
-                        className="flex justify-start"
-                      />
-                    )}
-
-                    {/* Error */}
-                    <AnimatePresence>
-                      {error && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="flex items-center gap-2 rounded-lg border border-accent-pink/30 bg-accent-pink/10 px-4 py-3 text-sm text-accent-pink"
-                        >
-                          <AlertCircle className="h-4 w-4 flex-shrink-0" />
-                          {error}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    {/* Submit button */}
-                    <button
-                      type="submit"
-                      disabled={submitting}
-                      className={cn(
-                        "group inline-flex items-center gap-2 rounded-lg px-6 py-3",
-                        "bg-accent-cyan text-bg-primary font-semibold text-sm",
-                        "hover:shadow-glow-cyan transition-all duration-200",
-                        "active:scale-[0.97]",
-                        "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none",
-                      )}
-                    >
-                      {submitting ? (
-                        <>
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                          Sending...
-                        </>
-                      ) : (
-                        <>
-                          Send Message
-                          <Send className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                        </>
-                      )}
-                    </button>
-                  </motion.form>
-                )}
-              </AnimatePresence>
-            </GlowCard>
+            <TerminalForm />
           </div>
 
-          {/* ── Sidebar info ── */}
+          {/* ── Sidebar ── */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -364,7 +135,7 @@ export function Contact() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="lg:col-span-2 flex flex-col gap-8"
           >
-            {/* Reach out card */}
+            {/* Social links — floating icons */}
             <GlowCard glowVariant="green" className="p-8">
               <h3 className="text-lg font-bold text-text-primary mb-2">
                 Or reach me at
@@ -375,40 +146,76 @@ export function Contact() {
               </p>
 
               <div className="grid grid-cols-2 gap-3">
-                {socialLinks.map(({ icon: Icon, href, label, color }) => (
-                  <a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={cn(
-                      "flex items-center gap-3 rounded-lg border border-[--color-border-custom] bg-bg-secondary px-4 py-3",
-                      "text-sm text-text-secondary transition-all duration-200",
-                      color,
-                    )}
-                  >
-                    <Icon className="h-4 w-4 flex-shrink-0" />
-                    {label}
-                  </a>
-                ))}
+                {socialLinks.map(
+                  ({ icon, href, label, color, floatDelay }, index) =>
+                    tier === "low" ? (
+                      <a
+                        key={label}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={cn(
+                          "flex items-center gap-3 rounded-lg border border-[--color-border-custom] bg-bg-secondary px-4 py-3",
+                          "text-sm text-text-secondary transition-all duration-200",
+                          color,
+                        )}
+                      >
+                        {(() => {
+                          const IconComp = icon;
+                          return <IconComp className="h-4 w-4 flex-shrink-0" />;
+                        })()}
+                        {label}
+                      </a>
+                    ) : (
+                      <FloatingSocialIcon
+                        key={label}
+                        icon={icon}
+                        href={href}
+                        label={label}
+                        color={color}
+                        delay={floatDelay}
+                        index={index}
+                      />
+                    ),
+                )}
               </div>
             </GlowCard>
 
-            {/* Availability card */}
+            {/* Availability card with radar ping */}
             <GlowCard glowVariant="cyan" className="p-8">
-              <div className="flex items-center gap-3 mb-3">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-accent-green opacity-75 animate-ping" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-accent-green" />
-                </span>
-                <span className="text-sm font-mono text-accent-green">
-                  Available for work
-                </span>
+              <div className="flex items-center gap-4 mb-3">
+                <RadarPing />
+                <div>
+                  <span className="text-sm font-mono text-accent-green font-semibold">
+                    Signal Active
+                  </span>
+                  <p className="text-xs text-text-muted font-mono">
+                    STATUS: AVAILABLE
+                  </p>
+                </div>
               </div>
               <p className="text-sm text-text-secondary">
-                Currently open to freelance projects, consulting engagements,
-                and full-time opportunities in AI/ML engineering.
+                Currently open to freelance projects and consulting engagements
+                in AI/ML engineering.
               </p>
+
+              {/* Signal strength bars */}
+              <div className="mt-4 flex items-end gap-1">
+                {[1, 2, 3, 4, 5].map((bar) => (
+                  <motion.div
+                    key={bar}
+                    className="w-2 rounded-sm bg-accent-green"
+                    initial={{ height: 0 }}
+                    whileInView={{ height: bar * 4 + 4 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.5 + bar * 0.1, duration: 0.3 }}
+                    style={{ opacity: 0.4 + bar * 0.12 }}
+                  />
+                ))}
+                <span className="ml-2 text-[10px] font-mono text-accent-green/60">
+                  5/5 bars
+                </span>
+              </div>
             </GlowCard>
           </motion.div>
         </div>

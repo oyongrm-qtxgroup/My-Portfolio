@@ -1,12 +1,20 @@
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  MotionConfig,
+  useScroll,
+  useSpring,
+} from "framer-motion";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { KonamiEasterEgg } from "@/components/ui/KonamiEasterEgg";
+import { AmbientBackground } from "@/components/3d/AmbientBackground";
+import { DeviceCapabilityProvider } from "@/contexts/DeviceCapabilityContext";
 import Home from "@/pages/Home";
 import BlogPostPage from "@/pages/BlogPost";
 
@@ -66,18 +74,23 @@ function AnimatedRoutes() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <div className="flex min-h-screen flex-col bg-bg-primary">
-        <CustomCursor />
-        <KonamiEasterEgg />
-        <ScrollProgressBar />
-        <Navbar />
-        <AnimatedRoutes />
-        <Footer />
-      </div>
-      <Analytics />
-      <SpeedInsights />
-    </BrowserRouter>
+    <MotionConfig reducedMotion="user">
+      <DeviceCapabilityProvider>
+        <BrowserRouter>
+          <AmbientBackground />
+          <div className="relative z-10 flex min-h-screen flex-col">
+            <CustomCursor />
+            <KonamiEasterEgg />
+            <ScrollProgressBar />
+            <Navbar />
+            <AnimatedRoutes />
+            <Footer />
+          </div>
+          <Analytics />
+          <SpeedInsights />
+        </BrowserRouter>
+      </DeviceCapabilityProvider>
+    </MotionConfig>
   );
 }
 

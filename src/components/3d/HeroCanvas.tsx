@@ -24,9 +24,9 @@ export function HeroCanvas() {
     <Suspense fallback={<GlobeLoader />}>
       <Canvas
         camera={{ position: [0, 0, 6.5], fov: 45 }}
-        dpr={[1, 1.5]}
+        dpr={[1, 1.25]}
         gl={{
-          antialias: true,
+          antialias: false,
           alpha: true,
           powerPreference: "high-performance",
         }}

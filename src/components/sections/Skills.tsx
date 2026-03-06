@@ -78,8 +78,8 @@ const defaultMeta = {
   barTo: "var(--color-accent-green)",
 };
 
-/* ── Animated skill bar ──────────────────────────── */
-function SkillBar({
+/* ── Skill chip — compact, modern badge ──────────── */
+function SkillChip({
   skill,
   index,
   barFrom,
@@ -94,54 +94,41 @@ function SkillBar({
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: -15 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
+      initial={{ opacity: 0, scale: 0.85 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true, margin: "-30px" }}
       transition={{
-        delay: index * 0.05,
-        duration: 0.4,
+        delay: index * 0.03,
+        duration: 0.35,
         ease: "easeOut" as const,
       }}
-      className="group"
+      className="group relative flex items-center gap-2 rounded-lg border border-[--color-border-custom] bg-bg-primary/40 px-3 py-2 hover:border-accent-cyan/30 transition-colors"
     >
-      <div className="flex items-center justify-between mb-1.5">
-        <div className="flex items-center gap-2">
-          {skill.icon_url && (
-            <img
-              src={skill.icon_url}
-              alt=""
-              className="h-4 w-4 object-contain"
-              loading="lazy"
-            />
-          )}
-          <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
-            {skill.name}
-          </span>
-        </div>
-        {proficiency > 0 && (
-          <span className="font-mono text-[10px] text-text-muted">
-            {proficiency}%
-          </span>
-        )}
-      </div>
+      {/* Proficiency accent bar (left edge) */}
+      <div
+        className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] rounded-full"
+        style={{
+          height: `${Math.max(30, proficiency)}%`,
+          background: `linear-gradient(180deg, ${barFrom}, ${barTo})`,
+        }}
+      />
 
-      {/* Bar track */}
-      <div className="h-1.5 w-full rounded-full bg-bg-primary/60 overflow-hidden">
-        <motion.div
-          className="h-full rounded-full"
-          style={{
-            background: `linear-gradient(90deg, ${barFrom}, ${barTo})`,
-          }}
-          initial={{ width: 0 }}
-          whileInView={{ width: `${proficiency}%` }}
-          viewport={{ once: true, margin: "-40px" }}
-          transition={{
-            delay: index * 0.05 + 0.2,
-            duration: 0.8,
-            ease: "easeOut" as const,
-          }}
+      {skill.icon_url && (
+        <img
+          src={skill.icon_url}
+          alt=""
+          className="h-4 w-4 object-contain shrink-0"
+          loading="lazy"
         />
-      </div>
+      )}
+      <span className="text-xs text-text-secondary group-hover:text-text-primary transition-colors truncate">
+        {skill.name}
+      </span>
+      {proficiency > 0 && (
+        <span className="ml-auto font-mono text-[9px] text-text-muted shrink-0">
+          {proficiency}%
+        </span>
+      )}
     </motion.div>
   );
 }
@@ -192,12 +179,12 @@ function SkillCategoryCard({
           </div>
         </div>
 
-        {/* Skill bars */}
-        <div className="space-y-3">
+        {/* Skill chips */}
+        <div className="grid grid-cols-2 gap-2">
           {skills
             .sort((a, b) => (b.proficiency ?? 0) - (a.proficiency ?? 0))
             .map((skill, i) => (
-              <SkillBar
+              <SkillChip
                 key={skill.id}
                 skill={skill}
                 index={i}
@@ -243,11 +230,15 @@ export function Skills() {
   );
 
   return (
-    <section id="skills" className="px-4 py-24 sm:px-6 lg:px-8 bg-bg-secondary">
+    <section
+      id="skills"
+      className="section-bg-skills px-4 py-24 sm:px-6 lg:px-8"
+    >
       <div className="mx-auto max-w-7xl">
         <SectionHeader
           label="Skills & Expertise"
           title="Technical Arsenal"
+          entrance="constellation"
           subtitle="A comprehensive toolkit spanning AI/ML, cloud infrastructure, backend systems, and modern frontend frameworks."
         />
 
@@ -258,7 +249,7 @@ export function Skills() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="mb-10 flex flex-wrap gap-2"
+            className="mb-8 flex flex-wrap items-center gap-2"
           >
             <span className="font-mono text-[10px] text-text-muted uppercase tracking-widest self-center mr-2">
               Top Skills
