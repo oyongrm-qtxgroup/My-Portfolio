@@ -273,7 +273,7 @@ export function Blog() {
           label="Blog"
           title="Latest Articles"
           entrance="cascade"
-          subtitle="Deep dives into AI engineering, system architecture, and lessons from the trenches."
+          subtitle="Practical insights on AI engineering, system design, and hard-won lessons from production."
         />
 
         {/* Loading */}

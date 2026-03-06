@@ -401,7 +401,7 @@ export function Experience() {
           label="Experience"
           title="Professional Journey"
           entrance="timeline"
-          subtitle="Building and shipping production AI systems across industries."
+          subtitle="7+ years of building and shipping production systems — from enterprise automation to AI-powered solutions."
         />
 
         {/* Loading state */}

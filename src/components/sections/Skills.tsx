@@ -3,12 +3,13 @@ import { motion } from "framer-motion";
 import {
   Brain,
   Cloud,
-  Server,
   BarChart3,
   Monitor,
-  Database,
   Cpu,
   Layers,
+  Shield,
+  Cog,
+  Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSkills } from "@/hooks/useSkills";
@@ -27,44 +28,50 @@ const categoryMeta: Record<
     barTo: string;
   }
 > = {
-  "AI/ML": {
-    icon: <Brain className="h-5 w-5" />,
-    gradient: "from-accent-cyan to-accent-green",
-    barFrom: "var(--color-accent-cyan)",
-    barTo: "var(--color-accent-green)",
-  },
-  Cloud: {
+  "Cloud & AI Platforms": {
     icon: <Cloud className="h-5 w-5" />,
     gradient: "from-accent-purple to-accent-cyan",
     barFrom: "var(--color-accent-purple)",
     barTo: "var(--color-accent-cyan)",
   },
-  Backend: {
-    icon: <Server className="h-5 w-5" />,
-    gradient: "from-accent-orange to-accent-pink",
-    barFrom: "var(--color-accent-orange)",
-    barTo: "var(--color-accent-pink)",
+  "AI & Intelligent Automation": {
+    icon: <Brain className="h-5 w-5" />,
+    gradient: "from-accent-cyan to-accent-green",
+    barFrom: "var(--color-accent-cyan)",
+    barTo: "var(--color-accent-green)",
   },
-  Frontend: {
-    icon: <Monitor className="h-5 w-5" />,
-    gradient: "from-accent-green to-accent-cyan",
-    barFrom: "var(--color-accent-green)",
-    barTo: "var(--color-accent-cyan)",
-  },
-  Data: {
+  "Data & Analytics": {
     icon: <BarChart3 className="h-5 w-5" />,
     gradient: "from-accent-pink to-accent-purple",
     barFrom: "var(--color-accent-pink)",
     barTo: "var(--color-accent-purple)",
   },
-  DevOps: {
+  "Automation & Integration": {
+    icon: <Cog className="h-5 w-5" />,
+    gradient: "from-accent-orange to-accent-cyan",
+    barFrom: "var(--color-accent-orange)",
+    barTo: "var(--color-accent-cyan)",
+  },
+  "DevOps & Scalability": {
     icon: <Cpu className="h-5 w-5" />,
     gradient: "from-accent-orange to-accent-yellow",
     barFrom: "var(--color-accent-orange)",
     barTo: "var(--color-accent-yellow)",
   },
-  Database: {
-    icon: <Database className="h-5 w-5" />,
+  "Web & Frontend": {
+    icon: <Monitor className="h-5 w-5" />,
+    gradient: "from-accent-green to-accent-cyan",
+    barFrom: "var(--color-accent-green)",
+    barTo: "var(--color-accent-cyan)",
+  },
+  "Security & Governance": {
+    icon: <Shield className="h-5 w-5" />,
+    gradient: "from-accent-pink to-accent-orange",
+    barFrom: "var(--color-accent-pink)",
+    barTo: "var(--color-accent-orange)",
+  },
+  "Leadership & Delivery": {
+    icon: <Users className="h-5 w-5" />,
     gradient: "from-accent-cyan to-accent-purple",
     barFrom: "var(--color-accent-cyan)",
     barTo: "var(--color-accent-purple)",
@@ -239,7 +246,7 @@ export function Skills() {
           label="Skills & Expertise"
           title="Technical Arsenal"
           entrance="constellation"
-          subtitle="A comprehensive toolkit spanning AI/ML, cloud infrastructure, backend systems, and modern frontend frameworks."
+          subtitle="From Azure AI and intelligent automation to enterprise systems and team leadership — tools I use to ship real-world solutions."
         />
 
         {/* Featured skills ribbon */}

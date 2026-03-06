@@ -24,7 +24,7 @@ const socialLinks = [
   },
   {
     icon: Facebook,
-    href: "https://www.facebook.com/",
+    href: "https://www.facebook.com/oyongrm",
     label: "Facebook",
     color: "hover:text-accent-cyan hover:border-accent-cyan/40",
     floatDelay: 1.0,
@@ -118,7 +118,7 @@ export function Contact() {
           label="Contact"
           title="Let's Build Something Remarkable"
           entrance="terminal"
-          subtitle="Have a project in mind, want to collaborate, or just say hello? Drop me a transmission."
+          subtitle="Have a project in mind, want to collaborate, or just want to say hello? I'd love to hear from you."
         />
 
         <div className="grid gap-10 lg:grid-cols-5">

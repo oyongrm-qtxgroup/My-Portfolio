@@ -8,7 +8,11 @@ const socialLinks = [
     href: "https://www.linkedin.com/in/raymundo-oyong-4ab94321a/",
     label: "LinkedIn",
   },
-  { icon: Facebook, href: "https://www.facebook.com/", label: "Facebook" },
+  {
+    icon: Facebook,
+    href: "https://www.facebook.com/oyongrm",
+    label: "Facebook",
+  },
   { icon: Mail, href: "mailto:oyongrm@gmail.com", label: "Email" },
 ];
 

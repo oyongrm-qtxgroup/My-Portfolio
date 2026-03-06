@@ -714,7 +714,7 @@ export function Projects() {
           label="Projects"
           title="Featured Work"
           entrance="spread"
-          subtitle="A curated collection of enterprise and AI projects — from payment gateways and RPA automation to intelligent document processing."
+          subtitle="Enterprise-grade solutions I've designed and delivered — spanning AI, fintech, automation, and beyond."
         />
 
         {/* Filter bar — glassmorphism floats above scene */}

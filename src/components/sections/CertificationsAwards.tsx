@@ -410,7 +410,7 @@ export function CertificationsAwards() {
           label="Credentials"
           title="Certifications & Awards"
           entrance="unlock"
-          subtitle="Professional certifications and academic recognitions earned along the way."
+          subtitle="Industry credentials and recognitions that validate the work."
         />
 
         {/* Loading state */}
