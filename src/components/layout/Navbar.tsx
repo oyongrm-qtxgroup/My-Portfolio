@@ -272,7 +272,6 @@ export function Navbar() {
             )}
             Download CV
           </button>
-          <ThemeToggle mobile />
           <div className="flex items-center gap-2 px-3 py-2">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-green opacity-75" />
@@ -282,6 +281,7 @@ export function Navbar() {
               Available for work
             </span>
           </div>
+          <ThemeToggle mobile />
         </div>
       </div>
     </motion.nav>

@@ -397,17 +397,12 @@ function MobileCarouselCard({
       transition={{ delay: index * 0.05, duration: 0.3 }}
       onClick={onClick}
       className={cn(
-        "flex-shrink-0 w-[280px] snap-center text-left rounded-xl border-l-2 p-5 transition-all duration-300",
+        "flex-shrink-0 w-[calc(100vw-3rem)] max-w-[320px] snap-start text-left rounded-xl border-l-2 p-5 transition-all duration-300",
         borderColor,
         isActive
-          ? "bg-bg-elevated border-accent-cyan/60 shadow-glow-cyan depth-shadow scale-[1.02]"
+          ? "bg-bg-elevated border-accent-cyan/60 shadow-glow-cyan depth-shadow"
           : "bg-bg-elevated/50 border-border-glow/40 hover:bg-bg-elevated/80",
       )}
-      style={{
-        transform: isActive
-          ? "perspective(800px) translateZ(10px)"
-          : "perspective(800px) translateZ(0)",
-      }}
     >
       <div className="flex items-center gap-2 mb-2">
         <span className="font-mono text-[10px] uppercase tracking-widest text-text-muted">
@@ -856,11 +851,11 @@ export function Projects() {
             {/* ── Mobile: horizontal swipe carousel ─────── */}
             <div
               className={cn(
-                "lg:hidden overflow-hidden",
+                "lg:hidden overflow-x-clip",
                 tier === "high" && "lg:hidden",
               )}
             >
-              <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar -mx-4 px-4">
+              <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar scroll-pl-4">
                 {projects.map((project, index) => (
                   <MobileCarouselCard
                     key={project.id}
