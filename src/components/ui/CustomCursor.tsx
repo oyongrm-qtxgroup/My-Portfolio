@@ -1,4 +1,5 @@
 import { useEffect, useRef, useCallback } from "react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 /**
  * Custom cursor: small glowing cyan dot + trailing circle.
@@ -8,6 +9,8 @@ import { useEffect, useRef, useCallback } from "react";
 export function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
+  const { resolvedTheme } = useTheme();
+  const isLight = resolvedTheme === "light";
   const pos = useRef({ x: -100, y: -100 });
   const ringPos = useRef({ x: -100, y: -100 });
   const visible = useRef(false);
@@ -86,13 +89,13 @@ export function CustomCursor() {
       {/* Inner dot */}
       <div
         ref={dotRef}
-        className="pointer-events-none fixed top-0 left-0 z-[9999] h-2 w-2 rounded-full bg-accent-cyan mix-blend-screen"
+        className={`pointer-events-none fixed top-0 left-0 z-[9999] h-2 w-2 rounded-full bg-accent-cyan ${isLight ? "mix-blend-multiply" : "mix-blend-screen"}`}
         style={{ opacity: 0, willChange: "transform" }}
       />
       {/* Outer trailing circle */}
       <div
         ref={ringRef}
-        className="pointer-events-none fixed top-0 left-0 z-[9998] rounded-full border border-accent-cyan/50 mix-blend-screen"
+        className={`pointer-events-none fixed top-0 left-0 z-[9998] rounded-full border border-accent-cyan/50 ${isLight ? "mix-blend-multiply" : "mix-blend-screen"}`}
         style={{
           opacity: 0,
           willChange: "transform",

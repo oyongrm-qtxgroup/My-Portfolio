@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Menu, X, Download, Loader2 } from "lucide-react";
 import { useDownloadCV } from "@/hooks/useDownloadCV";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { toast } from "sonner";
 
 const navLinks = [
@@ -210,6 +211,9 @@ export function Navbar() {
               Available
             </span>
           </div>
+
+          {/* Theme toggle */}
+          <ThemeToggle />
         </div>
 
         {/* Mobile hamburger */}
@@ -226,10 +230,12 @@ export function Navbar() {
       <div
         className={cn(
           "md:hidden overflow-hidden transition-all duration-300 border-t border-[--color-border-custom] bg-bg-primary/95 backdrop-blur-xl",
-          mobileOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0 border-t-0",
+          mobileOpen
+            ? "max-h-[28rem] opacity-100"
+            : "max-h-0 opacity-0 border-t-0",
         )}
       >
-        <div className="flex flex-col gap-1 px-4 py-4">
+        <div className="flex flex-col gap-1 px-4 py-4 pb-6">
           {navLinks.map((link) => (
             <a
               key={link.hash}
@@ -266,6 +272,7 @@ export function Navbar() {
             )}
             Download CV
           </button>
+          <ThemeToggle mobile />
           <div className="flex items-center gap-2 px-3 py-2">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent-green opacity-75" />

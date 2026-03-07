@@ -58,45 +58,43 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* ── Portfolio: Surface Colors ─────────────────── */
-  --color-bg-primary: #0a0c10;
-  --color-bg-secondary: #0f1117;
-  --color-bg-elevated: #161b22;
-  --color-bg-overlay: rgb(10 12 16 / 0.85);
+  /* ── Portfolio: Surface Colors (themed via CSS vars) ── */
+  --color-bg-primary: var(--portfolio-bg-primary);
+  --color-bg-secondary: var(--portfolio-bg-secondary);
+  --color-bg-elevated: var(--portfolio-bg-elevated);
+  --color-bg-overlay: var(--portfolio-bg-overlay);
 
   /* ── Portfolio: Border Colors ──────────────────── */
-  --color-border-custom: #21262d;
-  --color-border-glow: #30363d;
-  --color-border-subtle: #161b22;
+  --color-border-custom: var(--portfolio-border-custom);
+  --color-border-glow: var(--portfolio-border-glow);
+  --color-border-subtle: var(--portfolio-border-subtle);
 
   /* ── Portfolio: Accent Palette ─────────────────── */
-  --color-accent-cyan: #00d4ff;
-  --color-accent-green: #00ff88;
-  --color-accent-orange: #ff6b35;
-  --color-accent-purple: #7c3aed;
-  --color-accent-pink: #ff2d78;
-  --color-accent-yellow: #ffd60a;
+  --color-accent-cyan: var(--portfolio-accent-cyan);
+  --color-accent-green: var(--portfolio-accent-green);
+  --color-accent-orange: var(--portfolio-accent-orange);
+  --color-accent-purple: var(--portfolio-accent-purple);
+  --color-accent-pink: var(--portfolio-accent-pink);
+  --color-accent-yellow: var(--portfolio-accent-yellow);
 
   /* ── Portfolio: Text Colors ────────────────────── */
-  --color-text-primary: #e6edf3;
-  --color-text-secondary: #8b949e;
-  --color-text-muted: #484f58;
-  --color-text-link: #00d4ff;
+  --color-text-primary: var(--portfolio-text-primary);
+  --color-text-secondary: var(--portfolio-text-secondary);
+  --color-text-muted: var(--portfolio-text-muted);
+  --color-text-link: var(--portfolio-text-link);
 
   /* ── Typography ────────────────────────────────── */
   --font-display: "Space Grotesk", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 
-  /* ── Shadows ───────────────────────────────────── */
-  --shadow-glow-cyan: 0 0 20px color-mix(in oklch, #00d4ff 30%, transparent);
-  --shadow-glow-green: 0 0 20px color-mix(in oklch, #00ff88 25%, transparent);
-  --shadow-glow-orange: 0 0 20px color-mix(in oklch, #ff6b35 25%, transparent);
-  --shadow-glow-purple: 0 0 20px color-mix(in oklch, #7c3aed 25%, transparent);
-  --shadow-glow-pink: 0 0 20px color-mix(in oklch, #ff2d78 25%, transparent);
-  --shadow-glow-card: 0 8px 32px rgb(0 0 0 / 0.6);
-  --shadow-glow-card-lg:
-    0 12px 48px rgb(0 0 0 / 0.7),
-    0 0 24px color-mix(in oklch, #00d4ff 10%, transparent);
+  /* ── Shadows (themed via CSS vars) ──────────────── */
+  --shadow-glow-cyan: var(--portfolio-shadow-glow-cyan);
+  --shadow-glow-green: var(--portfolio-shadow-glow-green);
+  --shadow-glow-orange: var(--portfolio-shadow-glow-orange);
+  --shadow-glow-purple: var(--portfolio-shadow-glow-purple);
+  --shadow-glow-pink: var(--portfolio-shadow-glow-pink);
+  --shadow-glow-card: var(--portfolio-shadow-glow-card);
+  --shadow-glow-card-lg: var(--portfolio-shadow-glow-card-lg);
 
   /* ── Custom Animations ─────────────────────────── */
   --animate-glow-pulse: glow-pulse 2s ease-in-out infinite;
@@ -314,9 +312,91 @@
   }
 }
 
-/* ── Dark theme as default (always dark) ──────────── */
+/* ═══════════════════════════════════════════════════════
+   THEME MODE — Light (:root default) / Dark (.dark)
+   Default is dark — FOLT-prevention script in index.html
+   adds .dark to <html> synchronously before React mounts.
+   ═══════════════════════════════════════════════════════ */
 :root {
   --radius: 0.625rem;
+
+  /* ── shadcn: Light mode ────────────────────────── */
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #0891b2;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #475569;
+  --accent: #f1f5f9;
+  --accent-foreground: #0f172a;
+  --destructive: #e11d48;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #0891b2;
+  --chart-1: #0891b2;
+  --chart-2: #059669;
+  --chart-3: #ea580c;
+  --chart-4: #7c3aed;
+  --chart-5: #e11d48;
+  --sidebar: #f1f5f9;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #0891b2;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #0891b2;
+
+  /* ── Portfolio: Light mode surfaces ─────────────── */
+  --portfolio-bg-primary: #f8fafc;
+  --portfolio-bg-secondary: #f1f5f9;
+  --portfolio-bg-elevated: #ffffff;
+  --portfolio-bg-overlay: rgba(248, 250, 252, 0.85);
+
+  /* ── Portfolio: Light mode borders ──────────────── */
+  --portfolio-border-custom: #e2e8f0;
+  --portfolio-border-glow: #cbd5e1;
+  --portfolio-border-subtle: #f1f5f9;
+
+  /* ── Portfolio: Light mode accents ──────────────── */
+  --portfolio-accent-cyan: #0891b2;
+  --portfolio-accent-green: #059669;
+  --portfolio-accent-orange: #ea580c;
+  --portfolio-accent-purple: #7c3aed;
+  --portfolio-accent-pink: #e11d48;
+  --portfolio-accent-yellow: #ca8a04;
+
+  /* ── Portfolio: Light mode text ─────────────────── */
+  --portfolio-text-primary: #0f172a;
+  --portfolio-text-secondary: #475569;
+  --portfolio-text-muted: #94a3b8;
+  --portfolio-text-link: #0891b2;
+
+  /* ── Portfolio: Light mode shadows ──────────────── */
+  --portfolio-shadow-glow-cyan: 0 0 20px
+    color-mix(in oklch, #0891b2 15%, transparent);
+  --portfolio-shadow-glow-green: 0 0 20px
+    color-mix(in oklch, #059669 12%, transparent);
+  --portfolio-shadow-glow-orange: 0 0 20px
+    color-mix(in oklch, #ea580c 12%, transparent);
+  --portfolio-shadow-glow-purple: 0 0 20px
+    color-mix(in oklch, #7c3aed 12%, transparent);
+  --portfolio-shadow-glow-pink: 0 0 20px
+    color-mix(in oklch, #e11d48 12%, transparent);
+  --portfolio-shadow-glow-card: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --portfolio-shadow-glow-card-lg:
+    0 12px 48px rgba(0, 0, 0, 0.1),
+    0 0 24px color-mix(in oklch, #0891b2 5%, transparent);
+}
+
+.dark {
+  /* ── shadcn: Dark mode ─────────────────────────── */
   --background: #0a0c10;
   --foreground: #e6edf3;
   --card: #161b22;
@@ -348,6 +428,47 @@
   --sidebar-accent-foreground: #e6edf3;
   --sidebar-border: #21262d;
   --sidebar-ring: #00d4ff;
+
+  /* ── Portfolio: Dark mode surfaces ──────────────── */
+  --portfolio-bg-primary: #0a0c10;
+  --portfolio-bg-secondary: #0f1117;
+  --portfolio-bg-elevated: #161b22;
+  --portfolio-bg-overlay: rgb(10 12 16 / 0.85);
+
+  /* ── Portfolio: Dark mode borders ───────────────── */
+  --portfolio-border-custom: #21262d;
+  --portfolio-border-glow: #30363d;
+  --portfolio-border-subtle: #161b22;
+
+  /* ── Portfolio: Dark mode accents ───────────────── */
+  --portfolio-accent-cyan: #00d4ff;
+  --portfolio-accent-green: #00ff88;
+  --portfolio-accent-orange: #ff6b35;
+  --portfolio-accent-purple: #7c3aed;
+  --portfolio-accent-pink: #ff2d78;
+  --portfolio-accent-yellow: #ffd60a;
+
+  /* ── Portfolio: Dark mode text ──────────────────── */
+  --portfolio-text-primary: #e6edf3;
+  --portfolio-text-secondary: #8b949e;
+  --portfolio-text-muted: #484f58;
+  --portfolio-text-link: #00d4ff;
+
+  /* ── Portfolio: Dark mode shadows ───────────────── */
+  --portfolio-shadow-glow-cyan: 0 0 20px
+    color-mix(in oklch, #00d4ff 30%, transparent);
+  --portfolio-shadow-glow-green: 0 0 20px
+    color-mix(in oklch, #00ff88 25%, transparent);
+  --portfolio-shadow-glow-orange: 0 0 20px
+    color-mix(in oklch, #ff6b35 25%, transparent);
+  --portfolio-shadow-glow-purple: 0 0 20px
+    color-mix(in oklch, #7c3aed 25%, transparent);
+  --portfolio-shadow-glow-pink: 0 0 20px
+    color-mix(in oklch, #ff2d78 25%, transparent);
+  --portfolio-shadow-glow-card: 0 8px 32px rgb(0 0 0 / 0.6);
+  --portfolio-shadow-glow-card-lg:
+    0 12px 48px rgb(0 0 0 / 0.7),
+    0 0 24px color-mix(in oklch, #00d4ff 10%, transparent);
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -363,6 +484,7 @@
     scroll-behavior: smooth;
     scrollbar-color: var(--color-border-glow) var(--color-bg-primary);
     scrollbar-width: thin;
+    overflow-x: hidden;
   }
 
   body {

@@ -101,7 +101,7 @@ export function HolographicCard({
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         className={cn(
-          "relative rounded-xl overflow-hidden transition-transform duration-200 ease-out",
+          "relative rounded-xl transition-transform duration-200 ease-out",
           backContent && "cursor-pointer",
           className,
         )}
@@ -147,14 +147,15 @@ export function HolographicCard({
           }}
         />
 
-        {/* Front face */}
+        {/* Card flip container */}
         <AnimatePresence mode="wait">
           {!isFlipped ? (
             <motion.div
               key="front"
-              initial={{ rotateY: 0 }}
-              exit={{ rotateY: 90 }}
-              transition={{ duration: 0.3 }}
+              initial={{ rotateY: -90, opacity: 0 }}
+              animate={{ rotateY: 0, opacity: 1 }}
+              exit={{ rotateY: 90, opacity: 0 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
               className="relative z-5 bg-bg-elevated border border-[--color-border-custom] rounded-xl p-6"
             >
               {children}
@@ -162,10 +163,10 @@ export function HolographicCard({
           ) : (
             <motion.div
               key="back"
-              initial={{ rotateY: -90 }}
-              animate={{ rotateY: 0 }}
-              exit={{ rotateY: 90 }}
-              transition={{ duration: 0.3 }}
+              initial={{ rotateY: -90, opacity: 0 }}
+              animate={{ rotateY: 0, opacity: 1 }}
+              exit={{ rotateY: 90, opacity: 0 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
               className="relative z-5 bg-bg-elevated border border-[--color-border-custom] rounded-xl p-6"
             >
               {backContent}

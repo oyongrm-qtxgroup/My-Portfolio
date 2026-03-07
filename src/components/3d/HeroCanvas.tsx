@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { NeuralGlobe } from "./NeuralGlobe";
 import { FloatingParticles } from "./FloatingParticles";
+import type { Skill } from "@/types";
 
 function GlobeLoader() {
   return (
@@ -19,7 +20,7 @@ function GlobeLoader() {
   );
 }
 
-export function HeroCanvas() {
+export function HeroCanvas({ skills = [] }: { skills?: Skill[] }) {
   return (
     <Suspense fallback={<GlobeLoader />}>
       <Canvas
@@ -34,15 +35,17 @@ export function HeroCanvas() {
           width: "100%",
           height: "100%",
           background: "transparent",
+          overflow: "visible",
         }}
       >
-        {/* Lighting */}
-        <ambientLight intensity={0.15} />
-        <pointLight position={[5, 5, 5]} intensity={0.4} color="#00d4ff" />
-        <pointLight position={[-5, -3, 3]} intensity={0.2} color="#00ff88" />
+        {/* Lighting — boosted to illuminate wireframe & rings */}
+        <ambientLight intensity={0.2} />
+        <pointLight position={[5, 5, 5]} intensity={0.5} color="#00d4ff" />
+        <pointLight position={[-5, -3, 3]} intensity={0.3} color="#00ff88" />
+        <pointLight position={[0, -5, 4]} intensity={0.2} color="#7c3aed" />
 
         {/* Globe */}
-        <NeuralGlobe />
+        <NeuralGlobe skills={skills} />
 
         {/* Background particles */}
         <FloatingParticles />

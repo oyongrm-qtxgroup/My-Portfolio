@@ -22,6 +22,7 @@ import { KonamiEasterEgg } from "@/components/ui/KonamiEasterEgg";
 import { AmbientBackground } from "@/components/3d/AmbientBackground";
 import { DeviceCapabilityProvider } from "@/contexts/DeviceCapabilityContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 import Home from "@/pages/Home";
 import BlogPostPage from "@/pages/BlogPost";
@@ -109,146 +110,148 @@ function AnimatedRoutes() {
 function App() {
   return (
     <MotionConfig reducedMotion="user">
-      <AuthProvider>
-        <DeviceCapabilityProvider>
-          <BrowserRouter>
-            <Routes>
-              {/* ── Admin routes (no public chrome) ──── */}
-              <Route
-                path="/admin/login"
-                element={
-                  <Suspense fallback={<AdminLoadingFallback />}>
-                    <AdminLogin />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="/admin/reset-password"
-                element={
-                  <Suspense fallback={<AdminLoadingFallback />}>
-                    <AdminResetPassword />
-                  </Suspense>
-                }
-              />
-              <Route
-                path="/admin"
-                element={
-                  <Suspense fallback={<AdminLoadingFallback />}>
-                    <ProtectedRoute>
-                      <AdminLayout />
-                    </ProtectedRoute>
-                  </Suspense>
-                }
-              >
+      <ThemeProvider>
+        <AuthProvider>
+          <DeviceCapabilityProvider>
+            <BrowserRouter>
+              <Routes>
+                {/* ── Admin routes (no public chrome) ──── */}
                 <Route
-                  index
-                  element={<Navigate to="/admin/dashboard" replace />}
-                />
-                <Route
-                  path="dashboard"
+                  path="/admin/login"
                   element={
                     <Suspense fallback={<AdminLoadingFallback />}>
-                      <AdminDashboard />
+                      <AdminLogin />
                     </Suspense>
                   }
                 />
                 <Route
-                  path="projects"
+                  path="/admin/reset-password"
                   element={
                     <Suspense fallback={<AdminLoadingFallback />}>
-                      <ProjectsManager />
+                      <AdminResetPassword />
                     </Suspense>
                   }
                 />
                 <Route
-                  path="experience"
+                  path="/admin"
                   element={
                     <Suspense fallback={<AdminLoadingFallback />}>
-                      <ExperienceManager />
+                      <ProtectedRoute>
+                        <AdminLayout />
+                      </ProtectedRoute>
                     </Suspense>
                   }
-                />
-                <Route
-                  path="skills"
-                  element={
-                    <Suspense fallback={<AdminLoadingFallback />}>
-                      <SkillsManager />
-                    </Suspense>
-                  }
-                />
-                <Route
-                  path="blog"
-                  element={
-                    <Suspense fallback={<AdminLoadingFallback />}>
-                      <BlogManager />
-                    </Suspense>
-                  }
-                />
-                <Route
-                  path="certifications"
-                  element={
-                    <Suspense fallback={<AdminLoadingFallback />}>
-                      <CertificationsManager />
-                    </Suspense>
-                  }
-                />
-                <Route
-                  path="awards"
-                  element={
-                    <Suspense fallback={<AdminLoadingFallback />}>
-                      <AwardsManager />
-                    </Suspense>
-                  }
-                />
-                <Route
-                  path="messages"
-                  element={
-                    <Suspense fallback={<AdminLoadingFallback />}>
-                      <ContactMessages />
-                    </Suspense>
-                  }
-                />
-                <Route
-                  path="profile"
-                  element={
-                    <Suspense fallback={<AdminLoadingFallback />}>
-                      <ProfileManager />
-                    </Suspense>
-                  }
-                />
-                <Route
-                  path="education"
-                  element={
-                    <Suspense fallback={<AdminLoadingFallback />}>
-                      <EducationManager />
-                    </Suspense>
-                  }
-                />
-              </Route>
+                >
+                  <Route
+                    index
+                    element={<Navigate to="/admin/dashboard" replace />}
+                  />
+                  <Route
+                    path="dashboard"
+                    element={
+                      <Suspense fallback={<AdminLoadingFallback />}>
+                        <AdminDashboard />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="projects"
+                    element={
+                      <Suspense fallback={<AdminLoadingFallback />}>
+                        <ProjectsManager />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="experience"
+                    element={
+                      <Suspense fallback={<AdminLoadingFallback />}>
+                        <ExperienceManager />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="skills"
+                    element={
+                      <Suspense fallback={<AdminLoadingFallback />}>
+                        <SkillsManager />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="blog"
+                    element={
+                      <Suspense fallback={<AdminLoadingFallback />}>
+                        <BlogManager />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="certifications"
+                    element={
+                      <Suspense fallback={<AdminLoadingFallback />}>
+                        <CertificationsManager />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="awards"
+                    element={
+                      <Suspense fallback={<AdminLoadingFallback />}>
+                        <AwardsManager />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="messages"
+                    element={
+                      <Suspense fallback={<AdminLoadingFallback />}>
+                        <ContactMessages />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="profile"
+                    element={
+                      <Suspense fallback={<AdminLoadingFallback />}>
+                        <ProfileManager />
+                      </Suspense>
+                    }
+                  />
+                  <Route
+                    path="education"
+                    element={
+                      <Suspense fallback={<AdminLoadingFallback />}>
+                        <EducationManager />
+                      </Suspense>
+                    }
+                  />
+                </Route>
 
-              {/* ── Public routes (with navbar/footer) ─ */}
-              <Route
-                path="*"
-                element={
-                  <>
-                    <AmbientBackground />
-                    <div className="relative z-10 flex min-h-screen flex-col">
-                      <CustomCursor />
-                      <KonamiEasterEgg />
-                      <ScrollProgressBar />
-                      <Navbar />
-                      <AnimatedRoutes />
-                      <Footer />
-                    </div>
-                    <Analytics />
-                    <SpeedInsights />
-                  </>
-                }
-              />
-            </Routes>
-          </BrowserRouter>
-        </DeviceCapabilityProvider>
-      </AuthProvider>
+                {/* ── Public routes (with navbar/footer) ─ */}
+                <Route
+                  path="*"
+                  element={
+                    <>
+                      <AmbientBackground />
+                      <div className="relative z-10 flex min-h-screen flex-col overflow-x-hidden">
+                        <CustomCursor />
+                        <KonamiEasterEgg />
+                        <ScrollProgressBar />
+                        <Navbar />
+                        <AnimatedRoutes />
+                        <Footer />
+                      </div>
+                      <Analytics />
+                      <SpeedInsights />
+                    </>
+                  }
+                />
+              </Routes>
+            </BrowserRouter>
+          </DeviceCapabilityProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </MotionConfig>
   );
 }

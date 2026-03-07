@@ -10,6 +10,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useContactForm } from "@/hooks/useContactForm";
 import { TurnstileWidget } from "@/components/ui/TurnstileWidget";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || "";
 
@@ -80,7 +81,7 @@ function TerminalInput({
         placeholder={placeholder}
         disabled={disabled}
         className={cn(
-          "w-full rounded border border-accent-green/20 bg-black/60 px-3 py-2.5",
+          "w-full rounded border border-accent-green/20 bg-[#0a0e14]/80 px-3 py-2.5",
           "text-sm text-accent-green placeholder:text-accent-green/30",
           "font-mono outline-none transition-all duration-200",
           "focus:border-accent-green/60 focus:ring-1 focus:ring-accent-green/20",
@@ -126,7 +127,7 @@ function TerminalTextarea({
         disabled={disabled}
         rows={rows}
         className={cn(
-          "w-full rounded border border-accent-green/20 bg-black/60 px-3 py-2.5",
+          "w-full rounded border border-accent-green/20 bg-[#0a0e14]/80 px-3 py-2.5",
           "text-sm text-accent-green placeholder:text-accent-green/30",
           "font-mono outline-none transition-all duration-200 resize-none",
           "focus:border-accent-green/60 focus:ring-1 focus:ring-accent-green/20",
@@ -174,6 +175,7 @@ function TransmissionReceived({ onReset }: { onReset: () => void }) {
    ═══════════════════════════════════════════════════════ */
 export function TerminalForm() {
   const { submitting, success, error, submit, reset } = useContactForm();
+  const { resolvedTheme } = useTheme();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -210,10 +212,12 @@ export function TerminalForm() {
 
   return (
     <div
-      className="relative rounded-xl overflow-hidden border border-accent-green/20 bg-black/80"
+      className="relative rounded-xl overflow-hidden border border-accent-green/20 bg-[#0d1117] shadow-lg"
       style={{
         boxShadow:
-          "0 0 40px rgba(0, 255, 136, 0.05), inset 0 0 80px rgba(0, 0, 0, 0.3)",
+          resolvedTheme === "light"
+            ? "0 4px 24px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 255, 136, 0.08)"
+            : "0 0 40px rgba(0, 255, 136, 0.05), inset 0 0 80px rgba(0, 0, 0, 0.3)",
       }}
     >
       {/* Scanline overlay */}
@@ -229,7 +233,7 @@ export function TerminalForm() {
       />
 
       {/* Terminal header bar */}
-      <div className="relative z-10 flex items-center gap-2 border-b border-accent-green/15 px-4 py-2.5 bg-black/60">
+      <div className="relative z-10 flex items-center gap-2 border-b border-accent-green/15 px-4 py-2.5 bg-[#0a0e14]">
         <Terminal className="h-3.5 w-3.5 text-accent-green/60" />
         <span className="font-mono text-[10px] uppercase tracking-widest text-accent-green/50">
           contact_terminal v2.0

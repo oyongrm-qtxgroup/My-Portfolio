@@ -1,12 +1,15 @@
 import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { useTheme } from "@/contexts/ThemeContext";
 
 const PARTICLE_COUNT = 80;
 const SPREAD = 10;
 
 export function FloatingParticles() {
   const pointsRef = useRef<THREE.Points>(null);
+  const { resolvedTheme } = useTheme();
+  const isLight = resolvedTheme === "light";
 
   const { positions, velocities } = useMemo(() => {
     const positions = new Float32Array(PARTICLE_COUNT * 3);
@@ -53,13 +56,13 @@ export function FloatingParticles() {
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial
-        color="#00d4ff"
+        color={isLight ? "#0891b2" : "#00d4ff"}
         size={0.02}
         sizeAttenuation
         transparent
-        opacity={0.35}
+        opacity={isLight ? 0.45 : 0.35}
         depthWrite={false}
-        blending={THREE.AdditiveBlending}
+        blending={isLight ? THREE.NormalBlending : THREE.AdditiveBlending}
       />
     </points>
   );

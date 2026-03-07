@@ -42,6 +42,17 @@
       async
       defer
     ></script>
+    <!-- Prevent flash of wrong theme: apply .dark before first paint -->
+    <script>
+      (function () {
+        var t = localStorage.getItem("portfolio-theme") || "dark";
+        var d =
+          t === "system"
+            ? window.matchMedia("(prefers-color-scheme: dark)").matches
+            : t === "dark";
+        if (d) document.documentElement.classList.add("dark");
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

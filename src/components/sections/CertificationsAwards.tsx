@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Award,
   BadgeCheck,
@@ -329,6 +330,7 @@ function FallbackCertCard({
   index: number;
 }) {
   const meta = badgeLevelMeta[cert.badge_level ?? ""] ?? defaultBadgeMeta;
+  const [isFlipped, setIsFlipped] = useState(false);
 
   return (
     <motion.div
@@ -337,9 +339,46 @@ function FallbackCertCard({
       viewport={{ once: true, margin: "-40px" }}
       transition={{ delay: index * 0.1, duration: 0.5, ease: "easeOut" }}
     >
-      <GlowCard glowVariant={meta.variant} className="p-6">
-        <CertFrontContent cert={cert} meta={meta} />
-      </GlowCard>
+      <div
+        className={cn(
+          "relative rounded-xl border border-[--color-border-custom] bg-bg-elevated p-6 cursor-pointer",
+          "transition-all duration-300 ease-out",
+          meta.variant === "cyan" &&
+            "hover:border-accent-cyan/40 hover:shadow-glow-cyan",
+          meta.variant === "purple" &&
+            "hover:border-accent-purple/40 hover:shadow-glow-purple",
+          meta.variant === "green" &&
+            "hover:border-accent-green/40 hover:shadow-glow-green",
+          meta.variant === "orange" &&
+            "hover:border-accent-orange/40 hover:shadow-glow-orange",
+        )}
+        style={{ perspective: 800 }}
+        onClick={() => setIsFlipped((f) => !f)}
+      >
+        <AnimatePresence mode="wait">
+          {!isFlipped ? (
+            <motion.div
+              key="front"
+              initial={{ rotateY: -90, opacity: 0 }}
+              animate={{ rotateY: 0, opacity: 1 }}
+              exit={{ rotateY: 90, opacity: 0 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+            >
+              <CertFrontContent cert={cert} meta={meta} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="back"
+              initial={{ rotateY: -90, opacity: 0 }}
+              animate={{ rotateY: 0, opacity: 1 }}
+              exit={{ rotateY: 90, opacity: 0 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+            >
+              <CertBackContent cert={cert} meta={meta} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </motion.div>
   );
 }

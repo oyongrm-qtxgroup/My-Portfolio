@@ -472,7 +472,7 @@ function DetailOverlay({
       onClick={onClose}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/60" />
 
       {/* Detail panel */}
       <motion.div
@@ -482,13 +482,13 @@ function DetailOverlay({
         transition={{ type: "spring", damping: 30, stiffness: 300 }}
         className={cn(
           "relative z-10 w-full max-w-3xl max-h-[80vh] overflow-y-auto rounded-t-2xl",
-          "glass border-t border-l-2",
+          "bg-bg-primary border border-[--color-border-custom] border-l-2",
           borderColor,
         )}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close handle */}
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[--color-border-custom] bg-bg-primary/80 backdrop-blur-xl px-6 py-3">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[--color-border-custom] bg-bg-primary px-6 py-3">
           <div className="flex items-center gap-2">
             <span className="font-mono text-[10px] uppercase tracking-widest text-text-muted">
               {project.industry ?? "General"}
@@ -707,7 +707,7 @@ export function Projects() {
   return (
     <section
       id="projects"
-      className="section-bg-projects px-4 py-24 sm:px-6 lg:px-8"
+      className="section-bg-projects px-4 py-24 sm:px-6 lg:px-8 overflow-x-hidden"
     >
       <div className="mx-auto max-w-7xl">
         <SectionHeader
@@ -727,7 +727,7 @@ export function Projects() {
                 setActiveFilter(f);
                 setSelectedIndex(0);
               }}
-              className="mb-6 glass rounded-full px-2 py-1 inline-flex"
+              className="mb-6 glass rounded-full px-2 py-1 max-w-full"
             />
           </div>
         )}
@@ -854,7 +854,12 @@ export function Projects() {
             )}
 
             {/* ── Mobile: horizontal swipe carousel ─────── */}
-            <div className={cn("lg:hidden", tier === "high" && "lg:hidden")}>
+            <div
+              className={cn(
+                "lg:hidden overflow-hidden",
+                tier === "high" && "lg:hidden",
+              )}
+            >
               <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 no-scrollbar -mx-4 px-4">
                 {projects.map((project, index) => (
                   <MobileCarouselCard

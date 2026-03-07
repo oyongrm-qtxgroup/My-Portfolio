@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { PillBadge } from "@/components/ui/PillBadge";
 import { HeroCanvas } from "@/components/3d/HeroCanvas";
 import { LazyCanvas } from "@/components/3d/LazyCanvas";
+import { useSkills } from "@/hooks/useSkills";
 
 /* ── Animation variants ──────────────────────────── */
 const containerVariants = {
@@ -119,14 +120,20 @@ function StaggerHeadline() {
 }
 
 export function Hero() {
+  const { skills } = useSkills();
+  const featuredSkills = useMemo(
+    () => skills.filter((s) => s.is_featured),
+    [skills],
+  );
+
   return (
     <section
       id="hero"
-      className="noise-overlay relative flex min-h-screen items-center overflow-hidden pt-16"
+      className="noise-overlay relative flex min-h-screen items-center pt-16"
     >
       {/* Background grid overlay */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        className="pointer-events-none absolute inset-0 overflow-hidden opacity-[0.03]"
         style={{
           backgroundImage:
             "linear-gradient(var(--color-accent-cyan) 1px, transparent 1px), linear-gradient(90deg, var(--color-accent-cyan) 1px, transparent 1px)",
@@ -190,13 +197,13 @@ export function Hero() {
 
         {/* 3D Neural Globe */}
         <motion.div
-          className="flex flex-1 items-center justify-center"
+          className="flex flex-1 items-center justify-center overflow-visible"
           variants={globeVariants}
           initial="hidden"
           animate="visible"
         >
           <LazyCanvas
-            className="relative h-72 w-72 sm:h-96 sm:w-96 lg:h-[28rem] lg:w-[28rem]"
+            className="relative h-72 w-72 overflow-visible sm:h-96 sm:w-96 lg:h-[28rem] lg:w-[28rem]"
             rootMargin="400px 0px"
             fallback={
               <div className="flex h-full w-full items-center justify-center rounded-full border border-accent-cyan/20 bg-accent-cyan/5">
@@ -206,7 +213,7 @@ export function Hero() {
               </div>
             }
           >
-            <HeroCanvas />
+            <HeroCanvas skills={featuredSkills} />
           </LazyCanvas>
         </motion.div>
       </div>
