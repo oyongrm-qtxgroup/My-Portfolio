@@ -1,6 +1,6 @@
 # Portfolio revival — implementation plan
 
-Status: **design approved (round 2) and open items answered, 24 Oct 2026.** Nothing below is built yet.
+Status: **launched 24 Oct 2026** (`main` at `add74fe` serves production). Post-launch fixes follow [`FIX_PLAN.md`](FIX_PLAN.md); its §1 decisions replace parts of §1–4 below as each step lands, and those rows are updated in the same pull request.
 
 - Design canvas (source of truth, commentable): https://claude.ai/artifact/T6ctTPLx4F3tVGQ2pX2gue
 - Snapshot of the approved artboards: [`docs/design/`](design/) — `Main` (home), `Work` (case study), `Log`, `Mobile`, `MobileMenu`, `Night*` (dark mode), `States` (motion and loading states), `System` (tokens + accessibility), `CVPage1/2` (A4 CV). Copy exact colours, sizes, spacing and copy from these files.
@@ -13,7 +13,7 @@ Status: **design approved (round 2) and open items answered, 24 Oct 2026.** Noth
 | --- | --- |
 | Direction | **Engineering logbook.** Plain paper, black ink, ballpoint-blue accent, red notebook-margin line, condensed form-style headings. No cards, shadows, gradients, glow, glass, 3D, particles, typing effects, custom cursor, skill bars. |
 | Positioning | **AI and automation engineer** (changed 24 Oct 2026). Headline: "I build AI and software that does the work people shouldn't have to." Audience: hiring managers first, clients second. |
-| Names | Named: **Jayne Bandy AI** (always the full name), **RL Finance**, **SEED**, **Workable**. Every other project is described generically: "workforce & care platform for an NDIS provider", "retirement-village finance", "care-plan drafting for an aged-care provider". No client people's names anywhere. |
+| Names | Named: **Jayne Bandy AI** (always the full name), **RL Finance**, **SEED**, **Workable** (reconfirmed 24 Oct 2026; SEED and Workable get a one-clause explanation on first use). Every other project is described generically: "workforce & care platform for an NDIS provider", "retirement-village finance", "care-plan drafting for an aged-care provider". No client people's names anywhere. |
 | Workable | Credit **only the modules built** (campaigns, certifications + MS Learn sync, 30/60/90 onboarding, KPI/KRA, ad-audience sync, sales booking, AI-call scheduling fix, realtime/connection fix). |
 | Hours | Shown **rounded** ("650 h", "1,900+"). |
 | Modes | Paper (light), Night (dark), **Auto = default** (follows OS). Manual switch in footer and phone menu. |
@@ -161,7 +161,8 @@ First version (6 case studies, 49-entry dated log, "2026 in figures" with hours 
 - [x] Per-page titles and descriptions; Open Graph + Twitter tags with a 1200×630 share card per page (`src/pages/og/[slug].astro` → `npm run og` → `public/og/*.png`; CI fails if stale). JSON-LD `Person` on the home page. `sitemap.xml` and `robots.txt` generated from `src/lib/pages.ts`. No RSS: the notes it was for are gone.
 - [x] Redirects: `/blog` and `/blog/*` → `/` (301). `/admin*` falls through to the 404 ("No entry.").
 - [x] Performance: all CSS inlined (no render-blocking requests); the two variable fonts cut to the axes and characters used (`scripts/subset-fonts.sh`, 212 KB → 76 KB); the intro paragraph no longer fades in (it is the LCP element on phones). Lighthouse on the local build, mobile, simulated slow 4G: 99–100 in all four categories on `/`, a project page, `/cv/` and `/privacy/`; CLS 0; LCP 1.7–1.8 s (budget 1.5 s not met under this harsh profile; re-measure on production).
-- [ ] **Launch (owner's go-ahead):** merge the branch to `main` (production deploys from `main`), set the Vercel framework to Astro, set Deployment Protection to Standard (previews protected, production public), add `raymundo-oyong.vercel.app`, check from a logged-out browser, send a real message through the form, then remove `VITE_SUPABASE_*` and retire the legacy Supabase project.
+- [x] **Launched 24 Oct 2026**: the rebuild merged to `main` (`add74fe`) and production serves it at `raymundo-oyong.vercel.app`. Original checklist:
+- **Launch (owner's go-ahead):** merge the branch to `main` (production deploys from `main`), set the Vercel framework to Astro, set Deployment Protection to Standard (previews protected, production public), add `raymundo-oyong.vercel.app`, check from a logged-out browser, send a real message through the form, then remove `VITE_SUPABASE_*` and retire the legacy Supabase project.
 - Original scope, kept for reference:
 - Per-page title/description, OG images generated at build in the logbook style, sitemap, robots, JSON-LD `Person`, RSS.
 - Redirects: `/blog/*` → `/log`, `/admin*` → 404.
@@ -200,3 +201,7 @@ First version (6 case studies, 49-entry dated log, "2026 in figures" with hours 
 | Font swap shifting layout | Metric-matched fallbacks; preload two files. |
 | Margin red is AA, not AAA | Used only for errors and the "In progress" stamp; never for body text. |
 | Vercel login wall on the public URL | Logged-out check in Phase 6; limit protection to previews if needed. |
+
+## 10. Post-launch review (24 Oct 2026)
+
+A recruiter, a hiring manager and a UI/UX designer reviewed the built site blind; an informed pass checked each finding against this plan and the source. The approved fix plan, its decisions and its step order are in [`FIX_PLAN.md`](FIX_PLAN.md).

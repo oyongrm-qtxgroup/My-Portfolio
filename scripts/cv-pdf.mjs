@@ -71,6 +71,19 @@ try {
   const pdf = readFileSync(out, 'latin1');
   const pages = (pdf.match(/\/Type\s*\/Page(?!s)/g) ?? []).length;
   if (pages !== 2) failures.push(`the PDF has ${pages} page(s); it must be exactly 2`);
+  // Every link must work from a forwarded PDF: email or an absolute https URL,
+  // never the local build server or a relative path. With --check, the committed
+  // PDF is checked too: its links aren't covered by the text hash.
+  const pdfs = [['the PDF', pdf]];
+  if (check && existsSync(PDF)) pdfs.push(['the committed PDF', readFileSync(PDF, 'latin1')]);
+  for (const [label, body] of pdfs) {
+    const links = [...body.matchAll(/\/URI\s*\(([^)]*)\)/g)].map((m) => m[1]);
+    if (!links.length) failures.push(`${label} has no links`);
+    for (const url of links) {
+      if (!/^(mailto:|https:\/\/)/.test(url) || /localhost|127\.0\.0\.1/.test(url))
+        failures.push(`${label} links to "${url}"; links must be mailto: or public https:// URLs`);
+    }
+  }
   // Chromium embeds the variable fonts as Type 3; what matters is that every font
   // maps back to Unicode, so the text can be selected, copied and parsed.
   // Count top-level fonts only: a CID font's descendant carries no map of its own.

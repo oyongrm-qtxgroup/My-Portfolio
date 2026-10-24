@@ -27,7 +27,7 @@
     - heading: Care-plan drafting — aged-care provider; technical lead
       bullets:
         - Specified a sprint for the development team and built AI drafting in which every statement cites its source page, with contradictions raised for a clinician to review.
-        - Reduced the time per action from 6.5 seconds to about 1 second by moving the database connection to HTTPS.
+        - Reduced the time per action from 6.5 seconds to about 1 second by fixing the database connection.
     - heading: RL Finance — finance system for a retirement-village operator
       bullets:
         - Building a deferred management fee engine with Consumer Price Index (CPI) increases behind an approval step, matched to the client's own spreadsheet to the cent and kept as an automated test.
@@ -46,9 +46,9 @@
   start: January 2024
   end: December 2025
   span: 2024–25
-  summary: Led a team of up to four developers, built the company's first payment gateway, and automated SAP entry and HR remittances with two Power Automate bots.
+  summary: Led a four-person development team, built the company's first payment gateway, and automated SAP entry and HR remittances with two Power Automate bots.
   highlights:
-    - Led and mentored a team of up to four developers; introduced structured code reviews and secure development practices.
+    - Led and mentored a four-person development team; introduced structured code reviews and secure development practices.
     - Cut manual SAP processing time by 70–80% with a Power Automate Desktop bot that enters invoices, reversals and contract locks in the SAP desktop client.
     - Eliminated 100+ hours a month of manual HR work with a Power Automate bot that processes government remittances using AI document extraction.
     - Built the company's first in-house payment gateway (UnionBank UPay) with rate limiting and reCAPTCHA protection.
