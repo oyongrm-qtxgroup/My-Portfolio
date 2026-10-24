@@ -1,0 +1,100 @@
+---
+// Privacy notice. Required by Cloudflare for Turnstile's invisible mode: it must
+// reference the Turnstile Privacy Addendum. Describe only what the site really does.
+import Base from '../layouts/Base.astro';
+import MarginRow from '../components/MarginRow.astro';
+import { getProfile } from '../lib/content';
+
+const profile = await getProfile();
+const updated = '24 October 2026';
+---
+
+<Base
+  title="Privacy — R. Oyong"
+  description="What this site collects, who processes it, and how to ask for it to be deleted."
+>
+  <MarginRow index={0}>
+    <Fragment slot="label">Privacy</Fragment>
+    <header class="head">
+      <h1 class="display">Privacy</h1>
+      <p class="lede">
+        This site collects as little as it can. There are no analytics and no tracking cookies.
+      </p>
+      <p class="mono muted">Last updated {updated}</p>
+    </header>
+  </MarginRow>
+
+  <MarginRow index={1} ruled>
+    <Fragment slot="label">Visiting</Fragment>
+    <div class="prose">
+      <h2 class="title">Visiting the site</h2>
+      <p>
+        The site is hosted on <a href="https://vercel.com/legal/privacy-policy">Vercel</a>, which
+        processes each request (including your IP address and browser details) to serve the page and
+        keep it secure.
+      </p>
+      <p>
+        If you pick Paper, Night or Auto, that choice is saved in your own browser's storage so the
+        next page uses it. It never leaves your device.
+      </p>
+    </div>
+  </MarginRow>
+
+  <MarginRow index={2} ruled>
+    <Fragment slot="label">Contact form</Fragment>
+    <div class="prose">
+      <h2 class="title">Writing to me</h2>
+      <p>
+        When you send the contact form, your name (if you give one), email address and message are
+        emailed to me through <a href="https://resend.com/legal/privacy-policy">Resend</a>. This
+        site doesn't store them. I keep the email for as long as it takes to reply and follow up,
+        and I'll delete it if you ask.
+      </p>
+      <p>
+        To keep out spam, the form uses Cloudflare Turnstile, which runs invisibly when you get near
+        the form. Cloudflare processes signals such as your IP address and browser details to tell
+        people from bots. Turnstile does not read what you type into the form. See Cloudflare's{' '}
+        <a href="https://www.cloudflare.com/turnstile-privacy-policy/">Turnstile Privacy Addendum</a>
+        and <a href="https://www.cloudflare.com/privacypolicy/">Privacy Policy</a>.
+      </p>
+    </div>
+  </MarginRow>
+
+  <MarginRow index={3} ruled>
+    <Fragment slot="label">Questions</Fragment>
+    <div class="prose">
+      <h2 class="title">Questions or deletion</h2>
+      <p>
+        Write to <a href={`mailto:${profile.email}`}>{profile.email}</a> to ask what I hold about you or
+        to have it deleted.
+      </p>
+    </div>
+  </MarginRow>
+</Base>
+
+<style>
+  .head {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 32px 0 16px;
+  }
+
+  .head h1 {
+    font-size: clamp(56px, 10vw, 120px);
+  }
+
+  .prose .title {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+
+  .prose p + p {
+    margin-top: 16px;
+  }
+
+  .prose a {
+    color: var(--accent);
+    text-underline-offset: 4px;
+  }
+</style>

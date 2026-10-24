@@ -73,6 +73,9 @@ const siteKey =
     <button type="submit" class="send"><span data-send-label>Send</span></button>
     <span class="stamp received" data-received hidden></span>
   </div>
+  <p class="mono muted note">
+    Spam check by Cloudflare Turnstile, which runs invisibly. <a href="/privacy/">Privacy</a>
+  </p>
   <p class="status" role="status" data-form-status></p>
   <p class="failed" role="alert" data-failed hidden>
     <span data-failed-reason>That didn't send.</span> Your message is still here, so try again, or
@@ -383,6 +386,17 @@ const siteKey =
 
   .received[hidden] {
     display: none;
+  }
+
+  .note {
+    margin-top: -8px;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .note a {
+    color: inherit;
+    text-underline-offset: 3px;
   }
 
   .status,
