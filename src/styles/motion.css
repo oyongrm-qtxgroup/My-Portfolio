@@ -1,0 +1,90 @@
+/* Motion: every effect plays once, and all of it is removed under reduced motion.
+   Content is visible by default; animations only enhance it. */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes draw-down {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes press {
+  0% {
+    opacity: 0;
+    transform: scale(1.6) rotate(-9deg);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(0.96) rotate(-1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(-2deg);
+  }
+}
+
+/* Margin line draws down, row by row. */
+.row > .mar::after {
+  transform-origin: top;
+  animation: draw-down 0.7s var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 110ms);
+}
+
+.page-edge {
+  transform-origin: top;
+  animation: draw-down 1.1s var(--ease-out) both;
+}
+
+/* Headline sets line by line. */
+.ln {
+  display: inline-block;
+  animation: rise 0.7s var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 90ms + 150ms);
+}
+
+.fade {
+  animation: rise 0.6s var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 110ms + 400ms);
+}
+
+.stamp.press {
+  animation: press 0.45s cubic-bezier(0.3, 0.7, 0.4, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms + 900ms);
+}
+
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: rise linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 35%;
+  }
+
+  .reveal .stamp.press {
+    animation: press linear both;
+    animation-timeline: view();
+    animation-range: entry 10% entry 45%;
+    animation-delay: 0s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

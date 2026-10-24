@@ -1,0 +1,35 @@
+---
+import ThemeSwitch from './ThemeSwitch.astro';
+
+const built = new Date().toLocaleDateString('en-AU', {
+  day: '2-digit',
+  month: '2-digit',
+  year: '2-digit',
+});
+---
+
+<footer class="site-footer">
+  <p>
+    Set in Archivo, Source Serif 4 and IBM Plex Mono. Built with Astro, hosted on Vercel.{' '}
+    <span class="nowrap">Build {built.replaceAll('/', '.')}.</span>
+  </p>
+  <ThemeSwitch />
+</footer>
+
+<style>
+  .site-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 0 40px;
+    border-top: 1px solid var(--rule);
+    font: 12px/1.5 var(--font-mono);
+    color: var(--ink-2);
+  }
+
+  .nowrap {
+    white-space: nowrap;
+  }
+</style>

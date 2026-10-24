@@ -1,0 +1,22 @@
+---
+export type Status = 'live' | 'shipped' | 'in-progress' | 'handed-over';
+
+interface Props {
+  status: Status;
+  index?: number;
+  press?: boolean;
+}
+
+const { status, index = 0, press = true } = Astro.props;
+
+const words: Record<Status, string> = {
+  live: 'Live',
+  shipped: 'Shipped',
+  'in-progress': 'In progress',
+  'handed-over': 'Handed over',
+};
+---
+
+<span class:list={['stamp', { press }]} data-status={status} style={`--i: ${index}`}>
+  {words[status]}
+</span>

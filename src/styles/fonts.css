@@ -1,0 +1,33 @@
+@import '@fontsource-variable/archivo/wdth.css';
+@import '@fontsource-variable/source-serif-4/opsz.css';
+@import '@fontsource/ibm-plex-mono/latin-400.css';
+@import '@fontsource/ibm-plex-mono/latin-500.css';
+
+/* Metric-matched fallbacks (measured from the woff2 files) so the swap to the
+   web font does not move text. Archivo is matched at its 72% width instance. */
+@font-face {
+  font-family: 'Archivo Fallback';
+  src: local('Arial Narrow'), local('Arial'), local('Helvetica');
+  size-adjust: 95.9%;
+  ascent-override: 91.6%;
+  descent-override: 21.9%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Source Serif Fallback';
+  src: local('Georgia'), local('Times New Roman');
+  size-adjust: 108%;
+  ascent-override: 95.9%;
+  descent-override: 31%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Plex Mono Fallback';
+  src: local('Courier New'), local('Courier');
+  size-adjust: 100%;
+  ascent-override: 102.5%;
+  descent-override: 27.5%;
+  line-gap-override: 0%;
+}

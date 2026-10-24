@@ -1,0 +1,86 @@
+---
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+const links = [
+  { href: '/#work', label: 'Work', match: '/work' },
+  { href: '/log', label: 'Log', match: '/log' },
+  { href: '/cv', label: 'CV', match: '/cv' },
+  { href: '/#contact', label: 'Contact', match: null },
+];
+---
+
+<header class="site-header">
+  <a href="/" class="brand target">R. Oyong — Log</a>
+  <nav aria-label="Primary">
+    <ul>
+      {
+        links.map((l) => {
+          const current = l.match !== null && path.startsWith(l.match);
+          return (
+            <li>
+              <a href={l.href} class="target" aria-current={current ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </nav>
+  <span class="vol">Vol. 2026</span>
+</header>
+
+<style>
+  .site-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px 24px;
+    padding: 10px 0;
+    border-bottom: 2px solid var(--ink);
+    font: 400 13px var(--font-mono);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  .brand {
+    font-weight: 500;
+  }
+
+  ul {
+    display: flex;
+    gap: 28px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  [aria-current='page'] {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+  }
+
+  a:hover {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+  }
+
+  .vol {
+    color: var(--ink-2);
+  }
+
+  @media (max-width: 760px) {
+    ul {
+      gap: 18px;
+    }
+
+    .vol {
+      display: none;
+    }
+  }
+</style>

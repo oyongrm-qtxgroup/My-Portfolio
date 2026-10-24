@@ -1,0 +1,312 @@
+---
+import Base from '../layouts/Base.astro';
+import MarginRow from '../components/MarginRow.astro';
+import Stamp from '../components/Stamp.astro';
+import { palettes, contrast, wcagLevel, type Token } from '../design/tokens';
+
+// Reference page for the design system (noindex). Mirrors docs/design/System.dc.html
+// and renders from the live tokens, so it also shows Night mode correctly.
+const swatches: { token: Token; name: string; use: string }[] = [
+  { token: 'paper', name: 'Paper', use: 'Ground' },
+  { token: 'ink', name: 'Ink', use: 'Body, headings' },
+  { token: 'ink2', name: 'Ink 2', use: 'Dates, labels, control borders' },
+  { token: 'rule', name: 'Rule', use: 'Decorative row dividers only' },
+  { token: 'accent', name: 'Ballpoint', use: 'Links, notes, "Live"' },
+  { token: 'margin', name: 'Margin red', use: 'Margin line, errors, "In progress"' },
+];
+
+const rows = swatches
+  .filter((s) => s.token !== 'paper')
+  .map((s) => {
+    const day = contrast(palettes.paper[s.token], palettes.paper.paper);
+    const night = contrast(palettes.night[s.token], palettes.night.paper);
+    return { ...s, day, night, decorative: s.token === 'rule' };
+  });
+
+const fmt = (n: number) => n.toFixed(1);
+const cssVar: Record<Token, string> = {
+  paper: 'var(--paper)',
+  ink: 'var(--ink)',
+  ink2: 'var(--ink-2)',
+  rule: 'var(--rule)',
+  accent: 'var(--accent)',
+  margin: 'var(--margin)',
+};
+---
+
+<Base title="Design system — R. Oyong" noindex>
+  <MarginRow>
+    <Fragment slot="label">Index</Fragment>
+    <h1 class="display page-title">Logbook — system sheet</h1>
+    <p class="lede">
+      The parts the site is built from. Colours and contrast below are computed from the same tokens
+      the pages use; switch the theme in the footer to see Night.
+    </p>
+  </MarginRow>
+
+  <MarginRow index={1} ruled>
+    <Fragment slot="label">01<br />Type</Fragment>
+    <div class="type-grid">
+      <div>
+        <p class="display sample">Aa 26</p>
+        <p class="label">Archivo · condensed 72% · 700</p>
+        <p class="note">Headlines, figures, project names.</p>
+      </div>
+      <div>
+        <p class="sample serif">Aa 26</p>
+        <p class="label">Source Serif 4 · optical size</p>
+        <p class="note">Everything you read. 18–23 px, 1.5 line height.</p>
+      </div>
+      <div>
+        <p class="sample mono-sample">24.10</p>
+        <p class="label">IBM Plex Mono · 400 / 500</p>
+        <p class="note">Dates, labels, stamps, margin notes.</p>
+      </div>
+    </div>
+  </MarginRow>
+
+  <MarginRow index={2} ruled>
+    <Fragment slot="label">02<br />Colour</Fragment>
+    <ul class="swatches">
+      {
+        swatches.map((s) => (
+          <li>
+            <span class="chip" style={`background: ${cssVar[s.token]}`} />
+            <span class="mono">{s.name}</span>
+            <span class="mono muted">
+              {palettes.paper[s.token]} / {palettes.night[s.token]}
+            </span>
+            <span class="note muted">{s.use}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </MarginRow>
+
+  <MarginRow index={3} ruled>
+    <Fragment slot="label">03<br />Parts</Fragment>
+    <div class="parts">
+      <div>
+        <p class="label">Status stamps</p>
+        <p class="stamps">
+          <Stamp status="live" index={0} />
+          <Stamp status="shipped" index={1} />
+          <Stamp status="in-progress" index={2} />
+          <Stamp status="handed-over" index={3} />
+        </p>
+      </div>
+      <div>
+        <p class="label">Margin note</p>
+        <p class="sidenote">One practice owner's script went through eleven rounds of review.</p>
+      </div>
+      <div class="wide">
+        <p class="label">Log row</p>
+        <div class="logrow">
+          <time class="mono muted tabular">16.10</time>
+          <span class="mono up">NDIS platform</span>
+          <span>Support workers can clock on from their phone.</span>
+        </div>
+      </div>
+      <div>
+        <p class="label">Footnote and link</p>
+        <p class="title foot">answers the phone<sup class="accent">1</sup></p>
+        <a href="mailto:oyongrm@gmail.com" class="accent">oyongrm@gmail.com</a>
+      </div>
+    </div>
+  </MarginRow>
+
+  <MarginRow index={4} ruled>
+    <Fragment slot="label">04<br />Motion</Fragment>
+    <ul class="prose list">
+      <li>The red margin line draws down each row on load.</li>
+      <li>Headlines set line by line, 90 ms apart; stamps press in last.</li>
+      <li>Rows rise as they scroll into view, where the browser supports it.</li>
+      <li>Everything is switched off under "reduce motion".</li>
+    </ul>
+  </MarginRow>
+
+  <MarginRow index={5} ruled>
+    <Fragment slot="label">05<br />Never</Fragment>
+    <p class="prose">
+      Gradients, glows, glass blur, drop shadows, rounded cards, neon accents, 3D globes, particles,
+      typing effects, custom cursors, emoji in headings, skill-percentage bars.
+    </p>
+  </MarginRow>
+
+  <MarginRow index={6} ruled>
+    <Fragment slot="label">06<br />Access<br />WCAG 2.2 AA</Fragment>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="Contrast table">
+      <table>
+        <caption class="label">Contrast against paper, measured from the tokens</caption>
+        <thead>
+          <tr>
+            <th scope="col">Token</th>
+            <th scope="col">Paper</th>
+            <th scope="col">Night</th>
+            <th scope="col">Used for</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            rows.map((r) => (
+              <tr>
+                <th scope="row">{r.name}</th>
+                <td class="tabular">
+                  {fmt(r.day)}:1 {r.decorative ? 'decorative' : wcagLevel(r.day)}
+                </td>
+                <td class="tabular">
+                  {fmt(r.night)}:1 {r.decorative ? 'decorative' : wcagLevel(r.night)}
+                </td>
+                <td>{r.use}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </MarginRow>
+</Base>
+
+<style>
+  .page-title {
+    font-size: clamp(56px, 8vw, 112px);
+    line-height: 0.9;
+    margin-top: 32px;
+  }
+
+  .lede {
+    margin-top: 20px;
+  }
+
+  .type-grid,
+  .parts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 32px;
+  }
+
+  .type-grid > div,
+  .parts > div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .sample {
+    font-size: 80px;
+    line-height: 0.95;
+  }
+
+  .serif {
+    font-family: var(--font-body);
+  }
+
+  .mono-sample {
+    font-family: var(--font-mono);
+  }
+
+  .note {
+    font-size: 16px;
+  }
+
+  .swatches {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 24px;
+  }
+
+  .swatches li {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .chip {
+    display: block;
+    height: 72px;
+    border: 1px solid var(--ink);
+  }
+
+  .parts > .wide {
+    grid-column: span 2;
+  }
+
+  .stamps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .sidenote {
+    max-width: 300px;
+  }
+
+  .logrow {
+    display: grid;
+    grid-template-columns: 56px 130px minmax(0, 1fr);
+    gap: 12px;
+    align-items: baseline;
+    padding: 12px 0;
+    border-block: 1px solid var(--rule);
+    font-size: 17px;
+  }
+
+  .up {
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+
+  .foot {
+    font-size: 40px;
+  }
+
+  .foot sup {
+    font: 500 13px var(--font-mono);
+    vertical-align: top;
+    margin-left: 3px;
+  }
+
+  .list {
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font: 14px var(--font-mono);
+  }
+
+  caption {
+    text-align: left;
+    padding-bottom: 10px;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 8px 12px 8px 0;
+    border-bottom: 1px solid var(--rule);
+    font-weight: 400;
+  }
+
+  thead th {
+    border-bottom: 2px solid var(--ink);
+    font-weight: 500;
+  }
+
+  @media (max-width: 760px) {
+    .logrow {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 4px;
+    }
+  }
+</style>

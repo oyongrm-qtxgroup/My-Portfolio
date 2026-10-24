@@ -90,10 +90,18 @@ Each phase ends with a Vercel preview and a review against the canvas before the
 - [x] Removed the personal phone number and street address from `supabase/seed_resume.sql`, and purged them from all git history (rewrite + force-push of `main` and this branch, approved by the owner on 24 Oct 2026). Commit IDs changed; the legacy tip is now `148b5c7`.
 - [x] ~~Export of the legacy Supabase content~~ — skipped by the owner's decision (losing it is acceptable). Contact-form messages in that database are the owner's to export privately if wanted.
 
-### Phase 1 — Foundation (M)
-- Replace the Vite SPA with Astro + TypeScript strict + Vercel adapter. Remove three/r3f/drei/postprocessing/maath, framer-motion, shadcn/radix, dnd-kit, jspdf, react-router, next-themes, Supabase client, admin pages/hooks/contexts.
-- Build tokens, fonts, `Base` layout, header, footer, ThemeSwitch, skip link, focus ring, 404, and a `noindex` `/_system` page that reproduces the system sheet.
-- **Done when:** preview matches `System.dc.html`; paper/night/auto switch with no flash; Lighthouse accessibility 100.
+### Phase 1 — Foundation (M) — built 24 Oct 2026, awaiting preview review
+
+- [x] Vite SPA replaced with **Astro 7.4.2** (TypeScript strict) + `@astrojs/vercel` 11, static output. All legacy code, Supabase files and dependencies removed. Requires Node ≥ 22.23.4 (Vercel builds on 24.x).
+- [x] Tokens in `src/design/tokens.ts` (single source; inlined as CSS; `/system` computes contrast from them).
+- [x] Self-hosted variable fonts (Archivo wdth, Source Serif 4 opsz, Plex Mono 400/500) with measured fallback metrics; the two headline/body files are preloaded.
+- [x] `Base` layout: no-flash theme bootstrap (paper / night / auto, follows OS changes), `<ClientRouter/>`, skip link, header, footer with theme switch, phone margin line on the page edge.
+- [x] `MarginRow` and `Stamp` components; load motion (margin draw, line-by-line headline, fades, stamp press) with reduced-motion kill switch.
+- [x] Pages: `/` (Phase 1 shell: hero, Now, figures), `/system` (noindex system sheet), 404 "No entry."
+- [x] Scripts: `lint:design` (anti-template), `lint:denylist` (reads the `DENYLIST` secret), `verify` (axe WCAG 2.2 A/AA, no sideways scroll, reduced motion, screenshots at 390/768/1440 × paper/night). All pass locally: 0 type errors, 0 axe violations.
+- [x] CI workflow `.github/workflows/ci.yml` runs all of the above on PRs and `main`.
+- [ ] Owner reviews the Vercel preview against the canvas.
+- Known: `npm audit` reports advisories in `@vercel/functions` / `@vercel/oidc` (adapter dependencies used only by server functions). The site has none yet; re-check before Phase 4 adds the contact action.
 
 ### Phase 2 — Content (M, needs open items 2, 4, 5, 6)
 - Write `profile.yaml`, 6 case studies, ~40 log entries (Mar–Oct 2026) and the pre-QTX roles. Start from the drafts in `docs/content/case-study-notes.md`.

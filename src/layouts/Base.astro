@@ -1,0 +1,83 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url';
+import serifLatin from '@fontsource-variable/source-serif-4/files/source-serif-4-latin-opsz-normal.woff2?url';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { tokensCss } from '../design/tokens';
+import '../styles/fonts.css';
+import '../styles/base.css';
+import '../styles/motion.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+}
+
+const {
+  title = 'Raymundo Oyong — AI product engineer',
+  description = 'Raymundo Oyong builds the software that answers the phone, bills the residents and rosters the carers. A logbook of shipped work.',
+  noindex = false,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href={archivoLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={serifLatin} as="font" type="font/woff2" crossorigin />
+    <style is:inline set:html={tokensCss} />
+    <script is:inline>
+      // Applies the saved theme before first paint. 'auto' follows the OS.
+      (() => {
+        if (window.__themeBoot) return;
+        window.__themeBoot = true;
+        const media = matchMedia('(prefers-color-scheme: dark)');
+        const apply = () => {
+          let choice;
+          try {
+            choice = localStorage.getItem('theme');
+          } catch {}
+          if (choice !== 'paper' && choice !== 'night') choice = 'auto';
+          const night = choice === 'night' || (choice === 'auto' && media.matches);
+          const root = document.documentElement;
+          root.dataset.theme = night ? 'night' : 'paper';
+          root.dataset.themeChoice = choice;
+        };
+        apply();
+        media.addEventListener('change', apply);
+        document.addEventListener('theme:change', apply);
+        document.addEventListener('astro:after-swap', apply);
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => document.documentElement.classList.add('theme-ready')),
+        );
+        document.addEventListener('astro:after-swap', () =>
+          document.documentElement.classList.add('theme-ready'),
+        );
+      })();
+    </script>
+    <ClientRouter />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <span class="page-edge" aria-hidden="true"></span>
+    <div class="wrap">
+      <SiteHeader />
+      <main id="main">
+        <slot />
+      </main>
+      <SiteFooter />
+    </div>
+  </body>
+</html>

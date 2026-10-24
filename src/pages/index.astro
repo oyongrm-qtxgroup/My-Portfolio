@@ -1,0 +1,179 @@
+---
+import Base from '../layouts/Base.astro';
+import MarginRow from '../components/MarginRow.astro';
+
+// Phase 1 shell: hero, "Now" and figures. Work, log and contact arrive in Phase 3
+// from the content collections (docs/REDESIGN_PLAN.md).
+const footnotes = [
+  'Jayne Bandy AI — an AI receptionist for dental practices',
+  'A finance system for a retirement-village operator',
+  'A workforce and care platform for an NDIS provider',
+];
+
+const figures = [
+  { value: '1,900+', label: 'hours logged' },
+  { value: '9', label: 'production projects' },
+  { value: '190', label: 'tasks closed' },
+  { value: '15+', label: 'integrations shipped' },
+];
+---
+
+<Base>
+  <MarginRow index={0}>
+    <Fragment slot="label">§ 00<br />Intro</Fragment>
+    <div class="hero">
+      <h1 class="display headline">
+        <span class="ln" style="--i: 0">I build the software</span>
+        <span class="ln" style="--i: 1">that answers the phone<sup>1</sup>,</span>
+        <span class="ln" style="--i: 2">bills the residents<sup>2</sup></span>
+        <span class="ln" style="--i: 3">and rosters the carers<sup>3</sup>.</span>
+      </h1>
+      <p class="lede fade" style="--i: 2">
+        AI product engineer at QTX. I take products from a client's first call to the version people
+        rely on every day: voice agents, finance engines, award-pay rules, and the integrations that
+        hold them together.
+      </p>
+      <ol class="notes mono muted fade" style="--i: 3">
+        {
+          footnotes.map((note, i) => (
+            <li>
+              <span class="accent">{i + 1}</span>
+              {note}
+            </li>
+          ))
+        }
+      </ol>
+      <p class="mono muted where fade" style="--i: 4">
+        Based in the Philippines · working with QTX, Sydney ·
+        <a href="mailto:oyongrm@gmail.com" class="accent">oyongrm@gmail.com</a>
+      </p>
+    </div>
+  </MarginRow>
+
+  <MarginRow index={1}>
+    <Fragment slot="label">Now<br />24.10.26</Fragment>
+    <div class="now fade" style="--i: 5">
+      <p>Tuning turn-detection so the Jayne Bandy AI voice agent stops talking over callers.</p>
+      <p>
+        Writing the Sprint 2 specs for an aged-care tool that drafts care plans with every sentence
+        linked to its source.
+      </p>
+    </div>
+  </MarginRow>
+
+  <MarginRow index={2}>
+    <Fragment slot="label">2026<br />in figures</Fragment>
+    <dl class="figures">
+      {
+        figures.map((f) => (
+          <div>
+            <dt class="label">{f.label}</dt>
+            <dd class="display tabular">{f.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </MarginRow>
+</Base>
+
+<style>
+  .hero {
+    padding-top: 40px;
+    padding-bottom: 16px;
+  }
+
+  .headline {
+    font-size: clamp(44px, 7.4vw, 92px);
+    max-width: 20ch;
+  }
+
+  .headline sup {
+    font: 500 0.2em var(--font-mono);
+    color: var(--accent);
+    vertical-align: top;
+    margin-left: 4px;
+  }
+
+  .lede {
+    margin-top: 40px;
+  }
+
+  .notes {
+    margin-top: 40px;
+    padding: 20px 0 0;
+    list-style: none;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .notes li {
+    display: flex;
+    gap: 12px;
+  }
+
+  .where {
+    margin-top: 28px;
+  }
+
+  .now {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 19px;
+  }
+
+  .figures {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: -24px 0 -40px;
+  }
+
+  .figures > div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 28px 20px 32px;
+    border-right: 1px solid var(--rule);
+  }
+
+  .figures > div:first-child {
+    padding-left: 0;
+  }
+
+  .figures > div:last-child {
+    border-right: 0;
+  }
+
+  .figures dd {
+    order: -1;
+    font-size: clamp(40px, 5vw, 64px);
+    line-height: 1;
+  }
+
+  @media (max-width: 760px) {
+    .hero {
+      padding-top: 8px;
+    }
+
+    .figures {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin: 0;
+    }
+
+    .figures > div {
+      padding: 18px 16px 18px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .figures > div:nth-child(2n) {
+      border-right: 0;
+      padding-left: 16px;
+    }
+
+    .figures > div:nth-child(n + 3) {
+      border-bottom: 0;
+    }
+  }
+</style>
