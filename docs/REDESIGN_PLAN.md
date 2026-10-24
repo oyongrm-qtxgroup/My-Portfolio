@@ -103,14 +103,18 @@ Each phase ends with a Vercel preview and a review against the canvas before the
 - [ ] Owner reviews the Vercel preview against the canvas.
 - Known: `npm audit` reports advisories in `@vercel/functions` / `@vercel/oidc` (adapter dependencies used only by server functions). The site has none yet; re-check before Phase 4 adds the contact action.
 
-### Phase 2 — Content (M, needs open items 2, 4, 5, 6)
-- Write `profile.yaml`, 6 case studies, ~40 log entries (Mar–Oct 2026) and the pre-QTX roles. Start from the drafts in `docs/content/case-study-notes.md`.
-- Screenshots: a Playwright script (`scripts/capture.mjs`) signs in to each product's demo or test environment, loads made-up fixture data (fake practice, fake residents, fake staff), and captures fixed-size PNGs. Nothing is captured from production. Where no demo environment is reachable, the case study uses its diagram only. Every image is checked by eye for names, phone numbers and emails before commit.
-- Source: read-only queries on the Workable project (`time_entries.description`, `tasks.title` for the user's two accounts), rewritten as one sentence for the person using the software. Never copy client or people names, prices, or client data.
-- **Done when:** you have approved every case study, log entry and screenshot.
+### Phase 2 — Content (M) — built 24 Oct 2026, awaiting the owner's read-through
+
+- [x] Content collections with build-time validation (`src/content.config.ts`): `work` (6 MDX case studies), `log` (49 entries, Feb–Oct 2026), `roles` (QTX + four earlier roles), `profile` (location, links, "Now", figures).
+- [x] Every log entry and case-study claim comes from a dated Workable timesheet or task record, rewritten for the person using the software. Client and people names never appear; the `lint:denylist` scan (41 names, kept out of the repo) passes on source, build and docs.
+- [x] Figures corrected from the records: **2,350+ hours** (2,387 logged), **245+ tasks closed** (249), 9 projects, 15+ integrations. The canvas showed 1,900+ / 190 earlier; that was wrong.
+- [x] "In hindsight" paragraphs live in each case study's frontmatter (drafts and their evidence: `docs/content/case-study-notes.md`). CV bullets are in the same frontmatter for Phase 5.
+- [x] Rendered for review through the real templates (pulled forward from Phase 3): home work list, recent log and earlier roles; `/work/[slug]/` with diagram, sections, margin notes, hindsight and the project's own log; `/log/` grouped by month with per-project filter pages.
+- [x] Screenshots: none yet. No demo environment is reachable from the build session, so each case study uses its diagram (Jayne Bandy AI, NDIS platform, village finance, care-plan drafting) or text only. Add screenshots later from demo data.
+- [ ] Owner reads every case study and log entry and flags anything wrong or not in their voice.
 
 ### Phase 3 — Pages and responsiveness (M)
-- Home, `/work/[slug]`, `/log` (+ per-project filter pages + RSS), `/cv` (HTML), contact section.
+- Home, `/work/[slug]` and `/log` exist from Phase 2; Phase 3 adds RSS, `/cv` (HTML), the phone menu, and checks every page against the canvas.
 - Phone: menu is a disclosure button (`aria-expanded`, Escape closes, focus returns to the button); 44 px minimum targets; reflow at 320 px and 200 % zoom with no sideways scroll.
 - **Done when:** screens match the canvas at 390 / 768 / 1440 in both modes; full keyboard pass.
 

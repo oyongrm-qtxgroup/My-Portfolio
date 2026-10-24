@@ -1,0 +1,23 @@
+main:
+  name: Raymundo Oyong
+  title: AI product engineer
+  location: Based in the Philippines · working with QTX, Sydney
+  email: oyongrm@gmail.com
+  links:
+    linkedin: https://www.linkedin.com/in/raymundo-oyong-4ab94321a/
+    github: https://github.com/oyong1926
+  now:
+    date: 2026-10-24
+    lines:
+      - Tuning turn-detection so the Jayne Bandy AI voice agent stops talking over callers.
+      - Writing the Sprint 2 specs for an aged-care tool that drafts care plans with every sentence linked to its source.
+  # Jan–Oct 2026, from timesheets and task records; rounded down.
+  figures:
+    - value: 2,350+
+      label: hours logged
+    - value: '9'
+      label: projects
+    - value: 245+
+      label: tasks closed
+    - value: 15+
+      label: integrations shipped

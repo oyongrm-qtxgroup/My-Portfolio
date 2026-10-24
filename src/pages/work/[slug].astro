@@ -1,0 +1,170 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import MarginRow from '../../components/MarginRow.astro';
+import Section from '../../components/Section.astro';
+import Stamp from '../../components/Stamp.astro';
+import LogRow from '../../components/LogRow.astro';
+import { getLog, getWork, type Work } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const work = await getWork();
+  return work.map((w, i) => ({
+    params: { slug: w.id },
+    props: { work: w, next: work[(i + 1) % work.length] },
+  }));
+}
+
+interface Props {
+  work: Work;
+  next: Work;
+}
+
+const { work, next } = Astro.props;
+const w = work.data;
+const { Content } = await render(work);
+const entries = (await getLog()).filter((e) => e.data.work?.id === work.id);
+const tasksLine = w.tasks ? ` · ${w.tasks} tasks` : '';
+---
+
+<Base title={`${w.title} — R. Oyong`} description={w.line}>
+  <MarginRow index={0}>
+    <Fragment slot="label">No. {w.no}<br />Case study</Fragment>
+    <header class="cs-head">
+      <h1 class="display cs-name" transition:name={`work-${work.id}`}>{w.title}</h1>
+      <p class="cs-line">{w.line}</p>
+      <dl class="meta">
+        <div>
+          <dt class="label">Role</dt>
+          <dd>{w.role}</dd>
+        </div>
+        <div>
+          <dt class="label">Time</dt>
+          <dd class="tabular">{w.hours} hours{tasksLine} · {w.period}</dd>
+        </div>
+        <div>
+          <dt class="label">Stack</dt>
+          <dd>{w.stack.join(', ')}</dd>
+        </div>
+        <div>
+          <dt class="label">Status</dt>
+          <dd><Stamp status={w.status} press={false} /></dd>
+        </div>
+      </dl>
+      <p class="mono muted for">For: {w.client}</p>
+    </header>
+  </MarginRow>
+
+  <Content />
+
+  <Section label="§ 3 In hindsight" ruled>
+    <p>{w.hindsight}</p>
+  </Section>
+
+  {
+    entries.length > 0 && (
+      <MarginRow ruled>
+        <Fragment slot="label">
+          From
+          <br />
+          the log
+        </Fragment>
+        <h2 class="visually-hidden">From the log</h2>
+        <div class="entries">
+          {entries.map((e, i) => (
+            <LogRow entry={e} index={i} hideProject />
+          ))}
+        </div>
+      </MarginRow>
+    )
+  }
+
+  <nav aria-label="More work" class="cs-nav mono">
+    <a href="/#work" class="target">← All work</a>
+    <a href={`/work/${next.id}/`} class="target accent">No. {next.data.no} {next.data.title} →</a>
+  </nav>
+</Base>
+
+<style>
+  .cs-head {
+    padding: 32px 0 8px;
+  }
+
+  .cs-name {
+    font-size: clamp(56px, 10vw, 132px);
+    line-height: 0.9;
+  }
+
+  .cs-line {
+    margin-top: 24px;
+    font-size: clamp(21px, 2.4vw, 28px);
+    line-height: 1.35;
+    max-width: 26em;
+  }
+
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: 48px;
+    border-top: 2px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .meta > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px 16px 18px;
+    border-right: 1px solid var(--rule);
+  }
+
+  .meta > div:first-child {
+    padding-left: 0;
+  }
+
+  .meta > div:last-child {
+    border-right: 0;
+  }
+
+  .meta dd {
+    font-size: 17px;
+    line-height: 1.4;
+  }
+
+  .for {
+    margin-top: 16px;
+  }
+
+  .entries {
+    margin-top: -8px;
+  }
+
+  .cs-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 0 40px;
+    border-top: 2px solid var(--ink);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 900px) {
+    .meta {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .meta > div:nth-child(2n) {
+      border-right: 0;
+    }
+
+    .meta > div:nth-child(2n + 1) {
+      padding-left: 0;
+    }
+
+    .meta > div:nth-child(-n + 2) {
+      border-bottom: 1px solid var(--rule);
+    }
+  }
+</style>

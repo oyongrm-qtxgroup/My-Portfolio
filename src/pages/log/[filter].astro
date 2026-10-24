@@ -1,0 +1,13 @@
+---
+import LogPage from '../../components/LogPage.astro';
+import { getLogFilters } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const filters = await getLogFilters();
+  return filters.map((f) => ({ params: { filter: f.slug } }));
+}
+
+const { filter } = Astro.params;
+---
+
+<LogPage filter={filter} />

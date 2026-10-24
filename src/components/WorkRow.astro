@@ -1,0 +1,130 @@
+---
+import Stamp from './Stamp.astro';
+import type { Work } from '../lib/content';
+
+interface Props {
+  work: Work;
+  index: number;
+}
+
+const { work, index } = Astro.props;
+const w = work.data;
+---
+
+<a href={`/work/${work.id}/`} class="work-row reveal">
+  <span class="mono muted">No. {w.no}</span>
+  <span class="main">
+    <span class="title name">
+      <span class="ttl" transition:name={`work-${work.id}`}>{w.title}</span><span
+        class="arr"
+        aria-hidden="true">→</span
+      >
+    </span>
+    <span class="line muted">{w.short}</span>
+  </span>
+  <span class="mono muted stack">{w.stack.slice(0, 4).join(' · ')}</span>
+  <span class="meta">
+    <span class="mono tabular">{w.hours} h</span>
+    <Stamp status={w.status} index={index} />
+  </span>
+</a>
+
+<style>
+  .work-row {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr) 220px 132px;
+    gap: 20px;
+    align-items: baseline;
+    padding: 22px 12px 22px 0;
+    border-bottom: 1px solid var(--rule);
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+
+  .work-row:hover {
+    background: color-mix(in srgb, var(--accent) 6%, transparent);
+  }
+
+  .main {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .name {
+    font-size: 34px;
+  }
+
+  .ttl {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+    transition: text-decoration-color 0.2s;
+  }
+
+  .arr {
+    display: inline-block;
+    margin-left: 10px;
+    color: var(--accent);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .work-row:hover .ttl,
+  .work-row:focus-visible .ttl {
+    text-decoration-color: var(--accent);
+  }
+
+  .work-row:hover .arr,
+  .work-row:focus-visible .arr {
+    opacity: 1;
+    transform: none;
+  }
+
+  .line {
+    font-size: 18px;
+    line-height: 1.45;
+    max-width: 36em;
+  }
+
+  .stack {
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  @media (max-width: 900px) {
+    .work-row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 8px;
+      padding: 18px 0;
+    }
+
+    .name {
+      font-size: 28px;
+    }
+
+    .stack {
+      display: none;
+    }
+
+    .meta {
+      flex-direction: row;
+      align-items: baseline;
+      gap: 16px;
+    }
+
+    .arr {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

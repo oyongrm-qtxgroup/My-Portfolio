@@ -1,0 +1,76 @@
+---
+no: '01'
+order: 1
+title: Jayne Bandy AI
+short: An AI receptionist that answers calls for dental practices, books into their practice system, and improves under human review.
+line: An AI receptionist for dental practices. It answers the phone, finds a free slot in the practice's own system, books it, and gets better under human review.
+client: A QTX product
+role: Lead engineer, after the April 2026 handover
+period: Apr–Oct 2026
+hours: 650
+tasks: 125
+stack: [Twilio, ElevenLabs, Supabase, Stripe, CareStack, Core Practice, Dentally]
+status: live
+hindsight: >-
+  Most of the problems that reached a practice weren't the AI being wrong. The AI provider ran out of
+  credit and nobody was alerted for days; patients couldn't be found because their name was spelt
+  differently from the record. If I started again, I'd build the health checks and the plain lookups
+  before the clever voice work, and I'd read the booking system's documentation before promising a
+  practice owner a feature.
+cv:
+  heading: Jayne Bandy AI — AI voice receptionist for dental practices; lead engineer since April 2026
+  bullets:
+    - Led engineering of a live AI receptionist that answers and books calls for dental practices, covering voice quality, practice-system integrations and billing.
+    - Integrated three practice-management systems (CareStack, Core Practice, Dentally) behind one receptionist script, with caller-identity matching against patient records.
+    - Designed a review workflow that tests every script change against simulated and replayed real calls before approval, with version history, scoring and restore.
+    - Added failure alerts and a 15-minute health check after an unnoticed AI-provider outage.
+    - Launched automatic trials, a premium tier with custom voices, Stripe subscription sync and per-country demo numbers.
+---
+
+import Flow from '../../components/Flow.astro';
+import Section from '../../components/Section.astro';
+
+<Flow
+  label="Fig. 1 One call"
+  caption="A patient rings the practice's own number; the agent books into the practice system or takes a callback."
+  steps={[
+    { title: 'Caller', note: 'a patient rings the practice' },
+    { title: 'Twilio number', note: "the practice's own line" },
+    { title: 'Voice agent', note: 'ElevenLabs voice + the reviewed script', key: true, link: 'two' },
+    { title: 'Practice system', note: 'CareStack · Core Practice · Dentally' },
+    { title: 'Booked', note: 'or a callback request' },
+  ]}
+/>
+
+<Section
+  label="§ 1 What I built"
+  ruled
+  notes={[
+    "One practice owner's script went through eleven rounds of review before they were happy with it. The review workflow exists because of that.",
+    'Prospects hear their own accent: each country gets its own demo number.',
+  ]}
+>
+
+### A voice that behaves like a receptionist
+
+Turn-detection so the agent stops talking over people. One admin-controlled brand voice per practice, with per-country accents on the demo numbers. The accent used to be re-rolled on every call, so a practice could hear an Australian voice one hour and an American one the next; I found the cause and removed it. The receptionist also knows the real date, time and time zone on every call, so "next Tuesday" means the right day.
+
+### One script, three practice systems
+
+Integrations with CareStack, Core Practice (OAuth) and Dentally behind a single receptionist script. Callers are matched by the number they ring from, even when the name on file is spelt differently, and an appointment is found from the day and time the caller gives.
+
+### Script changes are tested before they go live
+
+Practices ask for script changes in plain English, with an AI assistant that drafts the rewrite. Before an admin approves, they run test conversations against the proposed script: standard scenarios, custom ones, or replays of real call transcripts. Every version is kept, scored and can be restored, and practices can't see or copy the prompt behind their receptionist.
+
+### The business around it
+
+Trials that set up the receptionist automatically, Stripe subscriptions kept in sync, a premium tier with custom voices and a grace period on downgrade, referral commissions, and a landing page with live demo numbers you can ring.
+
+</Section>
+
+<Section label="§ 2 Keeping it up">
+
+Every failed AI reply is logged and alerts the admins, and a check runs every 15 minutes, after an outage once went unnoticed for days. The end-to-end tests are back on in the release pipeline without overloading the live database. Script changes sync safely across environments. The unglamorous part of the job, and most of the reason it stays live.
+
+</Section>

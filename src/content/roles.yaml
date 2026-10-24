@@ -1,0 +1,61 @@
+- id: qtx
+  org: QTX (Qualiticks Pty Ltd)
+  place: Sydney, Australia (remote)
+  title: Senior AI Software Engineer
+  start: January 2026
+  span: 2026–
+  current: true
+  summary: AI products for Australian health, disability-care, aged-care and finance clients.
+  highlights: []
+
+- id: ortigas-officer
+  org: Ortigas Land Corporation
+  place: Pasig, Philippines
+  title: Software Developer Officer
+  start: January 2024
+  end: December 2025
+  span: 2024–25
+  summary: Led the dev team, built the company's first payment gateway, and wrote RPA bots that cut manual SAP processing by 70–80%.
+  highlights:
+    - Led and mentored a team of developers; introduced structured code reviews and secure development practices.
+    - Built the company's first in-house payment gateway (UnionBank UPay) with rate limiting and reCAPTCHA protection.
+    - Cut manual SAP processing time by 70–80% with RPA bots for invoice entry, reversals and contract locking.
+    - Eliminated 100+ hours a month of manual HR work by automating government remittance filing with AI document extraction and Power Automate.
+    - Replaced a failing database backup uploader with a Windows service that partitions large files to Amazon S3.
+
+- id: ortigas-senior-associate
+  org: Ortigas Land Corporation
+  place: Pasig, Philippines
+  title: Senior Software Developer Associate
+  start: January 2022
+  end: December 2023
+  span: 2022–23
+  summary: Web APIs over SAP data; led the shopping module of the company's first e-commerce site.
+  highlights:
+    - Developed ASP.NET Core Web APIs exposing SAP data to third-party applications.
+    - Led the team that built the customer shopping module of the company's first e-commerce website.
+    - Maintained and tuned multiple MS SQL Server databases for performance and availability.
+
+- id: ortigas-associate
+  org: Ortigas Land Corporation
+  place: Pasig, Philippines
+  title: Software Developer Associate
+  start: May 2019
+  end: December 2021
+  span: 2019–21
+  summary: The company's first digital IT ticketing system; SharePoint report automation.
+  highlights:
+    - Developed the company's first digital IT ticketing system.
+    - Integrated SharePoint with in-house applications to automate daily accomplishment reports; administered Tableau.
+
+- id: oclp
+  org: OCLP Holdings Inc.
+  place: Pasig, Philippines
+  title: Programmer
+  start: July 2018
+  end: May 2019
+  span: 2018–19
+  summary: The company's first tenant-portal mobile app, in Xamarin.
+  highlights:
+    - Developed the company's first tenant-portal mobile application in Xamarin Forms.
+    - Designed and maintained relational databases for in-house projects.

@@ -1,0 +1,65 @@
+---
+no: '03'
+order: 3
+title: Retirement-village finance
+short: Deferred management fees, CPI increases, direct debits and statutory reports for a village operator.
+line: Deferred management fees, CPI increases, direct debits and statutory reports for a retirement-village operator.
+client: A retirement-village operator
+role: Engineer; ran the finance team's walkthroughs
+period: Jun–Oct 2026
+hours: 420
+tasks: 75
+stack: [Supabase, React, Westpac direct debit, Square POS]
+status: in-progress
+hindsight: >-
+  The finance team's own spreadsheet turned out to be the real specification. Once the system matched
+  it to the cent, I locked their example in as a permanent automated test, and arguments about numbers
+  became a test that either passes or doesn't. Next time I'd ask for that spreadsheet in the first
+  week, not after the third walkthrough.
+cv:
+  heading: Retirement-village finance system — in development
+  bullets:
+    - Building a deferred management fee engine with CPI-based increases and daily, capped accrual, validated to the cent against the finance team's own spreadsheet.
+    - Built billing that posts journal entries to the general ledger, Westpac direct-debit files, per-entity month locking, and profit-and-loss, balance-sheet and trial-balance reports.
+---
+
+import Flow from '../../components/Flow.astro';
+import Section from '../../components/Section.astro';
+
+<Flow
+  label="Fig. 1 A resident's month"
+  caption="Contract terms drive the fee engine; each billing run posts to the ledger and produces statements and the bank file."
+  steps={[
+    { title: 'Contract', note: 'purchase price, fee terms, CPI margin' },
+    { title: 'Fee engine', note: 'DMF, CPI, daily and capped accrual', key: true },
+    { title: 'Billing run', note: 'charges, café, adjustments' },
+    { title: 'Ledger', note: 'journal entries per entity' },
+    { title: 'Out', note: 'statements and direct-debit file' },
+  ]}
+/>
+
+<Section
+  label="§ 1 What I built"
+  ruled
+  notes={['A walkthrough booked for 90 minutes ran three hours. It was the most useful three hours of the project.']}
+>
+
+### A fee engine that matches the finance team's spreadsheet
+
+The deferred management fee, with daily and capped accrual, spread across the actual days in each month so April and May no longer show identical figures. Annual CPI-plus-margin increases from 1 July, behind an approval step with a full audit trail. Validated line by line against the finance team's own spreadsheet, and kept as an automated test.
+
+### Billing that posts real accounting
+
+Finalising a billing run writes the journal entries too, not just what residents owe, including charges that cross entities. Café purchases come in from the point of sale. Statement lines say what a resident is paying for: the charge, the rate and the period.
+
+### Money in, months closed
+
+The month's direct-debit file for the bank. Payment due dates roll forward to the next business day, with state public holidays kept in the system. Once Finance locks a month for an entity, nothing can be posted into it.
+
+</Section>
+
+<Section label="§ 2 Testing with the people who use it">
+
+Walkthroughs with the finance team covered the whole resident journey from move-in to exit and refund. The exit process was rebuilt to the finance lead's specification, and 24 corrections from three review sessions were closed in one day.
+
+</Section>

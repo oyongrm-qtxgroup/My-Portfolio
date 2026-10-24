@@ -13,7 +13,7 @@ const axeSource = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 
 const PORT = 4329;
 const BASE = `http://localhost:${PORT}`;
-const ROUTES = ['/', '/system', '/no-such-page'];
+const ROUTES = ['/', '/work/jayne-bandy-ai/', '/work/workforce-care-platform/', '/log/', '/log/client-work/', '/system/', '/no-such-page', '/log', '/work/seed-agents'];
 const WIDTHS = [390, 768, 1440];
 const THEMES = ['paper', 'night'];
 const outDir = process.argv[2];
@@ -72,7 +72,7 @@ try {
         }
 
         if (outDir) {
-          const name = `${route === '/' ? 'home' : route.slice(1)}-${width}-${theme}.png`;
+          const name = `${route === '/' ? 'home' : route.replace(/^\/|\/$/g, '').replaceAll('/', '_')}-${width}-${theme}.png`;
           // 'disabled' fast-forwards finished animations, so the shot shows the end state.
           await page.screenshot({ path: join(outDir, name), fullPage: true, animations: 'disabled' });
         }

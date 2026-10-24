@@ -2,7 +2,7 @@
 
 Drafted 24 Oct 2026 from Raymundo's own Workable time entries and tasks (Mar–Oct 2026). Written in the first person for the website. The CV never uses "I"; it has its own bullets.
 
-**Status: draft, needs Raymundo's approval of the wording before Phase 2 publishes it.**
+**Status: published in each case study's frontmatter (`src/content/work/*.mdx`, `hindsight`), awaiting Raymundo's read-through.** Edit the MDX files, not this one; this file keeps the evidence behind each paragraph.
 
 Rules: no client or people names, no prices, nothing a client could recognise as confidential.
 

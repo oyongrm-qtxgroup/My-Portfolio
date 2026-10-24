@@ -230,9 +230,9 @@ class Component extends DCLogic {
     var stamp = { Live: t.accent, Shipped: t.ink, "In progress": t.margin, "Handed over": t.ink2 };
     var p = st.p == null ? 1 : st.p;
     var figs = [
-      { n: 1900, suffix: "+", label: "hours logged" },
-      { n: 9, suffix: "", label: "production projects" },
-      { n: 190, suffix: "", label: "tasks closed" },
+      { n: 2350, suffix: "+", label: "hours logged" },
+      { n: 9, suffix: "", label: "projects" },
+      { n: 245, suffix: "+", label: "tasks closed" },
       { n: 15, suffix: "+", label: "integrations shipped" }
     ].map(function (f) {
       var v = Math.round(f.n * p);

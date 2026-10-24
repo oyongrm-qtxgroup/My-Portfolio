@@ -1,0 +1,80 @@
+---
+import Stamp from './Stamp.astro';
+import { dayMonth, type LogEntry } from '../lib/content';
+
+interface Props {
+  entry: LogEntry;
+  index?: number;
+  /** Show only the day (inside a month group). */
+  dayOnly?: boolean;
+  /** Link the project label to its case study. */
+  linkProject?: boolean;
+  /** Leave out the project column (on a case study's own page). */
+  hideProject?: boolean;
+}
+
+const { entry, index = 0, dayOnly = false, linkProject = true, hideProject = false } = Astro.props;
+const e = entry.data;
+const iso = e.date.toISOString().slice(0, 10);
+const shown = dayOnly ? String(e.date.getUTCDate()).padStart(2, '0') : dayMonth(e.date);
+---
+
+<div class:list={['log-row', 'reveal', { 'no-project': hideProject }]}>
+  <time datetime={iso} class="mono muted tabular">{shown}</time>
+  {hideProject ? null : linkProject && e.work ? (
+      <a href={`/work/${e.work.id}/`} class="mono project">
+        {e.label}
+      </a>
+    ) : (
+      <span class="mono project">{e.label}</span>
+    )}
+  <p class="text">{e.text}</p>
+  <span><Stamp status={e.status} index={index} /></span>
+</div>
+
+<style>
+  .log-row {
+    display: grid;
+    grid-template-columns: 72px 190px minmax(0, 1fr) 132px;
+    gap: 20px;
+    align-items: baseline;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .no-project {
+    grid-template-columns: 72px minmax(0, 1fr) 132px;
+  }
+
+  .project {
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  a.project:hover {
+    text-decoration: underline;
+  }
+
+  .text {
+    font-size: 18px;
+    line-height: 1.45;
+  }
+
+  @media (max-width: 900px) {
+    .log-row {
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 6px 14px;
+    }
+
+    .text {
+      grid-column: 1 / -1;
+      font-size: 17px;
+    }
+
+    .log-row > span:last-child {
+      grid-column: 1 / -1;
+    }
+  }
+</style>
