@@ -2,7 +2,7 @@
 
 ## Where things stand
 
-- Branch `claude/cool-bardeen-iztjyn` holds the Astro 7 rebuild (Phases 0–2). `main` is still the legacy React site at `148b5c7` and is what production serves (Vercel deployment `dpl_ZXiT92GCh2EKgtwRFh4n4BTGZ1nN`).
+- Branch `claude/cool-bardeen-iztjyn` holds the Astro 7 rebuild (Phases 0–2). `main` is still the legacy React site at `148b5c7` and is what production serves (Vercel deployment `dpl_C2agw125ypRfqUV7HBzHkboPYyuz`, built from `main` after the history rewrite; this is the instant-rollback target). Production deploys automatically from `main`.
 - **Design is approved and built:** the "engineering logbook" look (paper/night/auto themes, red margin line, condensed Archivo headings, Source Serif body, Plex Mono labels, stamps). See `docs/design/` and `/system/` on the preview. Keep it.
 - **Content was rebuilt skills-first** after an interview with the owner (see `docs/REDESIGN_PLAN.md`, Phase 2, third rework). Positioning: AI and automation engineer; audience: hiring first, clients second. The structure is approved; the wording awaits his read-through on the preview.
 
