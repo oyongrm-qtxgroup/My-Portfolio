@@ -19,6 +19,11 @@ for (const r of roles) {
 }
 
 const linkText = (url: string) => url.replace(/^https:\/\/(www\.)?/, '').replace(/\/$/, '');
+// Absolute, so the links in the PDF point to the live site, not the local build server.
+const siteUrl = new URL('/', Astro.site).href;
+// Split text so hyphenated compounds ("retrieval-augmented") never break at a line
+// end: PDF text extraction drops the hyphen there and fuses the two words.
+const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
 ---
 
 <Base
@@ -35,7 +40,7 @@ const linkText = (url: string) => url.replace(/^https:\/\/(www\.)?/, '').replace
           {cv.location} · <a href={`mailto:${profile.email}`}>{profile.email}</a> ·{' '}
           <a href={profile.links.linkedin}>{linkText(profile.links.linkedin)}</a> ·{' '}
           <a href={profile.links.github}>{linkText(profile.links.github)}</a> ·{' '}
-          <a href="/">{cv.site}</a>
+          <a href={siteUrl}>{cv.site}</a>
         </p>
         <p class="cv-pdf">
           <a href="/raymundo-oyong-cv.pdf" class="mono accent target" download>
@@ -79,7 +84,9 @@ const linkText = (url: string) => url.replace(/^https:\/\/(www\.)?/, '').replace
                       </h4>
                       <ul class="cv-ul">
                         {p.bullets.map((b) => (
-                          <li data-cv-bullet>{b}</li>
+                          <li data-cv-bullet>
+                            {keepCompounds(b).map((t, i) => (i % 2 ? <span class="nowrap">{t}</span> : t))}
+                          </li>
                         ))}
                       </ul>
                     </>
@@ -88,7 +95,9 @@ const linkText = (url: string) => url.replace(/^https:\/\/(www\.)?/, '').replace
                 {r.data.highlights.length > 0 && (
                   <ul class="cv-ul">
                     {r.data.highlights.map((b) => (
-                      <li data-cv-bullet>{b}</li>
+                      <li data-cv-bullet>
+                        {keepCompounds(b).map((t, i) => (i % 2 ? <span class="nowrap">{t}</span> : t))}
+                      </li>
                     ))}
                   </ul>
                 )}
@@ -107,7 +116,9 @@ const linkText = (url: string) => url.replace(/^https:\/\/(www\.)?/, '').replace
           cv.skills.map((s) => (
             <div>
               <dt>{s.label}:</dt>
-              <dd>{s.items}</dd>
+              <dd>
+                {keepCompounds(s.items).map((t, i) => (i % 2 ? <span class="nowrap">{t}</span> : t))}
+              </dd>
             </div>
           ))
         }
@@ -152,7 +163,7 @@ const linkText = (url: string) => url.replace(/^https:\/\/(www\.)?/, '').replace
         ))
       }
       <p class="cv-more">
-        Skills, project pages and working principles: <a href="/">{cv.site}</a>
+        Skills, project pages and working principles: <a href={siteUrl}>{cv.site}</a>
       </p>
     </MarginRow>
   </article>
@@ -269,6 +280,10 @@ const linkText = (url: string) => url.replace(/^https:\/\/(www\.)?/, '').replace
     font-weight: 400;
     font-style: italic;
     color: var(--ink-2);
+  }
+
+  .nowrap {
+    white-space: nowrap;
   }
 
   .cv-ul {

@@ -100,7 +100,7 @@
   name: Technical leadership
   pitch: I lead small teams by setting the standard in code review and writing specifications people can build from.
   proof:
-    - text: Led a team of up to four developers at Ortigas Land, myself included, and introduced structured code reviews and secure development practices.
+    - text: Led a four-person development team at Ortigas Land and introduced structured code reviews and secure development practices.
     - text: Lead engineer on Jayne Bandy AI; wrote the developer specifications for a sprint as technical lead on care-plan drafting.
 
 - id: clients
