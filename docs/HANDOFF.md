@@ -21,11 +21,11 @@
 
 ## Next step
 
-Phase 3 is built (`/cv/`, phone menu, 320 px reflow) and awaits the owner's look at the preview. Next: Phase 4 (motion and the contact form: Astro Action + Turnstile + Resend), Phase 5 (PDF from `/cv/`; the print stylesheet already fits 2 A4 pages), Phase 6 (launch).
+Phases 3 and 4 are built. The contact form needs the owner's Turnstile and Resend keys in Vercel (Production only; see the plan, Phase 4). Next: Phase 5 (PDF from `/cv/`; the print stylesheet already fits 2 A4 pages), then Phase 6 (launch).
 
 ## Practical notes
 
 - **Node ≥ 22.23.4 needed** (Astro 7.4). The container ships 22.22: `npm install --prefix <scratch>/node24 node@24.22.1` and put `<scratch>/node24/node_modules/node/bin` first on PATH.
-- `astro preview` is a background daemon in Astro 7; `scripts/verify.mjs` stops and starts it. Run `npm run build && npm run verify -- <shots-dir>`.
+- `astro preview` can't serve this build (it contains a Vercel function); `scripts/verify.mjs` serves `.vercel/output/static` itself and mocks the contact action. Run `npm run build && npm run verify -- <shots-dir>`. To exercise the real action locally use `astro dev` (outbound calls to Cloudflare/Resend are blocked in the cloud sandbox).
 - Deploy previews with the Vercel MCP `create_deployment` (gitSource: github, org `oyongrm-qtxgroup`, repo `My-Portfolio`, ref = branch, sha = pushed commit), project `prj_rJfvQXggKfrA31qJXop4ob57JAWb`, team `team_wU5QbmVCFy8q7JMs52647C5m`. Get a viewing link with `get_access_to_vercel_url`. Don't promote to production until the owner says so.
 - Never commit client or people names. `npm run lint:denylist` reads names from the `DENYLIST` env var; the list is not stored in the repo.

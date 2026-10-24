@@ -71,6 +71,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
+    <span class="ink-progress" aria-hidden="true" transition:persist="ink-progress"></span>
     <span class="page-edge" aria-hidden="true"></span>
     <div class="wrap">
       <SiteHeader />
@@ -79,5 +80,18 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       </main>
       <SiteFooter />
     </div>
+    <script>
+      // An ink line at the top, only when a page change takes longer than 150 ms.
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      const bar = () => document.querySelector('.ink-progress');
+      document.addEventListener('astro:before-preparation', () => {
+        clearTimeout(timer);
+        timer = setTimeout(() => bar()?.classList.add('on'), 150);
+      });
+      document.addEventListener('astro:after-swap', () => {
+        clearTimeout(timer);
+        bar()?.classList.remove('on');
+      });
+    </script>
   </body>
 </html>

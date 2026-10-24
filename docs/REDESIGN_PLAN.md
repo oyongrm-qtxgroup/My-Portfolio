@@ -134,7 +134,14 @@ First version (6 case studies, 49-entry dated log, "2026 in figures" with hours 
 - Phone: menu is a disclosure button (`aria-expanded`, Escape closes, focus returns to the button); 44 px minimum targets; reflow at 320 px and 200 % zoom with no sideways scroll.
 - **Done when:** screens match the canvas at 390 / 768 / 1440 in both modes; full keyboard pass.
 
-### Phase 4 — Motion and states (M, needs open item 7)
+### Phase 4 — Motion and states (M) — built 24 Oct 2026; live keys pending
+- [x] Contact: `src/actions/index.ts` (validate → honeypot → best-effort per-instance rate limit → Turnstile siteverify → Resend HTTP API; nothing stored). `ContactForm.astro` posts through the action in place: idle / invalid (errors under fields, focus moves to the first) / sending / sent ("Received · dd.mm · hh:mm" stamp) / failed (message kept, mailto fallback). Without JS the form posts to `/contact/` (on-demand page) which shows the result; Turnstile needs JS, so a no-JS sender is pointed to email.
+- [x] Turnstile loads only when the form is near view (home JS 12.3 KB gzip without it). Outside production the action uses Cloudflare's test keys and a dry run when `RESEND_API_KEY` is missing; in production missing keys fail closed.
+- [x] Figures count up (700 ms delay, 1.1 s ease-out; whole numbers only; final value in the HTML for screen readers and no-JS). Ink line on page changes slower than 150 ms.
+- [x] `verify` serves `.vercel/output/static` itself (`astro preview` can't serve a build with a Vercel function) and tests the form states with a mocked action and stubbed Turnstile.
+- [x] `npm audit` clean: `overrides` pin patched `zod` (in `@vercel/cli-config`) and `path-to-regexp` (in `@vercel/routing-utils`).
+- [ ] Owner adds, for **Production** only: `PUBLIC_TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET`, `RESEND_API_KEY` (optional: `CONTACT_TO`, `CONTACT_FROM`). Then a real message is sent from the production URL as the acceptance test.
+- Original scope, kept for reference:
 - Everything in §4 Motion and loading states.
 - Contact via Astro Action (sends to oyongrm@gmail.com through Resend; nothing stored), progressively enhanced (works without JS via normal POST). Invisible Turnstile + honeypot + rate limit; errors written under the field and announced.
 - **Done when:** every state on `States.dc.html` is reproducible on the preview; CLS < 0.02; reduced-motion verified.

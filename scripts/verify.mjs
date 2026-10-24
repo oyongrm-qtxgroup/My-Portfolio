@@ -1,11 +1,13 @@
-// Builds nothing: run `npm run build` first. Serves dist/ with `astro preview`,
-// then checks every route at phone, tablet and desktop widths in both themes:
-// axe-core (WCAG 2.2 A/AA), no sideways scrolling, and a screenshot of each.
+// Builds nothing: run `npm run build` first. Serves the built static pages
+// (.vercel/output/static), then checks every route at phone, tablet and desktop
+// widths in both themes: axe-core (WCAG 2.2 A/AA), no sideways scrolling, and a
+// screenshot of each. The contact action and Turnstile are mocked in the browser;
+// the real action is exercised on the Vercel preview.
 // Usage: node scripts/verify.mjs [screenshot-dir]
-import { spawn } from 'node:child_process';
-import { mkdirSync, readFileSync } from 'node:fs';
+import { createServer } from 'node:http';
+import { existsSync, mkdirSync, readFileSync, statSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { join } from 'node:path';
+import { extname, join, normalize } from 'node:path';
 import { chromium } from 'playwright';
 
 const require = createRequire(import.meta.url);
@@ -20,32 +22,51 @@ const THEMES = ['paper', 'night'];
 const outDir = process.argv[2];
 if (outDir) mkdirSync(outDir, { recursive: true });
 
-// `astro preview` runs as a background daemon in Astro 7: stop any old one first.
-const astro = (...args) =>
-  new Promise((resolve) => spawn('npx', ['astro', ...args], { stdio: 'ignore' }).on('exit', resolve));
-await astro('preview', 'stop');
-spawn('npx', ['astro', 'preview', '--port', String(PORT)], { stdio: 'ignore' });
-const stop = () => astro('preview', 'stop');
+// `astro preview` can't serve a build with a Vercel function in it, so serve the
+// static output the way Vercel does: /path/ → /path/index.html, unknown → 404.html.
+const ROOT = new URL('../.vercel/output/static/', import.meta.url).pathname;
+const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.xml': 'application/xml', '.txt': 'text/plain', '.pdf': 'application/pdf' };
+const server = createServer((req, res) => {
+  const path = normalize(decodeURIComponent(new URL(req.url, BASE).pathname)).replace(/^(\.\.[/\\])+/, '');
+  const file = [join(ROOT, path), join(ROOT, path, 'index.html'), join(ROOT, `${path}.html`)].find(
+    (f) => f.startsWith(ROOT) && existsSync(f) && statSync(f).isFile(),
+  );
+  const served = file ?? join(ROOT, '404.html');
+  res.writeHead(file ? 200 : 404, { 'content-type': TYPES[extname(served)] ?? 'application/octet-stream' });
+  res.end(readFileSync(served));
+});
+await new Promise((resolve) => server.listen(PORT, resolve));
+const stop = () => new Promise((resolve) => server.close(resolve));
 
-async function waitForServer() {
-  for (let i = 0; i < 60; i++) {
-    try {
-      const res = await fetch(BASE);
-      if (res.ok) return;
-    } catch {}
-    await new Promise((r) => setTimeout(r, 500));
-  }
-  throw new Error('preview server did not start');
+// Turnstile stub: renders nothing and hands out a token at once.
+const TURNSTILE_STUB = `window.turnstile = { render: () => 'w1', getResponse: () => 'test-token', reset: () => {} };`;
+async function mockContact(page, reply) {
+  await page.route('https://challenges.cloudflare.com/**', (route) =>
+    route.fulfill({ contentType: 'text/javascript', body: TURNSTILE_STUB }),
+  );
+  await page.route('**/_actions/contact**', reply);
+}
+
+async function axe(page, tag) {
+  await page.addScriptTag({ content: axeSource });
+  const result = await page.evaluate(() =>
+    window.axe.run(document, {
+      runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'] },
+    }),
+  );
+  for (const v of result.violations) failures.push(`${tag}: axe ${v.id} (${v.nodes.length}) ${v.help}`);
 }
 
 const failures = [];
 
 try {
-  await waitForServer();
   const browser = await chromium.launch();
   for (const theme of THEMES) {
     for (const width of WIDTHS) {
       const context = await browser.newContext({ viewport: { width, height: 900 } });
+      await context.route('https://challenges.cloudflare.com/**', (route) =>
+        route.fulfill({ contentType: 'text/javascript', body: TURNSTILE_STUB }),
+      );
       await context.addInitScript((t) => localStorage.setItem('theme', t), theme);
       const page = await context.newPage();
       for (const route of ROUTES) {
@@ -128,6 +149,76 @@ try {
       }));
       if (after.expanded !== 'false' || after.locked) failures.push(`${tag}: menu state leaked across navigation`);
     }
+    await ctx.close();
+  }
+
+  // Contact form states (docs/design/States, D) with a mocked action.
+  for (const theme of THEMES) {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    await ctx.addInitScript((t) => localStorage.setItem('theme', t), theme);
+    const p = await ctx.newPage();
+    const tag = `contact ${theme}`;
+    let replies = 0;
+    await mockContact(p, (route) => {
+      replies++;
+      // First send succeeds (devalue-encoded result), the second fails like a server error.
+      if (replies === 1)
+        return route.fulfill({ status: 200, contentType: 'application/json+devalue', body: '[{"received":1},true]' });
+      return route.fulfill({
+        status: 500,
+        contentType: 'application/json',
+        body: JSON.stringify({ type: 'AstroActionError', code: 'INTERNAL_SERVER_ERROR', status: 500, message: "The message didn't send." }),
+      });
+    });
+    await p.goto(BASE + '/#contact', { waitUntil: 'networkidle' });
+    await p.waitForTimeout(1600); // let the load sequence finish
+    const form = p.locator('[data-contact]');
+
+    // Invalid: errors in words under the fields, focus on the first one.
+    await form.locator('button[type=submit]').click();
+    const invalid = await p.evaluate(() => ({
+      email: document.querySelector('#cf-email')?.getAttribute('aria-invalid'),
+      emailErr: document.querySelector('#cf-email-err')?.textContent,
+      focused: document.activeElement?.id,
+    }));
+    if (invalid.email !== 'true' || !invalid.emailErr) failures.push(`${tag}: invalid email not flagged`);
+    if (invalid.focused !== 'cf-email') failures.push(`${tag}: focus not moved to the first invalid field`);
+    if (replies) failures.push(`${tag}: invalid form was sent`);
+    await axe(p, `${tag} invalid`);
+    if (outDir) await form.screenshot({ path: join(outDir, `contact-invalid-${theme}.png`) });
+
+    // Sent: "Received" stamp and a status line; the form clears.
+    await p.fill('#cf-email', 'alex@clinic.com.au');
+    await p.fill('#cf-message', 'A booking line for three clinics.');
+    await form.locator('button[type=submit]').click();
+    await p.locator('[data-received]:not([hidden])').waitFor({ timeout: 5000 }).catch(() => {});
+    await p.waitForTimeout(600); // the stamp presses in from transparent
+    const sent = await p.evaluate(() => ({
+      stamp: document.querySelector('[data-received]')?.textContent ?? '',
+      status: document.querySelector('[data-form-status]')?.textContent ?? '',
+      cleared: document.querySelector('#cf-message')?.value === '',
+    }));
+    if (!sent.stamp.startsWith('Received')) failures.push(`${tag}: no "Received" stamp after sending`);
+    if (!sent.status.includes('alex@clinic.com.au')) failures.push(`${tag}: no confirmation status`);
+    if (!sent.cleared) failures.push(`${tag}: form not cleared after sending`);
+    await axe(p, `${tag} sent`);
+    if (outDir) await form.screenshot({ path: join(outDir, `contact-sent-${theme}.png`) });
+
+    // Failed: an alert with the email fallback, and the message is kept.
+    await p.fill('#cf-email', 'alex@clinic.com.au');
+    await p.fill('#cf-message', 'Keep this message, please.');
+    await form.locator('button[type=submit]').click();
+    await p.locator('[data-failed]:not([hidden])').waitFor({ timeout: 5000 }).catch(() => {});
+    const failed = await p.evaluate(() => ({
+      shown: !document.querySelector('[data-failed]')?.hidden,
+      kept: document.querySelector('#cf-message')?.value,
+      enabled: !document.querySelector('.send')?.disabled,
+    }));
+    if (!failed.shown) failures.push(`${tag}: failed state not shown`);
+    if (failed.kept !== 'Keep this message, please.') failures.push(`${tag}: message lost after a failure`);
+    if (!failed.enabled) failures.push(`${tag}: Send stays disabled after a failure`);
+    await axe(p, `${tag} failed`);
+    if (outDir) await form.screenshot({ path: join(outDir, `contact-failed-${theme}.png`) });
     await ctx.close();
   }
 

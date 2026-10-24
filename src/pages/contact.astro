@@ -1,0 +1,91 @@
+---
+// No-JS fallback for the contact form: the form posts here and this page shows
+// the result. With JS the form never leaves the home page.
+import { actions, isInputError } from 'astro:actions';
+import Base from '../layouts/Base.astro';
+import MarginRow from '../components/MarginRow.astro';
+import { getProfile } from '../lib/content';
+
+export const prerender = false;
+
+const result = Astro.getActionResult(actions.contact);
+if (!result) return Astro.redirect('/#contact');
+
+const profile = await getProfile();
+const fieldErrors = result.error && isInputError(result.error) ? Object.values(result.error.fields).flat() : [];
+const now = new Date();
+const pad = (n: number) => String(n).padStart(2, '0');
+const stamp = `Received · ${pad(now.getUTCDate())}.${pad(now.getUTCMonth() + 1)}`;
+---
+
+<Base title="Contact — R. Oyong" description="Contact form result." noindex>
+  <MarginRow index={0}>
+    <Fragment slot="label">§ 06<br />Write</Fragment>
+    <div class="result">
+      {
+        result.data ? (
+          <>
+            <h1 class="display">Thanks.</h1>
+            <span class="stamp received">{stamp}</span>
+            <p role="status">It's in my inbox, and I'll reply by email.</p>
+          </>
+        ) : fieldErrors.length > 0 ? (
+          <>
+            <h1 class="display">Almost.</h1>
+            <ul role="alert" class="errors">
+              {fieldErrors.map((msg) => (
+                <li>{msg}</li>
+              ))}
+            </ul>
+            <p>Go back to fix it; your browser's Back button keeps what you typed.</p>
+          </>
+        ) : (
+          <>
+            <h1 class="display">That didn't send.</h1>
+            <p role="alert">
+              {result.error?.message} Write to{' '}
+              <a href={`mailto:${profile.email}`} class="accent">
+                {profile.email}
+              </a>{' '}
+              instead.
+            </p>
+          </>
+        )
+      }
+      <a href="/#contact" class="mono accent back target">← Back to the site</a>
+    </div>
+  </MarginRow>
+</Base>
+
+<style>
+  .result {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 40px 0 24px;
+    font-size: 19px;
+    line-height: 1.5;
+    max-width: 36em;
+  }
+
+  .result h1 {
+    font-size: clamp(48px, 8vw, 96px);
+  }
+
+  .received {
+    color: var(--accent);
+  }
+
+  .errors {
+    margin: 0;
+    padding-left: 20px;
+    color: var(--margin);
+  }
+
+  .back {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 13px;
+  }
+</style>

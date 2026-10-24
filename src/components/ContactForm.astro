@@ -1,0 +1,405 @@
+---
+// Contact form (docs/design/States, section D): idle, invalid, sending, sent, failed.
+// With JS it posts through the action in place; without JS it posts to /contact/,
+// which renders the result. Turnstile loads only when the form comes near view.
+import { actions } from 'astro:actions';
+import { PUBLIC_TURNSTILE_SITE_KEY } from 'astro:env/client';
+import { VERCEL_ENV } from 'astro:env/server';
+
+interface Props {
+  email: string;
+}
+
+const { email } = Astro.props;
+// Cloudflare's documented invisible test key (always passes) outside production.
+const siteKey =
+  PUBLIC_TURNSTILE_SITE_KEY ?? (VERCEL_ENV === 'production' ? '' : '1x00000000000000000000BB');
+---
+
+<form
+  class="contact-form"
+  method="POST"
+  action={'/contact/' + actions.contact}
+  novalidate
+  data-contact
+  data-sitekey={siteKey}
+>
+  <div class="field">
+    <label for="cf-name">Your name</label>
+    <input
+      id="cf-name"
+      name="name"
+      type="text"
+      autocomplete="name"
+      maxlength="100"
+      placeholder="Alex Rivera"
+      aria-describedby="cf-name-err"
+    />
+    <p id="cf-name-err" class="err" data-error-for="name"></p>
+  </div>
+  <div class="field">
+    <label for="cf-email">Email</label>
+    <input
+      id="cf-email"
+      name="email"
+      type="email"
+      inputmode="email"
+      autocomplete="email"
+      required
+      maxlength="254"
+      placeholder="alex@clinic.com.au"
+      aria-describedby="cf-email-err"
+    />
+    <p id="cf-email-err" class="err" data-error-for="email"></p>
+  </div>
+  <div class="field">
+    <label for="cf-message">What needs building?</label>
+    <textarea
+      id="cf-message"
+      name="message"
+      rows="4"
+      required
+      maxlength="5000"
+      placeholder="A booking line for three clinics."
+      aria-describedby="cf-message-err"></textarea>
+    <p id="cf-message-err" class="err" data-error-for="message"></p>
+  </div>
+  <div class="trap" aria-hidden="true">
+    <label for="cf-company">Company (leave empty)</label>
+    <input id="cf-company" name="company" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+  <div class="turnstile" data-turnstile></div>
+  <div class="actions">
+    <button type="submit" class="send"><span data-send-label>Send</span></button>
+    <span class="stamp received" data-received hidden></span>
+  </div>
+  <p class="status" role="status" data-form-status></p>
+  <p class="failed" role="alert" data-failed hidden>
+    <span data-failed-reason>That didn't send.</span> Your message is still here, so try again, or
+    write to <a href={`mailto:${email}`} class="accent">{email}</a>.
+  </p>
+</form>
+
+<script>
+  import { actions, isInputError } from 'astro:actions';
+
+  type Turnstile = {
+    render: (el: HTMLElement, opts: Record<string, unknown>) => string;
+    getResponse: (id: string) => string | undefined;
+    reset: (id: string) => void;
+  };
+  type TurnstileWindow = Window & { turnstile?: Turnstile };
+
+  const FIELDS = ['name', 'email', 'message'] as const;
+  const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  let scriptLoad: Promise<void> | undefined;
+  function loadTurnstile(): Promise<void> {
+    scriptLoad ??= new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      s.async = true;
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error('turnstile script failed'));
+      document.head.append(s);
+    });
+    return scriptLoad;
+  }
+
+  function setup() {
+    const form = document.querySelector<HTMLFormElement>('[data-contact]');
+    if (!form || form.dataset.ready) return;
+    form.dataset.ready = 'true';
+
+    const q = <T extends Element>(sel: string) => form.querySelector<T>(sel)!;
+    const button = q<HTMLButtonElement>('.send');
+    const label = q<HTMLElement>('[data-send-label]');
+    const status = q<HTMLElement>('[data-form-status]');
+    const failed = q<HTMLElement>('[data-failed]');
+    const failedReason = q<HTMLElement>('[data-failed-reason]');
+    const received = q<HTMLElement>('[data-received]');
+    const holder = q<HTMLElement>('[data-turnstile]');
+    const siteKey = form.dataset.sitekey ?? '';
+    let widget: string | undefined;
+
+    const startTurnstile = async () => {
+      if (widget !== undefined || !siteKey) return;
+      try {
+        await loadTurnstile();
+        const ts = (window as TurnstileWindow).turnstile;
+        widget = ts?.render(holder, {
+          sitekey: siteKey,
+          appearance: 'interaction-only',
+          size: 'flexible',
+          theme: document.documentElement.dataset.theme === 'night' ? 'dark' : 'light',
+          'refresh-expired': 'auto',
+        });
+      } catch {
+        // Submitting without a token fails server-side and shows the failed state.
+      }
+    };
+
+    // Load the spam check only when the form is close to view or touched.
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          io.disconnect();
+          startTurnstile();
+        }
+      },
+      { rootMargin: '400px' },
+    );
+    io.observe(form);
+    form.addEventListener('focusin', startTurnstile, { once: true });
+    document.addEventListener('astro:before-swap', () => io.disconnect(), { once: true });
+
+    const showErrors = (errors: Partial<Record<(typeof FIELDS)[number], string>>) => {
+      let first: HTMLElement | undefined;
+      for (const f of FIELDS) {
+        const input = form.elements.namedItem(f) as HTMLInputElement | HTMLTextAreaElement;
+        const msg = errors[f];
+        q<HTMLElement>(`[data-error-for="${f}"]`).textContent = msg ?? '';
+        if (msg) input.setAttribute('aria-invalid', 'true');
+        else input.removeAttribute('aria-invalid');
+        if (msg && !first) first = input;
+      }
+      // Focusing the field reads its error out (aria-describedby).
+      first?.focus();
+      return !first;
+    };
+
+    const validate = (data: FormData) => {
+      const errors: Partial<Record<(typeof FIELDS)[number], string>> = {};
+      const email = String(data.get('email') ?? '').trim();
+      const message = String(data.get('message') ?? '').trim();
+      if (!EMAIL.test(email)) errors.email = 'Enter an email like name@company.com so I can reply.';
+      if (message.length < 10)
+        errors.message = 'Tell me a little about what needs building (a sentence is plenty).';
+      return errors;
+    };
+
+    const setSending = (sending: boolean) => {
+      button.disabled = sending;
+      label.textContent = sending ? 'Sending' : 'Send';
+      label.classList.toggle('dots', sending);
+      form.setAttribute('aria-busy', String(sending));
+    };
+
+    const token = async () => {
+      await startTurnstile();
+      const ts = (window as TurnstileWindow).turnstile;
+      if (!ts || widget === undefined) return;
+      // The invisible check usually finishes before anyone presses Send; wait up to 10 s.
+      for (let i = 0; i < 40 && !ts.getResponse(widget); i++) {
+        await new Promise((r) => setTimeout(r, 250));
+      }
+    };
+
+    form.addEventListener('input', (e) => {
+      const target = e.target as HTMLInputElement;
+      if (target.getAttribute('aria-invalid') === 'true') {
+        target.removeAttribute('aria-invalid');
+        q<HTMLElement>(`[data-error-for="${target.name}"]`).textContent = '';
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (button.disabled) return;
+      failed.hidden = true;
+      received.hidden = true;
+      status.textContent = '';
+      if (!showErrors(validate(new FormData(form)))) return;
+
+      setSending(true);
+      status.textContent = 'Sending your message.';
+      await token();
+      const { data, error } = await actions.contact(new FormData(form));
+      setSending(false);
+      const ts = (window as TurnstileWindow).turnstile;
+      if (ts && widget !== undefined) ts.reset(widget); // tokens are single use
+
+      if (data) {
+        const sentTo = String(new FormData(form).get('email') ?? '').trim();
+        const now = new Date();
+        const pad = (n: number) => String(n).padStart(2, '0');
+        received.textContent = `Received · ${pad(now.getDate())}.${pad(now.getMonth() + 1)} · ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+        received.hidden = false;
+        status.textContent = `Thanks. It's in my inbox, and I'll reply to ${sentTo}.`;
+        form.reset();
+        return;
+      }
+      status.textContent = '';
+      if (isInputError(error)) {
+        const fields = error.fields as Record<string, string[] | undefined>;
+        showErrors({
+          name: fields.name?.[0],
+          email: fields.email?.[0],
+          message: fields.message?.[0],
+        });
+        return;
+      }
+      failedReason.textContent =
+        error?.code === 'TOO_MANY_REQUESTS' ? error.message : "That didn't send.";
+      failed.hidden = false;
+    });
+  }
+
+  document.addEventListener('astro:page-load', setup);
+</script>
+
+<style>
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    max-width: 36em;
+    margin-top: 40px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  label {
+    font: 12px var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  input,
+  textarea {
+    min-height: 44px;
+    padding: 10px 0;
+    border: 0;
+    border-bottom: 1.5px solid var(--ink-2);
+    border-radius: 0;
+    background: transparent;
+    color: var(--ink);
+    font: 18px/1.5 var(--font-body);
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--ink-2);
+    opacity: 1;
+  }
+
+  input:focus-visible,
+  textarea:focus-visible {
+    outline: none;
+    border-bottom: 2px solid var(--accent);
+  }
+
+  [aria-invalid='true'] {
+    border-bottom-color: var(--margin);
+  }
+
+  .err {
+    font: 13px/1.5 var(--font-mono);
+    color: var(--margin);
+  }
+
+  .err:empty {
+    display: none;
+  }
+
+  .trap {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .turnstile:empty {
+    display: none;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+    min-height: 52px;
+  }
+
+  .send {
+    min-height: 44px;
+    min-width: 112px;
+    padding: 0 16px;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    font: 12px var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+  }
+
+  .send:hover {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+
+  .send:disabled {
+    opacity: 0.7;
+    cursor: progress;
+  }
+
+  .dots::after {
+    content: '';
+    display: inline-block;
+    width: 1.5em;
+    text-align: left;
+    animation: dots 1.2s steps(4, end) infinite;
+  }
+
+  @keyframes dots {
+    0% {
+      content: '';
+    }
+    25% {
+      content: '.';
+    }
+    50% {
+      content: '..';
+    }
+    75% {
+      content: '...';
+    }
+  }
+
+  .received {
+    color: var(--accent);
+    animation: press 0.45s cubic-bezier(0.3, 0.7, 0.4, 1) both;
+  }
+
+  .received[hidden] {
+    display: none;
+  }
+
+  .status,
+  .failed {
+    font-size: 18px;
+    line-height: 1.5;
+  }
+
+  .status:empty {
+    display: none;
+  }
+
+  .failed {
+    color: var(--margin);
+  }
+
+  .failed[hidden] {
+    display: none;
+  }
+</style>

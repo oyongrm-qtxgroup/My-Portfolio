@@ -80,7 +80,40 @@
   }
 }
 
+/* Page change taking longer than 150 ms: an ink line draws across the top. */
+.ink-progress {
+  position: fixed;
+  z-index: 30;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--accent);
+  transform-origin: left;
+  transform: scaleX(0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ink-progress.on {
+  opacity: 1;
+  animation: ink 2.4s cubic-bezier(0.2, 0.7, 0, 1) forwards;
+}
+
+@keyframes ink {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(0.9);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .ink-progress.on {
+    transform: none;
+  }
+
   *,
   *::before,
   *::after {
