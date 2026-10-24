@@ -1,21 +1,14 @@
 ---
-no: '06'
-order: 6
+no: '04'
+order: 4
 title: Care-plan drafting
-short: Drafts aged-care plans from client records. Every sentence links back to the page it came from.
+short: Drafts aged-care plans from client records, with every sentence linked to the page it came from.
 line: Drafts aged-care plans from a client's records. Every statement links back to the page it came from, and contradictions go to a clinician instead of being smoothed over.
 client: An aged-care provider
 role: Technical lead
-period: Oct 2026–
-hours: 40
-tasks: 4
+period: Oct 2026 – now
 stack: [Large language model, Microsoft Entra ID, Supabase]
 status: in-progress
-hindsight: >-
-  With care plans, a confident wrong sentence is worse than no sentence. So every statement shows where
-  it came from, and contradictions go to a clinician instead of being smoothed over. The biggest
-  speed-up came from fixing a database connection, not from the model, which is a good reminder to
-  check the plumbing before blaming the AI.
 cv:
   heading: Care-plan drafting — aged-care provider; technical lead
   bullets:
@@ -25,6 +18,12 @@ cv:
 
 import Flow from '../../components/Flow.astro';
 import Section from '../../components/Section.astro';
+
+<Section label="§ 1 The problem" ruled>
+
+Aged-care staff write each client's care plan from a stack of assessments, letters and notes. An AI can draft one in minutes, but a draft is only useful if a clinician can check it quickly and trust what they sign.
+
+</Section>
 
 <Flow
   label="Fig. 1 From records to a plan"
@@ -39,27 +38,21 @@ import Section from '../../components/Section.astro';
 />
 
 <Section
-  label="§ 1 What I built"
+  label="§ 2 What I did"
   ruled
-  notes={['No client records were opened while reviewing the provider\'s current system, and structure was compared using de-identified documents only.']}
+  notes={["No client records were opened while reviewing the provider's current system; structure was compared using de-identified documents only."]}
 >
 
 ### Evidence first
 
-A versioned clinical record for each client: a summary of every document and key facts by domain, each linked to its page. Every statement in a draft links to its document page, quoted passage or assessment answer. Contradictions, gaps and outdated, undated or unreadable evidence become review items that the reviewer acknowledges; nothing is resolved silently.
+Every statement in a draft links to the document page, quoted passage or assessment answer it came from. Contradictions, gaps and outdated or unreadable evidence become review items a clinician acknowledges; nothing is resolved silently.
 
-### Drafting that survives a closed tab
+### Drafts that survive a closed tab
 
-Drafts run on the server, so a two-minute draft keeps going if the user reloads or closes the tab, and its progress shows from any tab. Each draft is marked as AI-assisted and names the model that wrote it.
+Drafting runs on the server, so a two-minute draft keeps going if someone reloads or closes the tab. Only clinical reviewers can approve a plan, and every return, resubmission and approval is recorded.
 
-### Access and approvals
+### Leading the sprint
 
-Microsoft sign-in creates the staff record, and every permission is checked on the server. Only clinical reviewers can approve a plan; returning, resubmitting, approving and withdrawing are all recorded, and approving your own plan is blocked by default.
-
-</Section>
-
-<Section label="§ 2 Leading the sprint">
-
-As technical lead I wrote the developer specification for each Sprint 2 task from the signed proposal and the provider's requirements, and mapped their risk scoring onto the new system. The largest speed-up of the month came from moving the database connection to HTTPS: actions went from 6.5 seconds to about 1.
+As technical lead I wrote the specification for each task in the second sprint from the signed proposal and the provider's requirements, and mapped their risk scoring onto the new system.
 
 </Section>

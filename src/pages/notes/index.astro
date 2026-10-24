@@ -1,0 +1,50 @@
+---
+import Base from '../../layouts/Base.astro';
+import MarginRow from '../../components/MarginRow.astro';
+import NoteItem from '../../components/NoteItem.astro';
+import { getNotes } from '../../lib/content';
+
+const notes = await getNotes();
+---
+
+<Base
+  title="Notes — R. Oyong"
+  description="Short stories from building AI products: what went wrong or surprised me, and what it changed in how I work."
+>
+  <MarginRow index={0}>
+    <Fragment slot="label">Index</Fragment>
+    <div class="head">
+      <h1 class="display">Notes</h1>
+      <p class="lede">
+        Short stories from building AI products: something that went wrong or surprised me, and what
+        it changed in how I work.
+      </p>
+    </div>
+  </MarginRow>
+
+  <MarginRow index={1} ruled>
+    <Fragment slot="label">{notes.length} notes</Fragment>
+    <div class="list">
+      {notes.map((note) => <NoteItem note={note} />)}
+    </div>
+  </MarginRow>
+</Base>
+
+<style>
+  .head {
+    padding: 32px 0 8px;
+  }
+
+  h1 {
+    font-size: clamp(64px, 9vw, 112px);
+    line-height: 0.9;
+  }
+
+  .lede {
+    margin-top: 20px;
+  }
+
+  .list {
+    margin-top: -24px;
+  }
+</style>

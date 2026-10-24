@@ -1,22 +1,14 @@
 import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
 
 export type Work = CollectionEntry<'work'>;
-export type LogEntry = CollectionEntry<'log'>;
+export type Note = CollectionEntry<'notes'>;
 export type Role = CollectionEntry<'roles'>;
 
-/** 24.10 */
-export function dayMonth(d: Date): string {
-  const dd = String(d.getUTCDate()).padStart(2, '0');
-  const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
-  return `${dd}.${mm}`;
-}
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-export function monthKey(d: Date): string {
-  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
-}
-
-export function monthName(d: Date): string {
-  return d.toLocaleDateString('en-AU', { month: 'long', timeZone: 'UTC' });
+/** Oct 2026 (three-letter months everywhere; the en-AU locale would give "Sept"). */
+export function monthYear(d: Date): string {
+  return `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
 }
 
 export async function getWork(): Promise<Work[]> {
@@ -24,9 +16,9 @@ export async function getWork(): Promise<Work[]> {
 }
 
 /** Newest first. */
-export async function getLog(): Promise<LogEntry[]> {
-  return (await getCollection('log')).sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime() || b.id.localeCompare(a.id),
+export async function getNotes(): Promise<Note[]> {
+  return (await getCollection('notes')).sort(
+    (a, b) => b.data.date.getTime() - a.data.date.getTime() || a.id.localeCompare(b.id),
   );
 }
 
@@ -40,17 +32,4 @@ export async function getProfile() {
   const entry = await getEntry('profile', 'main');
   if (!entry) throw new Error('src/content/profile.yaml needs a "main" entry');
   return entry.data;
-}
-
-/** Log filters: one per case study, plus "client work" for entries without one. */
-export async function getLogFilters() {
-  const [work, log] = await Promise.all([getWork(), getLog()]);
-  const filters = work.map((w) => ({
-    slug: w.id,
-    label: w.data.title,
-    count: log.filter((e) => e.data.work?.id === w.id).length,
-  }));
-  const other = log.filter((e) => !e.data.work).length;
-  if (other) filters.push({ slug: 'client-work', label: 'Client work', count: other });
-  return filters.filter((f) => f.count > 0);
 }

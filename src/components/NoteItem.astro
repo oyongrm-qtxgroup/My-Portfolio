@@ -1,0 +1,130 @@
+---
+import { render } from 'astro:content';
+import { getEntry } from 'astro:content';
+import { monthYear, type Note } from '../lib/content';
+
+interface Props {
+  note: Note;
+  /** 'full' renders the body; 'teaser' shows the summary and links to it. */
+  variant?: 'full' | 'teaser';
+  headingLevel?: 2 | 3;
+}
+
+const { note, variant = 'full', headingLevel = 2 } = Astro.props;
+const n = note.data;
+const { Content } = await render(note);
+const work = n.work ? await getEntry(n.work) : undefined;
+const Heading = headingLevel === 3 ? 'h3' : 'h2';
+---
+
+<article class:list={['note', 'reveal', variant]} id={note.id}>
+  <p class="mono muted when">
+    <time datetime={n.date.toISOString().slice(0, 10)}>{monthYear(n.date)}</time>
+  </p>
+  <div class="note-body">
+    <Heading class="title note-title">
+      {
+        variant === 'teaser' ? (
+          <a href={`/notes/#${note.id}`}>{n.title}</a>
+        ) : (
+          n.title
+        )
+      }
+    </Heading>
+    {
+      variant === 'teaser' ? (
+        <p class="summary">{n.summary}</p>
+      ) : (
+        <div class="text">
+          <Content />
+        </div>
+      )
+    }
+    {
+      variant === 'full' && work && (
+        <p class="mono from">
+          From <a href={`/work/${work.id}/`}>{work.data.title}</a>
+        </p>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .note {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 20px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .when {
+    padding-top: 6px;
+    white-space: nowrap;
+  }
+
+  .note-title {
+    font-size: 28px;
+  }
+
+  .full .note-title {
+    font-size: 32px;
+  }
+
+  .note-title a {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 5px;
+    transition: text-decoration-color 0.2s;
+  }
+
+  .note-title a:hover,
+  .note-title a:focus-visible {
+    text-decoration-color: var(--accent);
+  }
+
+  .summary {
+    margin-top: 8px;
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 38em;
+  }
+
+  .text {
+    margin-top: 12px;
+    font-size: 19px;
+    line-height: 1.6;
+    max-width: 38em;
+  }
+
+  .text :global(p + p) {
+    margin-top: 14px;
+  }
+
+  .from {
+    margin-top: 16px;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+
+  .from a {
+    color: var(--accent);
+  }
+
+  @media (max-width: 760px) {
+    .note {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 6px;
+    }
+
+    .note-title,
+    .full .note-title {
+      font-size: 26px;
+    }
+  }
+</style>

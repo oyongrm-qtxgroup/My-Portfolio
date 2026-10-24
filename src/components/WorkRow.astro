@@ -24,7 +24,7 @@ const w = work.data;
   </span>
   <span class="mono muted stack">{w.stack.slice(0, 4).join(' · ')}</span>
   <span class="meta">
-    <span class="mono tabular">{w.hours} h</span>
+    <span class="mono muted">{w.period}</span>
     <Stamp status={w.status} index={index} />
   </span>
 </a>
@@ -32,7 +32,7 @@ const w = work.data;
 <style>
   .work-row {
     display: grid;
-    grid-template-columns: 56px minmax(0, 1fr) 220px 132px;
+    grid-template-columns: 56px minmax(0, 1fr) 220px 140px;
     gap: 20px;
     align-items: baseline;
     padding: 22px 12px 22px 0;
@@ -99,6 +99,7 @@ const w = work.data;
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+    font-size: 12px;
   }
 
   @media (max-width: 900px) {

@@ -103,18 +103,21 @@ Each phase ends with a Vercel preview and a review against the canvas before the
 - [ ] Owner reviews the Vercel preview against the canvas.
 - Known: `npm audit` reports advisories in `@vercel/functions` / `@vercel/oidc` (adapter dependencies used only by server functions). The site has none yet; re-check before Phase 4 adds the contact action.
 
-### Phase 2 — Content (M) — built 24 Oct 2026, awaiting the owner's read-through
+### Phase 2 — Content (M) — reworked 24 Oct 2026 after owner review, awaiting read-through
 
-- [x] Content collections with build-time validation (`src/content.config.ts`): `work` (6 MDX case studies), `log` (49 entries, Feb–Oct 2026), `roles` (QTX + four earlier roles), `profile` (location, links, "Now", figures).
-- [x] Every log entry and case-study claim comes from a dated Workable timesheet or task record, rewritten for the person using the software. Client and people names never appear; the `lint:denylist` scan (41 names, kept out of the repo) passes on source, build and docs.
-- [x] Figures corrected from the records: **2,350+ hours** (2,387 logged), **245+ tasks closed** (249), 9 projects, 15+ integrations. The canvas showed 1,900+ / 190 earlier; that was wrong.
-- [x] "In hindsight" paragraphs live in each case study's frontmatter (drafts and their evidence: `docs/content/case-study-notes.md`). CV bullets are in the same frontmatter for Phase 5.
-- [x] Rendered for review through the real templates (pulled forward from Phase 3): home work list, recent log and earlier roles; `/work/[slug]/` with diagram, sections, margin notes, hindsight and the project's own log; `/log/` grouped by month with per-project filter pages.
-- [x] Screenshots: none yet. No demo environment is reachable from the build session, so each case study uses its diagram (Jayne Bandy AI, NDIS platform, village finance, care-plan drafting) or text only. Add screenshots later from demo data.
-- [ ] Owner reads every case study and log entry and flags anything wrong or not in their voice.
+First version (6 case studies, 49-entry dated log, "2026 in figures" with hours and tasks) read like a weekly status report. Reworked on the owner's call:
+
+- [x] **No effort metrics anywhere**: no hours logged, tasks closed or per-item status lists. Numbers only describe outcomes (6.5 s → 1 s, 70–80% less manual SAP work).
+- [x] **Notes replace the log**: 10 short stories (`src/content/notes/*.md`): what went wrong or surprised me, and what it changed. Month and year only, no stamps. Home shows the latest 3; `/notes/` has all of them.
+- [x] **Four case studies, written as stories**: § 1 The problem · Fig. 1 · § 2 What I did (headed paragraphs, outcomes not feature lists) · notes from the project. Workable and SEED are no longer case studies; their best moments are notes, and their CV bullets live under the QTX role.
+- [x] **"Now"** is one line about current interests, not current tasks. The intro is about Raymundo; QTX appears in the location line and the CV.
+- [x] Writing rules: `docs/content/WRITING.md` (the Harvard guide's language rules, minus the CV-only ones).
+- [x] Every claim checked against its source record; three overstatements found and corrected. `lint:denylist` (41 names) passes.
+- [ ] Owner reads the notes and case studies and flags anything wrong or not in their voice.
+- Screenshots: still none (no demo environment reachable); diagrams carry the case studies.
 
 ### Phase 3 — Pages and responsiveness (M)
-- Home, `/work/[slug]` and `/log` exist from Phase 2; Phase 3 adds RSS, `/cv` (HTML), the phone menu, and checks every page against the canvas.
+- Home, `/work/[slug]/` and `/notes/` exist from Phase 2; Phase 3 adds a notes RSS feed, `/cv/` (HTML), the phone menu, and checks every page against the canvas.
 - Phone: menu is a disclosure button (`aria-expanded`, Escape closes, focus returns to the button); 44 px minimum targets; reflow at 320 px and 200 % zoom with no sideways scroll.
 - **Done when:** screens match the canvas at 390 / 768 / 1440 in both modes; full keyboard pass.
 

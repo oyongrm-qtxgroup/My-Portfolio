@@ -2,30 +2,23 @@
 import Base from '../layouts/Base.astro';
 import MarginRow from '../components/MarginRow.astro';
 import WorkRow from '../components/WorkRow.astro';
-import LogRow from '../components/LogRow.astro';
-import { getLog, getProfile, getRoles, getWork } from '../lib/content';
+import NoteItem from '../components/NoteItem.astro';
+import { getNotes, getProfile, getRoles, getWork } from '../lib/content';
 
-const [profile, work, log, roles] = await Promise.all([
+const [profile, work, notes, roles] = await Promise.all([
   getProfile(),
   getWork(),
-  getLog(),
+  getNotes(),
   getRoles(),
 ]);
 
 const footnotes = [
   'Jayne Bandy AI — an AI receptionist for dental practices',
   'A finance system for a retirement-village operator',
-  'A workforce and care platform for an NDIS provider',
+  'A workforce and care platform for a disability-support provider',
 ];
 
-const recent = log.slice(0, 7);
 const before = roles.filter((r) => !r.data.current);
-const nowDate = profile.now.date.toLocaleDateString('en-AU', {
-  day: '2-digit',
-  month: '2-digit',
-  year: '2-digit',
-  timeZone: 'UTC',
-});
 ---
 
 <Base>
@@ -39,9 +32,9 @@ const nowDate = profile.now.date.toLocaleDateString('en-AU', {
         <span class="ln" style="--i: 3">and rosters the carers<sup>3</sup>.</span>
       </h1>
       <p class="lede fade" style="--i: 2">
-        {profile.title.charAt(0).toUpperCase() + profile.title.slice(1)} at QTX. I take products from
-        a client's first call to the version people rely on every day: voice agents, finance engines,
-        award-pay rules, and the integrations that hold them together.
+        I'm Raymundo, an AI product engineer. I take products from a client's first call to the
+        version people rely on every day: voice agents, finance engines, award-pay rules, and the
+        integrations that hold them together.
       </p>
       <ol class="notes mono muted fade" style="--i: 3">
         {
@@ -61,27 +54,11 @@ const nowDate = profile.now.date.toLocaleDateString('en-AU', {
   </MarginRow>
 
   <MarginRow index={1}>
-    <Fragment slot="label">Now<br />{nowDate.replaceAll('/', '.')}</Fragment>
-    <div class="now fade" style="--i: 5">
-      {profile.now.lines.map((line) => <p>{line}</p>)}
-    </div>
+    <Fragment slot="label">Now</Fragment>
+    <p class="now fade" style="--i: 5">{profile.now}</p>
   </MarginRow>
 
-  <MarginRow index={2}>
-    <Fragment slot="label">2026<br />in figures</Fragment>
-    <dl class="figures">
-      {
-        profile.figures.map((f) => (
-          <div>
-            <dt class="label">{f.label}</dt>
-            <dd class="display tabular">{f.value}</dd>
-          </div>
-        ))
-      }
-    </dl>
-  </MarginRow>
-
-  <MarginRow index={3} ruled id="work">
+  <MarginRow index={2} ruled id="work">
     <Fragment slot="label">§ 01<br />Work</Fragment>
     <h2 class="visually-hidden">Work</h2>
     <div class="list">
@@ -89,16 +66,16 @@ const nowDate = profile.now.date.toLocaleDateString('en-AU', {
     </div>
   </MarginRow>
 
-  <MarginRow index={4} ruled>
-    <Fragment slot="label">§ 02<br />Recent log</Fragment>
-    <h2 class="visually-hidden">Recent log</h2>
+  <MarginRow index={3} ruled>
+    <Fragment slot="label">§ 02<br />Notes</Fragment>
+    <h2 class="visually-hidden">Notes</h2>
     <div class="list">
-      {recent.map((e, i) => <LogRow entry={e} index={i} />)}
+      {notes.slice(0, 3).map((note) => <NoteItem note={note} variant="teaser" headingLevel={3} />)}
     </div>
-    <a href="/log/" class="mono accent more target">Read the full log →</a>
+    <a href="/notes/" class="mono accent more target">All {notes.length} notes →</a>
   </MarginRow>
 
-  <MarginRow index={5} ruled>
+  <MarginRow index={4} ruled>
     <Fragment slot="label">§ 03<br />Before QTX</Fragment>
     <h2 class="visually-hidden">Before QTX</h2>
     <div class="list">
@@ -116,7 +93,7 @@ const nowDate = profile.now.date.toLocaleDateString('en-AU', {
     </div>
   </MarginRow>
 
-  <MarginRow index={6} ruled id="contact">
+  <MarginRow index={5} ruled id="contact">
     <Fragment slot="label">§ 04<br />Write</Fragment>
     <div class="contact reveal">
       <h2 class="display ask">Got a phone line, a ledger or a roster that needs software?</h2>
@@ -171,38 +148,8 @@ const nowDate = profile.now.date.toLocaleDateString('en-AU', {
   }
 
   .now {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
     font-size: 19px;
-  }
-
-  .figures {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    margin: -24px 0 -40px;
-  }
-
-  .figures > div {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 28px 20px 32px;
-    border-right: 1px solid var(--rule);
-  }
-
-  .figures > div:first-child {
-    padding-left: 0;
-  }
-
-  .figures > div:last-child {
-    border-right: 0;
-  }
-
-  .figures dd {
-    order: -1;
-    font-size: clamp(40px, 5vw, 64px);
-    line-height: 1;
+    max-width: 40em;
   }
 
   .list {
@@ -282,25 +229,6 @@ const nowDate = profile.now.date.toLocaleDateString('en-AU', {
   @media (max-width: 760px) {
     .hero {
       padding-top: 8px;
-    }
-
-    .figures {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      margin: 0;
-    }
-
-    .figures > div {
-      padding: 18px 16px 18px 0;
-      border-bottom: 1px solid var(--rule);
-    }
-
-    .figures > div:nth-child(2n) {
-      border-right: 0;
-      padding-left: 16px;
-    }
-
-    .figures > div:nth-child(n + 3) {
-      border-bottom: 0;
     }
   }
 </style>

@@ -2,20 +2,13 @@
 no: '03'
 order: 3
 title: Retirement-village finance
-short: Deferred management fees, CPI increases, direct debits and statutory reports for a village operator.
-line: Deferred management fees, CPI increases, direct debits and statutory reports for a retirement-village operator.
+short: Management fees, CPI increases, billing and direct debits for a retirement-village operator.
+line: Deferred management fees, CPI increases, billing, direct debits and statutory reports for a retirement-village operator.
 client: A retirement-village operator
-role: Engineer; ran the finance team's walkthroughs
-period: Jun–Oct 2026
-hours: 420
-tasks: 75
+role: Engineer, running the finance team's walkthroughs
+period: Jun 2026 – now
 stack: [Supabase, React, Westpac direct debit, Square POS]
 status: in-progress
-hindsight: >-
-  The finance team's own spreadsheet turned out to be the real specification. Once the system matched
-  it to the cent, I locked their example in as a permanent automated test, and arguments about numbers
-  became a test that either passes or doesn't. Next time I'd ask for that spreadsheet in the first
-  week, not after the third walkthrough.
 cv:
   heading: Retirement-village finance system — in development
   bullets:
@@ -25,6 +18,12 @@ cv:
 
 import Flow from '../../components/Flow.astro';
 import Section from '../../components/Section.astro';
+
+<Section label="§ 1 The problem" ruled>
+
+A retirement-village operator bills residents under contracts that can run for decades: a management fee that builds up daily and is settled when they leave, yearly increases tied to inflation, café tabs and direct debits. The numbers have to match the finance team's own records exactly, because residents and auditors will check them.
+
+</Section>
 
 <Flow
   label="Fig. 1 A resident's month"
@@ -39,27 +38,21 @@ import Section from '../../components/Section.astro';
 />
 
 <Section
-  label="§ 1 What I built"
+  label="§ 2 What I did"
   ruled
   notes={['A walkthrough booked for 90 minutes ran three hours. It was the most useful three hours of the project.']}
 >
 
-### A fee engine that matches the finance team's spreadsheet
+### A fee engine the finance team can check
 
-The deferred management fee, with daily and capped accrual, spread across the actual days in each month so April and May no longer show identical figures. Annual CPI-plus-margin increases from 1 July, behind an approval step with a full audit trail. Validated line by line against the finance team's own spreadsheet, and kept as an automated test.
+The management fee and its yearly CPI increases are calculated to match the finance team's own spreadsheet to the cent, and that spreadsheet's example now runs as a test on every change.
 
-### Billing that posts real accounting
+### Billing that keeps the books straight
 
-Finalising a billing run writes the journal entries too, not just what residents owe, including charges that cross entities. Café purchases come in from the point of sale. Statement lines say what a resident is paying for: the charge, the rate and the period.
+A billing run writes the accounting entries as well as what each resident owes, produces statements that say what each charge is for, and creates the month's direct-debit file for the bank. Once Finance closes a month, nothing can be posted into it.
 
-### Money in, months closed
+### Built in the room with Finance
 
-The month's direct-debit file for the bank. Payment due dates roll forward to the next business day, with state public holidays kept in the system. Once Finance locks a month for an entity, nothing can be posted into it.
-
-</Section>
-
-<Section label="§ 2 Testing with the people who use it">
-
-Walkthroughs with the finance team covered the whole resident journey from move-in to exit and refund. The exit process was rebuilt to the finance lead's specification, and 24 corrections from three review sessions were closed in one day.
+I ran the walkthroughs with the finance team, covering the whole resident journey from moving in to leaving and being refunded, and rebuilt the exit process to their lead's specification.
 
 </Section>

@@ -2,9 +2,8 @@ import { defineCollection, reference } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-const status = z.enum(['live', 'shipped', 'in-progress', 'handed-over']);
-
-// Case studies. Client names never appear: `client` is a generic description.
+// Case studies: the problem, what I did, and the notes that came out of it.
+// Client names never appear: `client` is a generic description.
 const work = defineCollection({
   loader: glob({ pattern: '*.mdx', base: './src/content/work' }),
   schema: z.object({
@@ -16,11 +15,8 @@ const work = defineCollection({
     client: z.string(),
     role: z.string(),
     period: z.string(),
-    hours: z.number().int(),
-    tasks: z.number().int().optional(),
     stack: z.array(z.string()).min(1),
-    status,
-    hindsight: z.string(),
+    status: z.enum(['live', 'shipped', 'in-progress', 'handed-over']),
     cv: z
       .object({
         heading: z.string(),
@@ -30,15 +26,14 @@ const work = defineCollection({
   }),
 });
 
-// One entry per shipped change, written for the person who uses the software.
-const log = defineCollection({
-  loader: file('src/content/log.yaml'),
+// Short stories about something that went wrong or surprised me, and what it taught me.
+const notes = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/notes' }),
   schema: z.object({
+    title: z.string(),
     date: z.coerce.date(),
+    summary: z.string(),
     work: reference('work').optional(),
-    label: z.string(),
-    text: z.string(),
-    status,
   }),
 });
 
@@ -65,9 +60,8 @@ const profile = defineCollection({
     location: z.string(),
     email: z.email(),
     links: z.object({ linkedin: z.url(), github: z.url() }),
-    now: z.object({ date: z.coerce.date(), lines: z.array(z.string()).min(1) }),
-    figures: z.array(z.object({ value: z.string(), label: z.string() })).length(4),
+    now: z.string(),
   }),
 });
 
-export const collections = { work, log, roles, profile };
+export const collections = { work, notes, roles, profile };

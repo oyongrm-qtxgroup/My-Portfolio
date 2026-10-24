@@ -2,10 +2,9 @@
 import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import MarginRow from '../../components/MarginRow.astro';
-import Section from '../../components/Section.astro';
 import Stamp from '../../components/Stamp.astro';
-import LogRow from '../../components/LogRow.astro';
-import { getLog, getWork, type Work } from '../../lib/content';
+import NoteItem from '../../components/NoteItem.astro';
+import { getNotes, getWork, type Work } from '../../lib/content';
 
 export async function getStaticPaths() {
   const work = await getWork();
@@ -23,13 +22,15 @@ interface Props {
 const { work, next } = Astro.props;
 const w = work.data;
 const { Content } = await render(work);
-const entries = (await getLog()).filter((e) => e.data.work?.id === work.id);
-const tasksLine = w.tasks ? ` · ${w.tasks} tasks` : '';
+const notes = (await getNotes()).filter((n) => n.data.work?.id === work.id);
 ---
 
 <Base title={`${w.title} — R. Oyong`} description={w.line}>
   <MarginRow index={0}>
-    <Fragment slot="label">No. {w.no}<br />Case study</Fragment>
+    <Fragment slot="label">
+      No. {w.no}<br />Case study
+      <span class="label-stamp"><Stamp status={w.status} press={false} /></span>
+    </Fragment>
     <header class="cs-head">
       <h1 class="display cs-name" transition:name={`work-${work.id}`}>{w.title}</h1>
       <p class="cs-line">{w.line}</p>
@@ -39,40 +40,35 @@ const tasksLine = w.tasks ? ` · ${w.tasks} tasks` : '';
           <dd>{w.role}</dd>
         </div>
         <div>
-          <dt class="label">Time</dt>
-          <dd class="tabular">{w.hours} hours{tasksLine} · {w.period}</dd>
+          <dt class="label">When</dt>
+          <dd>{w.period}</dd>
         </div>
         <div>
-          <dt class="label">Stack</dt>
+          <dt class="label">Built for</dt>
+          <dd>{w.client}</dd>
+        </div>
+        <div>
+          <dt class="label">Built with</dt>
           <dd>{w.stack.join(', ')}</dd>
         </div>
-        <div>
-          <dt class="label">Status</dt>
-          <dd><Stamp status={w.status} press={false} /></dd>
-        </div>
       </dl>
-      <p class="mono muted for">For: {w.client}</p>
     </header>
   </MarginRow>
 
   <Content />
 
-  <Section label="§ 3 In hindsight" ruled>
-    <p>{w.hindsight}</p>
-  </Section>
-
   {
-    entries.length > 0 && (
+    notes.length > 0 && (
       <MarginRow ruled>
         <Fragment slot="label">
-          From
+          Notes from
           <br />
-          the log
+          this project
         </Fragment>
-        <h2 class="visually-hidden">From the log</h2>
-        <div class="entries">
-          {entries.map((e, i) => (
-            <LogRow entry={e} index={i} hideProject />
+        <h2 class="visually-hidden">Notes from this project</h2>
+        <div class="notes">
+          {notes.map((note) => (
+            <NoteItem note={note} variant="teaser" headingLevel={3} />
           ))}
         </div>
       </MarginRow>
@@ -86,8 +82,13 @@ const tasksLine = w.tasks ? ` · ${w.tasks} tasks` : '';
 </Base>
 
 <style>
+  .label-stamp {
+    display: block;
+    margin-top: 16px;
+  }
+
   .cs-head {
-    padding: 32px 0 8px;
+    padding: 32px 0 16px;
   }
 
   .cs-name {
@@ -107,14 +108,13 @@ const tasksLine = w.tasks ? ` · ${w.tasks} tasks` : '';
     grid-template-columns: repeat(4, minmax(0, 1fr));
     margin-top: 48px;
     border-top: 2px solid var(--ink);
-    border-bottom: 1px solid var(--rule);
   }
 
   .meta > div {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    padding: 16px 16px 18px;
+    padding: 16px 16px 4px;
     border-right: 1px solid var(--rule);
   }
 
@@ -131,12 +131,8 @@ const tasksLine = w.tasks ? ` · ${w.tasks} tasks` : '';
     line-height: 1.4;
   }
 
-  .for {
-    margin-top: 16px;
-  }
-
-  .entries {
-    margin-top: -8px;
+  .notes {
+    margin-top: -24px;
   }
 
   .cs-nav {
@@ -164,7 +160,15 @@ const tasksLine = w.tasks ? ` · ${w.tasks} tasks` : '';
     }
 
     .meta > div:nth-child(-n + 2) {
+      padding-bottom: 16px;
       border-bottom: 1px solid var(--rule);
+    }
+  }
+
+  @media (max-width: 760px) {
+    .label-stamp {
+      display: inline-block;
+      margin: 0 0 0 12px;
     }
   }
 </style>

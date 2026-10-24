@@ -6,7 +6,11 @@
   span: 2026–
   current: true
   summary: AI products for Australian health, disability-care, aged-care and finance clients.
-  highlights: []
+  # CV bullets for QTX work without a case study on the site.
+  highlights:
+    - Added six modules to the company's operations platform, covering marketing campaigns, certification tracking synced from Microsoft Learn, 30/60/90-day onboarding, KPI reviews, ad-audience sync and sales booking links.
+    - Resolved recurring database-connection exhaustion by removing unfiltered real-time subscriptions.
+    - Built a contract-management agent and a standalone e-signature flow with tenant isolation and retrieval-augmented chat.
 
 - id: ortigas-officer
   org: Ortigas Land Corporation
