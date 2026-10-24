@@ -87,7 +87,7 @@ a{color:inherit}
 <div style="height: 54px; border-bottom: 1px solid #D8D8D2; opacity: {{vtOthers}}; transition: opacity .3s ease"></div>
 <div style="opacity: {{vtOthers}}; transition: opacity .3s ease; padding: 12px 0; border-bottom: 1px solid #D8D8D2; font-family: 'Archivo', sans-serif; font-stretch: 78%; font-weight: 700; font-size: 26px">Retirement-village finance</div>
 </div>
-<div style="position: absolute; left: 24px; top: {{vtTop}}; font-family: 'Archivo', sans-serif; font-stretch: 72%; font-weight: 700; font-size: {{vtSize}}; line-height: 0.95; color: #141413; transition: top .55s cubic-bezier(.2,.7,0,1), font-size .55s cubic-bezier(.2,.7,0,1)">Jayne AI</div>
+<div style="position: absolute; left: 24px; top: {{vtTop}}; font-family: 'Archivo', sans-serif; font-stretch: 72%; font-weight: 700; font-size: {{vtSize}}; line-height: 0.95; color: #141413; transition: top .55s cubic-bezier(.2,.7,0,1), font-size .55s cubic-bezier(.2,.7,0,1)">Jayne Bandy AI</div>
 <div style="position: absolute; left: 24px; right: 24px; top: 190px; font-size: 20px; line-height: 1.4; opacity: {{vtBody}}; transition: opacity .35s ease .35s">An AI receptionist for dental practices. It answers the phone, finds a free slot, books it.</div>
 </div>
 <div style="display: flex; align-items: center; gap: 16px; margin-top: 16px">
@@ -146,7 +146,7 @@ a{color:inherit}
 <div aria-live="polite" style="height: 200px; border: 1px solid #141413; overflow: hidden; padding: 0 16px">
 <div style="padding: 12px 0; border-bottom: 1px solid #D8D8D2; font-size: 15px; line-height: 1.4"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #56564F">04.26 · </span>Marketing campaigns module.</div>
 <sc-if value="{{moreLoaded}}" hint-placeholder-val="{{ false }}">
-<div class="s-in" style="--i: 0; padding: 12px 0; border-bottom: 1px solid #D8D8D2; font-size: 15px; line-height: 1.4"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #56564F">03.26 · </span>Moved BatchPay activity to a cached Azure Function.</div>
+<div class="s-in" style="--i: 0; padding: 12px 0; border-bottom: 1px solid #D8D8D2; font-size: 15px; line-height: 1.4"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #56564F">03.26 · </span>Replaced a six-hourly sync with a cached Azure Function.</div>
 <div class="s-in" style="--i: 1; padding: 12px 0; border-bottom: 1px solid #D8D8D2; font-size: 15px; line-height: 1.4"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #56564F">03.26 · </span>Interview rescheduling with calendar view.</div>
 </sc-if>
 <sc-if value="{{moreLoading}}" hint-placeholder-val="{{ false }}">
@@ -276,7 +276,7 @@ class Component extends DCLogic {
       vtSize: vt ? "96px" : "26px",
       vtOthers: vt ? "0" : "1",
       vtBody: vt ? "1" : "0",
-      vtLabel: vt ? "Back to list" : "Open Jayne AI",
+      vtLabel: vt ? "Back to list" : "Open Jayne Bandy AI",
       toggleVt: function () { self.setState({ vt: !vt }); },
       navW: navMap[0], navO: navMap[1], navT: navMap[2],
       navTitle: nav === "idle" ? "Work" : "The log",

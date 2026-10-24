@@ -1,6 +1,6 @@
 # Portfolio revival — implementation plan
 
-Status: **design approved (round 2), 24 Oct 2026.** Nothing below is built yet.
+Status: **design approved (round 2) and open items answered, 24 Oct 2026.** Nothing below is built yet.
 
 - Design canvas (source of truth, commentable): https://claude.ai/artifact/T6ctTPLx4F3tVGQ2pX2gue
 - Snapshot of the approved artboards: [`docs/design/`](design/) — `Main` (home), `Work` (case study), `Log`, `Mobile`, `MobileMenu`, `Night*` (dark mode), `States` (motion and loading states), `System` (tokens + accessibility), `CVPage1/2` (A4 CV). Copy exact colours, sizes, spacing and copy from these files.
@@ -13,7 +13,7 @@ Status: **design approved (round 2), 24 Oct 2026.** Nothing below is built yet.
 | --- | --- |
 | Direction | **Engineering logbook.** Plain paper, black ink, ballpoint-blue accent, red notebook-margin line, condensed form-style headings. No cards, shadows, gradients, glow, glass, 3D, particles, typing effects, custom cursor, skill bars. |
 | Positioning | **AI product engineer** at QTX. Headline: "I build the software that answers the phone¹, bills the residents² and rosters the carers³." |
-| Names | Named: **Jayne AI, SEED, Workable**. Every other project is described generically: "workforce & care platform for an NDIS provider", "retirement-village finance", "care-plan drafting for an aged-care provider". No client people's names anywhere. |
+| Names | Named: **Jayne Bandy AI** (always the full name), **SEED**, **Workable**. Every other project is described generically: "workforce & care platform for an NDIS provider", "retirement-village finance", "care-plan drafting for an aged-care provider". No client people's names anywhere. |
 | Workable | Credit **only the modules built** (campaigns, certifications + MS Learn sync, 30/60/90 onboarding, KPI/KRA, ad-audience sync, sales booking, AI-call scheduling fix, realtime/connection fix). |
 | Hours | Shown **rounded** ("650 h", "1,900+"). |
 | Modes | Paper (light), Night (dark), **Auto = default** (follows OS). Manual switch in footer and phone menu. |
@@ -22,17 +22,17 @@ Status: **design approved (round 2), 24 Oct 2026.** Nothing below is built yet.
 | Content | **Markdown/MDX content collections in the repo.** The Supabase CMS, admin panel and auth are retired. |
 | CV | Generated from the same content, A4, follows the Harvard Extension School OCS guide (see §7). |
 
-## 2. Open items (answer before the phase that needs them)
+## 2. Answers to the open items (24 Oct 2026)
 
-| # | Question | Needed by |
-| --- | --- | --- |
-| 1 | Phone number on the **public** CV PDF, or email only? | Phase 5 |
-| 2 | How many practices use Jayne AI (a rough number is fine)? | Phase 2 |
-| 3 | Custom domain, or stay on `*.vercel.app`? (Affects Vercel Deployment Protection, §6.) | Phase 6 |
-| 4 | "In hindsight" paragraph per case study, in your own words (2–3 sentences each). | Phase 2 |
-| 5 | Location line: "Based in the Philippines · working with QTX, Sydney" — correct? | Phase 2 |
-| 6 | Screenshots for case studies (blurred client data), or diagrams only? | Phase 2 |
-| 7 | Contact backend: **recommended** Astro Action → Turnstile verify → Resend email (no database). Alternative: keep the existing Supabase table + `send-contact-email` edge function. | Phase 4 |
+| # | Topic | Answer | Applied in |
+| --- | --- | --- | --- |
+| 1 | Phone on the public CV | **Email only.** No phone anywhere on the site or the PDF. | Phase 5 |
+| 2 | Product name | **"Jayne Bandy AI"** everywhere. No practice count is published; CV bullets use outcomes instead. | Phase 2 |
+| 3 | Domain | **Stay on `*.vercel.app`** (no budget for a custom domain yet). Proposed free alias: `raymundo-oyong.vercel.app`, falling back to the current `portfolio-sigma-nine-ikzbpiwe3p.vercel.app` if taken. | Phase 6 |
+| 4 | "In hindsight" paragraphs | **Drafted from the Workable timesheets and tasks:** [`docs/content/case-study-notes.md`](content/case-study-notes.md). Review the wording before publishing. | Phase 2 |
+| 5 | Location line | Confirmed: "Based in the Philippines · working with QTX, Sydney". | Phase 2 |
+| 6 | Visuals | **Screenshots with no client data, plus a diagram where one helps.** Capture from demo/test environments seeded with made-up data, never from production; see Phase 2. | Phase 2 |
+| 7 | Contact backend | **Astro Action → Turnstile verify → Resend email, no database.** Supabase is removed entirely. | Phase 4 |
 
 ## 3. Architecture
 
@@ -94,9 +94,10 @@ Each phase ends with a Vercel preview and a review against the canvas before the
 - **Done when:** preview matches `System.dc.html`; paper/night/auto switch with no flash; Lighthouse accessibility 100.
 
 ### Phase 2 — Content (M, needs open items 2, 4, 5, 6)
-- Write `profile.yaml`, 6 case studies, ~40 log entries (Mar–Oct 2026) and the pre-QTX roles.
+- Write `profile.yaml`, 6 case studies, ~40 log entries (Mar–Oct 2026) and the pre-QTX roles. Start from the drafts in `docs/content/case-study-notes.md`.
+- Screenshots: a Playwright script (`scripts/capture.mjs`) signs in to each product's demo or test environment, loads made-up fixture data (fake practice, fake residents, fake staff), and captures fixed-size PNGs. Nothing is captured from production. Where no demo environment is reachable, the case study uses its diagram only. Every image is checked by eye for names, phone numbers and emails before commit.
 - Source: read-only queries on the Workable project (`time_entries.description`, `tasks.title` for the user's two accounts), rewritten as one sentence for the person using the software. Never copy client or people names, prices, or client data.
-- **Done when:** you have approved every case study and log entry.
+- **Done when:** you have approved every case study, log entry and screenshot.
 
 ### Phase 3 — Pages and responsiveness (M)
 - Home, `/work/[slug]`, `/log` (+ per-project filter pages + RSS), `/cv` (HTML), contact section.
@@ -105,19 +106,20 @@ Each phase ends with a Vercel preview and a review against the canvas before the
 
 ### Phase 4 — Motion and states (M, needs open item 7)
 - Everything in §4 Motion and loading states.
-- Contact via Astro Action, progressively enhanced (works without JS via normal POST). Invisible Turnstile + honeypot + rate limit; errors written under the field and announced.
+- Contact via Astro Action (sends to oyongrm@gmail.com through Resend; nothing stored), progressively enhanced (works without JS via normal POST). Invisible Turnstile + honeypot + rate limit; errors written under the field and announced.
 - **Done when:** every state on `States.dc.html` is reproducible on the preview; CLS < 0.02; reduced-motion verified.
 
 ### Phase 5 — CV (S, needs open items 1 and 3)
 - `/cv` renders from the content collections (`roles`, work bullets flagged `cv: true`, education, certifications) with `print.css` matching `CVPage1/2.dc.html`.
 - `npm run cv:pdf` renders it to `public/raymundo-oyong-cv.pdf` (A4, selectable text, fonts embedded). Run as part of every content release; CI fails if any `src/content` file is newer than the PDF.
-- Automated Harvard checks (§7). Footer "CV (PDF)" links to the file.
+- Automated Harvard checks (§7), plus a check that no phone number appears in the PDF. Footer "CV (PDF)" links to the file.
 - **Done when:** the PDF is 2 pages, passes the checks, and you've signed off the wording.
 
 ### Phase 6 — SEO, performance, launch (M, needs open item 3)
 - Per-page title/description, OG images generated at build in the logbook style, sitemap, robots, JSON-LD `Person`, RSS.
 - Redirects: `/blog/*` → `/log`, `/admin*` → 404.
-- Vercel: connect the GitHub repo for a preview per PR (deploys are currently manual), set framework to Astro, add `TURNSTILE_SECRET`, `RESEND_API_KEY`, `CONTACT_TO`; remove `VITE_SUPABASE_*` after cutover. **Check Deployment Protection:** Vercel Authentication is set to "all except custom domains", so without a custom domain the public URL may require a Vercel login.
+- Vercel: connect the GitHub repo for a preview per PR (deploys are currently manual), set framework to Astro, add `TURNSTILE_SECRET`, `RESEND_API_KEY`, `CONTACT_TO`; remove `VITE_SUPABASE_*` and `VITE_TURNSTILE_SITE_KEY` after cutover (the new site key is `PUBLIC_TURNSTILE_SITE_KEY`).
+- Domain: add the free alias `raymundo-oyong.vercel.app` if available and make it the canonical URL (sitemap, OG tags, CV). **Verify from a logged-out browser that it is public.** Vercel Authentication is on ("all except custom domains"); if the production URL asks for a login, change Deployment Protection so it covers preview deployments only. Previews stay protected.
 - Retire the old Supabase tables and `send-contact-email` function after the backup is confirmed.
 - Promote to production; instant rollback to `v1-legacy` is available.
 - **Done when:** budgets in §8 pass on production.
@@ -130,7 +132,7 @@ Each phase ends with a Vercel preview and a review against the canvas before the
 
 - Language: specific, active, fact-based (quantified), easy to skim; strong action verbs.
 - Never: "I"/personal pronouns, narrative style, picture, age or sex, references, lines starting with a date, unexplained abbreviations (spell out NDIS etc. on first use).
-- Always: email and phone (open item 1), reverse chronological order, no gaps, consistent formatting, headings in order of importance, clean PDF conversion.
+- Always: email (the guide also asks for a phone; deliberately omitted on this public PDF, by your choice), reverse chronological order, no gaps, consistent formatting, headings in order of importance, clean PDF conversion.
 - Automated checks: no `\bI\b|\bmy\b|\bme\b` in CV text; every bullet starts with a verb from an allow-list; ≤ 2 pages; text extractable from the PDF.
 
 ## 8. Quality gates (CI on every PR)
@@ -150,4 +152,4 @@ Each phase ends with a Vercel preview and a review against the canvas before the
 | Scroll-driven animations / View Transitions not supported everywhere | Both are enhancements; content is static and visible without them. |
 | Font swap shifting layout | Metric-matched fallbacks; preload two files. |
 | Margin red is AA, not AAA | Used only for errors and the "In progress" stamp; never for body text. |
-| Vercel login wall on the public URL | Custom domain or adjust protection in Phase 6. |
+| Vercel login wall on the public URL | Logged-out check in Phase 6; limit protection to previews if needed. |
