@@ -1,8 +1,8 @@
 # Raymundo Oyong — portfolio
 
-Personal site and CV of Raymundo Oyong, AI product engineer at QTX.
+Personal site and CV of Raymundo Oyong, AI and automation engineer.
 
-**Status: being rebuilt.** The code on `main` is the previous React/Three.js version (kept for rollback). The new site is an "engineering logbook": plain paper, black ink, one blue accent, a red notebook margin, four case studies told as stories, short notes on what went wrong and what it taught, and a CV generated from the same content.
+**Status: being rebuilt.** The code on `main` is the previous React/Three.js version (kept for rollback). The new site is an "engineering logbook": plain paper, black ink, one blue accent, a red notebook margin. It leads with skills (what I can do, with proof), backed by three project pages, a few working principles, and a CV generated from the same content.
 
 - Plan, phases and decisions: [`docs/REDESIGN_PLAN.md`](docs/REDESIGN_PLAN.md)
 - Approved designs (snapshots of the design canvas): [`docs/design/`](docs/design/)

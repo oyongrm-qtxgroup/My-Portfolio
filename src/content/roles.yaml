@@ -1,40 +1,68 @@
+# Employment history, most recent first. `summary` is the one-line row on the home
+# page (first person allowed); `highlights` and `projects` are CV bullets and
+# follow the full Harvard rules: start with a verb, no "I", outcomes not effort.
+
 - id: qtx
   org: QTX (Qualiticks Pty Ltd)
+  short: QTX
   place: Sydney, Australia (remote)
   title: Senior AI Software Engineer
   start: January 2026
   span: 2026–
   current: true
-  summary: AI products for Australian health, disability-care, aged-care and finance clients.
-  # CV bullets for QTX work without a case study on the site.
-  highlights:
-    - Added six modules to the company's operations platform, covering marketing campaigns, certification tracking synced from Microsoft Learn, 30/60/90-day onboarding, KPI reviews, ad-audience sync and sales booking links.
-    - Resolved recurring database-connection exhaustion by removing unfiltered real-time subscriptions.
-    - Built a contract-management agent and a standalone e-signature flow with tenant isolation and retrieval-augmented chat.
+  summary: Lead engineer on Jayne Bandy AI, and AI, finance and workforce systems for Australian health, disability-care, aged-care and retirement-living clients.
+  projects:
+    - heading: Jayne Bandy AI — AI voice receptionist for dental practices; lead engineer since April 2026
+      bullets:
+        - Lead engineering of a live AI receptionist that answers and books calls for dental practices, covering voice quality, practice-system integrations and billing.
+        - Integrated three practice-management systems (CareStack, Core Practice, Dentally) behind one receptionist script, matching callers to patient records by phone number.
+        - Designed a review workflow that tests every script change against simulated and replayed real calls before approval, with version history and restore.
+        - Added failure alerts and a 15-minute health check, so an AI-provider outage now raises an alert instead of going unnoticed.
+        - Launched automatic trials, a premium tier with custom voices, Stripe subscription sync and per-country demo numbers.
+    - heading: Workforce and care platform — provider under the National Disability Insurance Scheme (NDIS)
+      bullets:
+        - Built rostering, SCHADS award pay rates and penalties, timesheets, invoicing by funding type, and MYOB payroll and sales-journal export.
+        - Rebuilt payment reconciliation so the system suggests a match for each payment line and Finance approves it; no invoice closes automatically.
+        - Restricted every user to the records in their reach (own, team, site or program), enforced with row-level security in the database.
+    - heading: Care-plan drafting — aged-care provider; technical lead
+      bullets:
+        - Specified a sprint for the development team and built AI drafting in which every statement cites its source page, with contradictions raised for a clinician to review.
+        - Reduced the time per action from 6.5 seconds to about 1 second by moving the database connection to HTTPS.
+    - heading: RL Finance — finance system for a retirement-village operator
+      bullets:
+        - Building a deferred management fee engine with CPI-based increases behind an approval step, matched to the client's own spreadsheet to the cent and kept as an automated test.
+        - Delivered direct-debit files, period locking, and group profit-and-loss, balance-sheet and trial-balance reports across entities.
+    - heading: Internal operations platform (Workable) and SEED AI agents
+      bullets:
+        - Added six modules to the company platform, covering marketing campaigns, certification tracking synced from Microsoft Learn, 30/60/90-day onboarding, KPI reviews, ad-audience sync and sales booking links.
+        - Resolved recurring database-connection exhaustion by removing unfiltered real-time subscriptions.
+        - Built a contract-management agent and a standalone e-signature flow with tenant isolation and retrieval-augmented chat.
 
 - id: ortigas-officer
   org: Ortigas Land Corporation
+  short: Ortigas Land
   place: Pasig, Philippines
   title: Software Developer Officer
   start: January 2024
   end: December 2025
   span: 2024–25
-  summary: Led the dev team, built the company's first payment gateway, and wrote RPA bots that cut manual SAP processing by 70–80%.
+  summary: Led a team of up to four developers, built the company's first payment gateway, and automated SAP entry and HR remittances with two Power Automate bots.
   highlights:
-    - Led and mentored a team of developers; introduced structured code reviews and secure development practices.
+    - Led and mentored a team of up to four developers; introduced structured code reviews and secure development practices.
+    - Cut manual SAP processing time by 70–80% with a Power Automate Desktop bot that enters invoices, reversals and contract locks in the SAP desktop client.
+    - Eliminated 100+ hours a month of manual HR work with a Power Automate bot that processes government remittances using AI document extraction.
     - Built the company's first in-house payment gateway (UnionBank UPay) with rate limiting and reCAPTCHA protection.
-    - Cut manual SAP processing time by 70–80% with RPA bots for invoice entry, reversals and contract locking.
-    - Eliminated 100+ hours a month of manual HR work by automating government remittance filing with AI document extraction and Power Automate.
-    - Replaced a failing database backup uploader with a Windows service that partitions large files to Amazon S3.
+    - Replaced a failing database backup uploader with a Windows service that partitions large files for Amazon S3.
 
 - id: ortigas-senior-associate
   org: Ortigas Land Corporation
+  short: Ortigas Land
   place: Pasig, Philippines
   title: Senior Software Developer Associate
   start: January 2022
   end: December 2023
   span: 2022–23
-  summary: Web APIs over SAP data; led the shopping module of the company's first e-commerce site.
+  summary: Built Web APIs over SAP data and led the shopping module of the company's first e-commerce site.
   highlights:
     - Developed ASP.NET Core Web APIs exposing SAP data to third-party applications.
     - Led the team that built the customer shopping module of the company's first e-commerce website.
@@ -42,24 +70,26 @@
 
 - id: ortigas-associate
   org: Ortigas Land Corporation
+  short: Ortigas Land
   place: Pasig, Philippines
   title: Software Developer Associate
   start: May 2019
   end: December 2021
   span: 2019–21
-  summary: The company's first digital IT ticketing system; SharePoint report automation.
+  summary: Built the company's first digital IT ticketing system and automated daily reports through SharePoint.
   highlights:
     - Developed the company's first digital IT ticketing system.
     - Integrated SharePoint with in-house applications to automate daily accomplishment reports; administered Tableau.
 
 - id: oclp
   org: OCLP Holdings Inc.
+  short: OCLP Holdings
   place: Pasig, Philippines
   title: Programmer
   start: July 2018
   end: May 2019
   span: 2018–19
-  summary: The company's first tenant-portal mobile app, in Xamarin.
+  summary: Built the company's first tenant-portal mobile app, in Xamarin.
   highlights:
     - Developed the company's first tenant-portal mobile application in Xamarin Forms.
     - Designed and maintained relational databases for in-house projects.

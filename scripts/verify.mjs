@@ -13,7 +13,7 @@ const axeSource = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 
 const PORT = 4329;
 const BASE = `http://localhost:${PORT}`;
-const ROUTES = ['/', '/work/jayne-bandy-ai/', '/work/care-plan-drafting', '/notes/', '/notes', '/system/', '/no-such-page'];
+const ROUTES = ['/', '/work/jayne-bandy-ai/', '/work/sap-automation/', '/work/care-plan-drafting', '/system/', '/no-such-page'];
 const WIDTHS = [390, 768, 1440];
 const THEMES = ['paper', 'night'];
 const outDir = process.argv[2];

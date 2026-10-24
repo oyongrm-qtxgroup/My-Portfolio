@@ -12,8 +12,8 @@ Status: **design approved (round 2) and open items answered, 24 Oct 2026.** Noth
 | Topic | Decision |
 | --- | --- |
 | Direction | **Engineering logbook.** Plain paper, black ink, ballpoint-blue accent, red notebook-margin line, condensed form-style headings. No cards, shadows, gradients, glow, glass, 3D, particles, typing effects, custom cursor, skill bars. |
-| Positioning | **AI product engineer** at QTX. Headline: "I build the software that answers the phone¹, bills the residents² and rosters the carers³." |
-| Names | Named: **Jayne Bandy AI** (always the full name), **SEED**, **Workable**. Every other project is described generically: "workforce & care platform for an NDIS provider", "retirement-village finance", "care-plan drafting for an aged-care provider". No client people's names anywhere. |
+| Positioning | **AI and automation engineer** (changed 24 Oct 2026). Headline: "I build AI and software that does the work people shouldn't have to." Audience: hiring managers first, clients second. |
+| Names | Named: **Jayne Bandy AI** (always the full name), **RL Finance**, **SEED**, **Workable**. Every other project is described generically: "workforce & care platform for an NDIS provider", "retirement-village finance", "care-plan drafting for an aged-care provider". No client people's names anywhere. |
 | Workable | Credit **only the modules built** (campaigns, certifications + MS Learn sync, 30/60/90 onboarding, KPI/KRA, ad-audience sync, sales booking, AI-call scheduling fix, realtime/connection fix). |
 | Hours | Shown **rounded** ("650 h", "1,900+"). |
 | Modes | Paper (light), Night (dark), **Auto = default** (follows OS). Manual switch in footer and phone menu. |
@@ -116,8 +116,17 @@ First version (6 case studies, 49-entry dated log, "2026 in figures" with hours 
 - [ ] Owner reads the notes and case studies and flags anything wrong or not in their voice.
 - Screenshots: still none (no demo environment reachable); diagrams carry the case studies.
 
+**Third rework, 24 Oct 2026: skills first (owner-approved structure).** The notes and the case-study-first home still narrated QTX operations. After an interview with the owner the content model is now built around skills:
+
+- [x] `skills.yaml`: three lead areas (Voice & conversational AI, Document AI you can trust, Process automation & RPA) and seven foundations (Solutions architecture, Software development, Integrations & payments, Data security & privacy, Data & reliability, Technical leadership, Working with clients), each with proof points.
+- [x] `principles.yaml`: five "How I work" principles replace the notes. Notes, `/notes/` and `docs/content/case-study-notes.md` deleted.
+- [x] Three project pages as evidence: Jayne Bandy AI, SAP & HR automation (Ortigas Land), care-plan drafting. Shape: challenge → approach → result → skills shown. The NDIS and retirement-village case studies are now one-line proof points.
+- [x] Home: intro · figures (outcomes only) · § 01 What I do · § 02 How I build · § 03 Selected work · § 04 How I work · § 05 Experience (Ortigas on equal footing with QTX) · § 06 Write.
+- [x] All CV bullets now live in `roles.yaml` (`highlights`, or `projects` for QTX); effort counts removed ("68 of 73 work packages", ticket rounds).
+- [ ] Owner reads the preview and flags wording.
+
 ### Phase 3 — Pages and responsiveness (M)
-- Home, `/work/[slug]/` and `/notes/` exist from Phase 2; Phase 3 adds a notes RSS feed, `/cv/` (HTML), the phone menu, and checks every page against the canvas.
+- Home and `/work/[slug]/` exist from Phase 2; Phase 3 adds `/cv/` (HTML), the phone menu, and checks every page against the canvas.
 - Phone: menu is a disclosure button (`aria-expanded`, Escape closes, focus returns to the button); 44 px minimum targets; reflow at 320 px and 200 % zoom with no sideways scroll.
 - **Done when:** screens match the canvas at 390 / 768 / 1440 in both modes; full keyboard pass.
 

@@ -1,0 +1,64 @@
+---
+no: '02'
+order: 2
+title: SAP & HR automation
+short: Two Power Automate bots that took repetitive SAP entry and government-remittance processing off people's desks.
+line: Two Power Automate bots for a property developer. One enters invoices, reversals and contract locks in SAP; the other processes government remittances for HR from the source documents.
+client: Ortigas Land Corporation
+role: Software Developer Officer, leading the dev team
+period: 2024 – 2025
+stack: [Power Automate Desktop, Power Automate cloud flows, AI document extraction, SAP ECC 6]
+status: shipped
+skills: [automation, integrations, leadership]
+---
+
+import Flow from '../../components/Flow.astro';
+import Section from '../../components/Section.astro';
+
+<Section label="§ 1 The challenge" ruled>
+
+Two jobs at Ortigas Land took people's time without needing their judgement. Staff keyed invoices, reversals and contract locks into SAP by hand, and HR spent more than 100 hours a month processing government remittances. Both followed fixed rules, which made them good candidates for a bot.
+
+</Section>
+
+<Flow
+  label="Fig. 1 SAP entry"
+  caption="The desktop bot works through the same SAP client staff use."
+  steps={[
+    { title: 'Entries', note: 'invoices, reversals, contract locks' },
+    { title: 'Desktop bot', note: 'Power Automate Desktop', key: true },
+    { title: 'SAP', note: 'entered in the desktop client' },
+  ]}
+/>
+
+<Flow
+  label="Fig. 2 Remittances"
+  caption="AI extraction reads the documents, so nobody retypes them."
+  steps={[
+    { title: 'HR documents', note: 'the source records' },
+    { title: 'AI extraction', note: 'figures read from each document', key: true },
+    { title: 'Remittance', note: 'processed by Power Automate' },
+  ]}
+/>
+
+<Section label="§ 2 The approach" ruled>
+
+### Use SAP the way staff do
+
+The SAP bot drives the same desktop client staff use and follows the same steps a person would, so SAP itself didn't have to change to be automated.
+
+### Read the documents instead of retyping them
+
+The remittance bot uses AI document extraction to read the figures from HR's source documents, and Power Automate carries the remittance through from there.
+
+### Lead the team that builds them
+
+I led a team of up to four developers, myself included, and introduced structured code reviews and secure development practices alongside the automation work.
+
+</Section>
+
+<Section label="§ 3 The result" ruled>
+
+Manual SAP processing time fell by 70–80%, and more than 100 hours a month of HR work moved from people to the remittance bot.
+
+</Section>

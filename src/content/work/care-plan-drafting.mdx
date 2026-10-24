@@ -1,6 +1,6 @@
 ---
-no: '04'
-order: 4
+no: '03'
+order: 3
 title: Care-plan drafting
 short: Drafts aged-care plans from client records, with every sentence linked to the page it came from.
 line: Drafts aged-care plans from a client's records. Every statement links back to the page it came from, and contradictions go to a clinician instead of being smoothed over.
@@ -9,17 +9,13 @@ role: Technical lead
 period: Oct 2026 – now
 stack: [Large language model, Microsoft Entra ID, Supabase]
 status: in-progress
-cv:
-  heading: Care-plan drafting — aged-care provider; technical lead
-  bullets:
-    - Specified Sprint 2 for the development team and built AI drafting in which every statement cites its source page, with contradictions raised for a clinician to review.
-    - Reduced the time per action from 6.5 seconds to about 1 second by moving the database connection to HTTPS.
+skills: [document-ai, security, architecture, leadership]
 ---
 
 import Flow from '../../components/Flow.astro';
 import Section from '../../components/Section.astro';
 
-<Section label="§ 1 The problem" ruled>
+<Section label="§ 1 The challenge" ruled>
 
 Aged-care staff write each client's care plan from a stack of assessments, letters and notes. An AI can draft one in minutes, but a draft is only useful if a clinician can check it quickly and trust what they sign.
 
@@ -38,7 +34,7 @@ Aged-care staff write each client's care plan from a stack of assessments, lette
 />
 
 <Section
-  label="§ 2 What I did"
+  label="§ 2 The approach"
   ruled
   notes={["No client records were opened while reviewing the provider's current system; structure was compared using de-identified documents only."]}
 >
@@ -51,8 +47,14 @@ Every statement in a draft links to the document page, quoted passage or assessm
 
 Drafting runs on the server, so a two-minute draft keeps going if someone reloads or closes the tab. Only clinical reviewers can approve a plan, and every return, resubmission and approval is recorded.
 
-### Leading the sprint
+### A specification people can build from
 
 As technical lead I wrote the specification for each task in the second sprint from the signed proposal and the provider's requirements, and mapped their risk scoring onto the new system.
+
+</Section>
+
+<Section label="§ 3 The result" ruled>
+
+Each action now takes about 1 second instead of 6.5, after I moved the database connection to Supabase's secure HTTPS connection with encryption switched back on; the model didn't change. Reviewers see the source of every sentence, so checking a draft means following links rather than rereading the records. The tool is still being built with the provider.
 
 </Section>

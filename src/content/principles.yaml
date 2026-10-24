@@ -1,0 +1,46 @@
+# "How I work": principles, not incidents. One short paragraph each, no dates.
+
+- id: money-gets-approval
+  order: 1
+  title: Money gets a person's approval.
+  skill: architecture
+  body: >-
+    Where software touches money, it suggests and a person approves. On an NDIS provider's
+    platform, an uploaded payment file proposes which invoice each line belongs to, and Finance
+    approves one line at a time. Nothing closes on its own.
+
+- id: show-the-source
+  order: 2
+  title: Show where every sentence came from.
+  skill: document-ai
+  body: >-
+    An AI draft is only useful if someone can check it quickly. I link every statement to its
+    source and send contradictions to a person, so reviewing a draft means following links, not
+    rereading the records.
+
+- id: plumbing-first
+  order: 3
+  title: Check the plumbing before blaming the AI.
+  skill: voice-ai
+  body: >-
+    When an AI product gets something wrong, I look at the data and the connections first. Most
+    "it couldn't find my appointment" calls on Jayne Bandy AI were patients on file under a
+    different spelling; matching on the caller's number fixed them, with no change to the model.
+
+- id: spreadsheet-is-the-spec
+  order: 4
+  title: The client's spreadsheet is the specification.
+  skill: clients
+  body: >-
+    A finance team already knows the right answer, and it's usually in a spreadsheet. I ask for it
+    early, match it to the cent, and keep it as an automated test, so a disagreement about numbers
+    becomes a test that passes or fails.
+
+- id: loud-failures
+  order: 5
+  title: A silent failure is a bug.
+  skill: reliability
+  body: >-
+    A screen that says "sent" when nothing went out is worse than an error message. I build
+    failures to be noticed: alerts, scheduled health checks, and messages that tell people what
+    didn't happen.

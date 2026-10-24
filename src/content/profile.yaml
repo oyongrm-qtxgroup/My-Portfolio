@@ -1,9 +1,34 @@
 main:
   name: Raymundo Oyong
-  title: AI product engineer
+  title: AI and automation engineer
+  # One string per line of the set headline.
+  headline:
+    - I build AI and software
+    - that does the work
+    - people shouldn't have to.
+  lede: >-
+    I'm Raymundo, a software engineer with eight years of building business systems. I build voice
+    agents that book patients into a practice's own diary, document AI that shows where every
+    sentence came from, and bots that took 70–80% of the manual work out of SAP processing. I design
+    the system, build it, and lead it through to the version people rely on every day.
+  # CV profile line (no first person).
+  summary: >-
+    Software engineer with eight years of building business systems, leading with AI and automation:
+    voice agents that book into practice systems, document drafting with every statement linked to
+    its source, and robotic process automation that cut manual SAP processing by 70–80%. Owns a
+    system from the first client conversation to live support.
   location: Based in the Philippines · working with QTX, Sydney
   email: oyongrm@gmail.com
   links:
     linkedin: https://www.linkedin.com/in/raymundo-oyong-4ab94321a/
     github: https://github.com/oyong1926
-  now: Most interested in voice agents that know when to stop talking, and in AI that can show where every sentence came from.
+  # Outcomes only: never hours logged, tasks closed or tickets counted.
+  figures:
+    - value: 70–80%
+      label: less manual SAP processing
+    - value: 100+ h
+      label: of HR work automated each month
+    - value: 6.5 → 1 s
+      label: per action on an AI drafting tool
+    - value: 8 yrs
+      label: building business software

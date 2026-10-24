@@ -2,7 +2,38 @@ import { defineCollection, reference } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-// Case studies: the problem, what I did, and the notes that came out of it.
+// What I can do, with the evidence for it. `lead` areas get a full block on the
+// home page; `foundation` areas sit in the "How I build" grid.
+const skills = defineCollection({
+  loader: file('src/content/skills.yaml'),
+  schema: z.object({
+    order: z.number().int(),
+    tier: z.enum(['lead', 'foundation']),
+    name: z.string(),
+    pitch: z.string(),
+    proof: z
+      .array(
+        z.object({
+          text: z.string(),
+          work: reference('work').optional(),
+        }),
+      )
+      .min(1),
+  }),
+});
+
+// Working principles ("How I work"): no dates, no incident stories.
+const principles = defineCollection({
+  loader: file('src/content/principles.yaml'),
+  schema: z.object({
+    order: z.number().int(),
+    title: z.string(),
+    body: z.string(),
+    skill: reference('skills'),
+  }),
+});
+
+// Project pages: the challenge, the approach and the result, as evidence for skills.
 // Client names never appear: `client` is a generic description.
 const work = defineCollection({
   loader: glob({ pattern: '*.mdx', base: './src/content/work' }),
@@ -17,37 +48,27 @@ const work = defineCollection({
     period: z.string(),
     stack: z.array(z.string()).min(1),
     status: z.enum(['live', 'shipped', 'in-progress', 'handed-over']),
-    cv: z
-      .object({
-        heading: z.string(),
-        bullets: z.array(z.string()).min(1),
-      })
-      .optional(),
+    skills: z.array(reference('skills')).min(1),
   }),
 });
 
-// Short stories about something that went wrong or surprised me, and what it taught me.
-const notes = defineCollection({
-  loader: glob({ pattern: '*.md', base: './src/content/notes' }),
-  schema: z.object({
-    title: z.string(),
-    date: z.coerce.date(),
-    summary: z.string(),
-    work: reference('work').optional(),
-  }),
-});
-
+// Employment history. Every CV bullet lives here: `highlights` for a role, or
+// `projects` when a role's bullets are grouped by project (as at QTX).
 const roles = defineCollection({
   loader: file('src/content/roles.yaml'),
   schema: z.object({
     org: z.string(),
+    short: z.string(),
     place: z.string(),
     title: z.string(),
     start: z.string(),
     end: z.string().optional(),
     span: z.string(),
     summary: z.string(),
-    highlights: z.array(z.string()),
+    highlights: z.array(z.string()).default([]),
+    projects: z
+      .array(z.object({ heading: z.string(), bullets: z.array(z.string()).min(1) }))
+      .default([]),
     current: z.boolean().default(false),
   }),
 });
@@ -57,11 +78,14 @@ const profile = defineCollection({
   schema: z.object({
     name: z.string(),
     title: z.string(),
+    headline: z.array(z.string()).min(1),
+    lede: z.string(),
+    summary: z.string(),
     location: z.string(),
     email: z.email(),
     links: z.object({ linkedin: z.url(), github: z.url() }),
-    now: z.string(),
+    figures: z.array(z.object({ value: z.string(), label: z.string() })).length(4),
   }),
 });
 
-export const collections = { work, notes, roles, profile };
+export const collections = { skills, principles, work, roles, profile };

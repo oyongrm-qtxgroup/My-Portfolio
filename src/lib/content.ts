@@ -1,25 +1,22 @@
 import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
 
+export type Skill = CollectionEntry<'skills'>;
+export type Principle = CollectionEntry<'principles'>;
 export type Work = CollectionEntry<'work'>;
-export type Note = CollectionEntry<'notes'>;
 export type Role = CollectionEntry<'roles'>;
 
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const byOrder = <T extends { data: { order: number } }>(a: T, b: T) => a.data.order - b.data.order;
 
-/** Oct 2026 (three-letter months everywhere; the en-AU locale would give "Sept"). */
-export function monthYear(d: Date): string {
-  return `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+export async function getSkills(): Promise<Skill[]> {
+  return (await getCollection('skills')).sort(byOrder);
+}
+
+export async function getPrinciples(): Promise<Principle[]> {
+  return (await getCollection('principles')).sort(byOrder);
 }
 
 export async function getWork(): Promise<Work[]> {
-  return (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
-}
-
-/** Newest first. */
-export async function getNotes(): Promise<Note[]> {
-  return (await getCollection('notes')).sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime() || a.id.localeCompare(b.id),
-  );
+  return (await getCollection('work')).sort(byOrder);
 }
 
 /** Most recent role first ("January 2024" sorts above "May 2019"). */
