@@ -1,0 +1,20 @@
+---
+// One logbook row: a label in the margin column, content right of the red line.
+interface Props {
+  index?: number;
+  ruled?: boolean;
+  id?: string;
+  class?: string;
+}
+
+const { index = 0, ruled = false, id, class: className } = Astro.props;
+---
+
+<section class:list={['row', { ruled }, className]} id={id}>
+  <div class="mar label" style={`--i: ${index}`}>
+    <slot name="label" />
+  </div>
+  <div class="body">
+    <slot />
+  </div>
+</section>

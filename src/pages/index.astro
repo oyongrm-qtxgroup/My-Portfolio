@@ -1,0 +1,466 @@
+---
+import Base from '../layouts/Base.astro';
+import MarginRow from '../components/MarginRow.astro';
+import WorkRow from '../components/WorkRow.astro';
+import SkillBlock from '../components/SkillBlock.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { getPrinciples, getProfile, getRoles, getSkills, getWork } from '../lib/content';
+
+const [profile, skills, principles, work, roles] = await Promise.all([
+  getProfile(),
+  getSkills(),
+  getPrinciples(),
+  getWork(),
+  getRoles(),
+]);
+
+const lead = skills.filter((s) => s.data.tier === 'lead');
+const foundation = skills.filter((s) => s.data.tier === 'foundation');
+const skillName = new Map(skills.map((s) => [s.id, s.data.name]));
+
+// schema.org Person for search engines: who, what, where, and the profiles that confirm it.
+const currentRole = roles.find((r) => r.data.current);
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  jobTitle: profile.title,
+  description: profile.summary,
+  url: Astro.site?.href,
+  email: `mailto:${profile.email}`,
+  image: new URL('/og/home.png', Astro.site).href,
+  address: { '@type': 'PostalAddress', addressCountry: 'PH' },
+  ...(currentRole && { worksFor: { '@type': 'Organization', name: currentRole.data.org } }),
+  knowsAbout: skills.map((s) => s.data.name),
+  sameAs: [profile.links.linkedin, profile.links.github],
+};
+---
+
+<Base description={profile.summary} jsonLd={person}>
+  <MarginRow index={0}>
+    <Fragment slot="label">§ 00<br />Intro</Fragment>
+    <div class="hero">
+      <h1 class="display headline">
+        {profile.headline.map((line, i) => <span class="ln" style={`--i: ${i}`}>{line}</span>)}
+      </h1>
+      <!-- Not faded: the largest text block on a phone must paint at once (LCP). -->
+      <p class="lede">{profile.lede}</p>
+      <p class="mono muted where fade" style="--i: 3">
+        {profile.title} · {profile.location} ·{' '}
+        <a href={`mailto:${profile.email}`} class="accent">{profile.email}</a>
+      </p>
+    </div>
+  </MarginRow>
+
+  <MarginRow index={1}>
+    <Fragment slot="label">In<br />figures</Fragment>
+    <dl class="figures fade" style="--i: 4">
+      {
+        profile.figures.map((f) => (
+          <div>
+            <dt class="label">{f.label}</dt>
+            <dd class="display tabular">
+              <span class="visually-hidden">{f.value}</span>
+              <span aria-hidden="true" data-count>
+                {f.value}
+              </span>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </MarginRow>
+
+  <MarginRow index={2} ruled id="skills">
+    <Fragment slot="label">§ 01<br />What I do</Fragment>
+    <h2 class="visually-hidden">What I do</h2>
+    <div class="lead">
+      {lead.map((s, i) => <SkillBlock skill={s} no={i + 1} />)}
+    </div>
+  </MarginRow>
+
+  <MarginRow index={3} ruled id="foundations">
+    <Fragment slot="label">§ 02<br />How I build</Fragment>
+    <h2 class="visually-hidden">How I build</h2>
+    <div class="grid">
+      {
+        foundation.map((s) => (
+          <section class="cell reveal" id={s.id} aria-labelledby={`${s.id}-name`}>
+            <h3 class="title cell-name" id={`${s.id}-name`}>
+              {s.data.name}
+            </h3>
+            <p class="cell-pitch">{s.data.pitch}</p>
+            <ul class="cell-proof">
+              {s.data.proof.map((p) => (
+                <li>{p.text}</li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+  </MarginRow>
+
+  <MarginRow index={4} ruled id="work">
+    <Fragment slot="label">§ 03<br />Selected work</Fragment>
+    <h2 class="visually-hidden">Selected work</h2>
+    <div class="list">
+      {work.map((w, i) => <WorkRow work={w} index={i} />)}
+    </div>
+  </MarginRow>
+
+  <MarginRow index={5} ruled id="principles">
+    <Fragment slot="label">§ 04<br />How I work</Fragment>
+    <h2 class="visually-hidden">How I work</h2>
+    <ol class="list principles">
+      {
+        principles.map((p, i) => (
+          <li class="principle reveal">
+            <span class="mono muted tabular">{String(i + 1).padStart(2, '0')}</span>
+            <div>
+              <h3 class="title principle-title">{p.data.title}</h3>
+              <p>{p.data.body}</p>
+              <a href={`#${p.data.skill.id}`} class="mono muted skill-link target">
+                {skillName.get(p.data.skill.id)}
+              </a>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </MarginRow>
+
+  <MarginRow index={6} ruled id="experience">
+    <Fragment slot="label">§ 05<br />Experience</Fragment>
+    <h2 class="visually-hidden">Experience</h2>
+    <div class="list">
+      {
+        roles.map((r) => (
+          <div class="role reveal">
+            <span class="mono muted tabular">{r.data.span}</span>
+            <span class="mono role-org">{r.data.short}</span>
+            <p>
+              <strong class="role-title">{r.data.title}.</strong> {r.data.summary}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+    <a href="/cv/" class="mono accent more target">Full CV →</a>
+  </MarginRow>
+
+  <MarginRow index={7} ruled id="contact">
+    <Fragment slot="label">§ 06<br />Write</Fragment>
+    <div class="contact reveal">
+      <h2 class="display ask">Hiring, or need something built?</h2>
+      <a href={`mailto:${profile.email}`} class="accent email">{profile.email}</a>
+      <ul class="mono links">
+        <li><a href={profile.links.linkedin} class="target">LinkedIn</a></li>
+        <li><a href={profile.links.github} class="target">GitHub</a></li>
+        <li><a href="/cv/" class="target">CV</a></li>
+      </ul>
+      <ContactForm email={profile.email} />
+    </div>
+  </MarginRow>
+</Base>
+
+<script>
+  // Figures count up once the intro has set (700 ms), over 1.1 s. Only whole
+  // numbers count; the final text is already in the page, so nothing waits on JS.
+  function countUp() {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
+      const final = el.textContent?.trim() ?? '';
+      const parts = final.split(/(\d+(?:\.\d+)?)/);
+      const targets = parts.map((p) => (/^\d+$/.test(p) && Number(p) >= 2 ? Number(p) : null));
+      if (!targets.some((n) => n !== null)) return;
+      el.style.display = 'inline-block';
+      el.style.minWidth = `${el.getBoundingClientRect().width}px`; // no reflow as digits grow
+      const render = (k: number) => {
+        el.textContent = parts.map((p, i) => (targets[i] === null ? p : String(Math.round(targets[i]! * k)))).join('');
+      };
+      render(0);
+      const start = performance.now() + 700;
+      const tick = (now: number) => {
+        const t = Math.min(1, Math.max(0, (now - start) / 1100));
+        render(1 - Math.pow(1 - t, 3));
+        if (t < 1) requestAnimationFrame(tick);
+        else el.textContent = final;
+      };
+      requestAnimationFrame(tick);
+    });
+  }
+
+  document.addEventListener('astro:page-load', countUp);
+</script>
+
+<style>
+  .hero {
+    padding-top: 40px;
+    padding-bottom: 16px;
+  }
+
+  .headline {
+    font-size: clamp(44px, 7.4vw, 92px);
+    max-width: 20ch;
+  }
+
+  .lede {
+    margin-top: 40px;
+  }
+
+  .where {
+    margin-top: 28px;
+  }
+
+  .figures {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin: -28px 0 0;
+  }
+
+  .figures > div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 28px 20px 32px;
+    border-right: 1px solid var(--rule);
+  }
+
+  .figures > div:first-child {
+    padding-left: 0;
+  }
+
+  .figures > div:last-child {
+    border-right: 0;
+  }
+
+  .figures dd {
+    order: -1;
+    font-size: clamp(36px, 4.4vw, 60px);
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .lead {
+    margin-top: -28px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: -28px;
+  }
+
+  .cell {
+    padding: 28px 28px 28px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .cell:nth-child(2n) {
+    padding: 28px 0 28px 28px;
+    border-left: 1px solid var(--rule);
+  }
+
+  .cell:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    border-bottom: 0;
+  }
+
+  .cell-name {
+    font-size: 26px;
+  }
+
+  .cell-pitch {
+    margin-top: 10px;
+    font-size: 18px;
+    line-height: 1.45;
+  }
+
+  .cell-proof {
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 16px;
+    line-height: 1.45;
+    color: var(--ink-2);
+  }
+
+  .cell-proof li {
+    padding-left: 18px;
+    text-indent: -18px;
+  }
+
+  .cell-proof li::before {
+    content: '— ';
+    color: var(--accent);
+  }
+
+  .list {
+    margin-top: -8px;
+  }
+
+  .principles {
+    padding: 0;
+    list-style: none;
+  }
+
+  .principle {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 20px;
+    align-items: baseline;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .principle-title {
+    font-size: 28px;
+  }
+
+  .principle p {
+    margin-top: 8px;
+    font-size: 18px;
+    line-height: 1.5;
+    max-width: 40em;
+  }
+
+  .skill-link {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .more {
+    display: inline-block;
+    margin-top: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .role {
+    display: grid;
+    grid-template-columns: 72px 150px minmax(0, 1fr);
+    gap: 20px;
+    align-items: baseline;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .role-org {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .role p {
+    font-size: 18px;
+    line-height: 1.45;
+  }
+
+  .role-title {
+    font-weight: 600;
+  }
+
+  .contact {
+    padding: 16px 0 24px;
+  }
+
+  .ask {
+    font-size: clamp(36px, 5vw, 56px);
+    line-height: 1;
+    max-width: 18ch;
+  }
+
+  .email {
+    display: inline-block;
+    margin-top: 28px;
+    font-size: clamp(22px, 3vw, 30px);
+    text-underline-offset: 6px;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    margin-top: 16px;
+    padding: 0;
+    list-style: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 1040px) {
+    .figures {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .figures > div:nth-child(2n) {
+      border-right: 0;
+    }
+
+    .figures > div:nth-child(2n + 1) {
+      padding-left: 0;
+    }
+
+    .figures > div:nth-child(-n + 2) {
+      border-bottom: 1px solid var(--rule);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .cell,
+    .cell:nth-child(2n) {
+      padding: 24px 0;
+      border-left: 0;
+    }
+
+    .role {
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 6px 14px;
+    }
+
+    .role p {
+      grid-column: 1 / -1;
+      font-size: 17px;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .hero {
+      padding-top: 8px;
+    }
+
+    .figures,
+    .lead,
+    .grid {
+      margin-top: 0;
+    }
+
+    .figures > div {
+      padding: 18px 16px 18px 0;
+    }
+
+    .figures > div:nth-child(2n) {
+      padding-left: 16px;
+    }
+
+    .principle {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 6px;
+    }
+
+    .principle-title {
+      font-size: 24px;
+    }
+  }
+</style>

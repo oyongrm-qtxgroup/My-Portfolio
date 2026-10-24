@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Raymundo Oyong — Log</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Source+Serif+4:opsz,wght@8..60,400..600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:inherit}
+a:hover{text-decoration-thickness:2px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.skip{position:absolute;left:16px;top:-80px;padding:12px 16px;background:var(--ink);color:var(--paper);font:500 13px 'IBM Plex Mono',monospace;z-index:5}
+.skip:focus{top:12px}
+.pg{transition:background-color .3s ease,color .3s ease}
+.row{display:grid;grid-template-columns:168px minmax(0,1fr)}
+.mar{position:relative}
+.mar::after{content:"";position:absolute;top:0;right:0;bottom:0;width:1.5px;background:var(--margin);transform-origin:top;animation:draw .7s cubic-bezier(.2,.7,0,1) both;animation-delay:calc(var(--i,0)*110ms)}
+.lead{grid-template-columns:56px minmax(0,1fr) 240px 132px;transition:background-color .2s}
+.lead:hover{background:color-mix(in srgb,var(--accent) 6%,transparent)}
+.ttl{text-decoration:underline;text-decoration-color:transparent;text-decoration-thickness:2px;text-underline-offset:6px;transition:text-decoration-color .2s}
+.lead:hover .ttl,.lead:focus-visible .ttl{text-decoration-color:var(--accent)}
+.arr{display:inline-block;margin-left:10px;opacity:0;transform:translateX(-8px);transition:opacity .2s,transform .2s;color:var(--accent)}
+.lead:hover .arr,.lead:focus-visible .arr{opacity:1;transform:none}
+.logrow{grid-template-columns:96px 200px minmax(0,1fr) 132px}
+.figs{grid-template-columns:repeat(4,minmax(0,1fr))}
+.ln{display:inline-block;animation:rise .7s cubic-bezier(.2,.7,0,1) both;animation-delay:calc(var(--i,0)*90ms + 150ms)}
+.fade{animation:rise .6s cubic-bezier(.2,.7,0,1) both;animation-delay:calc(var(--i,0)*110ms + 400ms)}
+.stamp{display:inline-block;border:1.5px solid currentColor;padding:3px 8px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;transform:rotate(-2deg);animation:press .45s cubic-bezier(.3,.7,.4,1) both;animation-delay:calc(var(--i,0)*70ms + 900ms)}
+.seg{min-height:44px;padding:0 12px;background:none;border:1px solid var(--ink2);color:var(--ink);font:inherit;cursor:pointer}
+.seg[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+@keyframes rise{from{opacity:0;transform:translateY(.35em)}to{opacity:1;transform:none}}
+@keyframes draw{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes press{0%{opacity:0;transform:scale(1.6) rotate(-9deg)}70%{opacity:1;transform:scale(.96) rotate(-1deg)}100%{opacity:1;transform:rotate(-2deg)}}
+@supports (animation-timeline: view()){
+.sv{animation:rise linear both;animation-timeline:view();animation-range:entry 0% entry 35%}
+.sv .stamp{animation:press linear both;animation-timeline:view();animation-range:entry 10% entry 45%;animation-delay:0s}
+}
+@media (max-width:760px){
+.row{grid-template-columns:minmax(0,1fr)}
+.row>.mar{padding:24px 0 0 0 !important}
+.row>.mar::after{display:none}
+.row>.body{padding-left:0 !important}
+.lead,.logrow{grid-template-columns:minmax(0,1fr)}
+.figs{grid-template-columns:repeat(2,minmax(0,1fr))}
+.nav{flex-wrap:wrap}
+.hero{font-size:52px !important}
+}
+@media (prefers-reduced-motion:reduce){*,*::after{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="pg" style="--paper: {{paper}}; --ink: {{ink}}; --ink2: {{ink2}}; --rule: {{rule}}; --accent: {{accent}}; --margin: {{margin}}; position: relative; background: var(--paper); color: var(--ink); font-family: 'Source Serif 4', Georgia, serif; min-height: 100vh">
+<a class="skip" href="#main">Skip to content</a>
+<div style="max-width: 1240px; margin: 0 auto; padding: 0 32px">
+
+<header class="nav" style="display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 20px 0; border-bottom: 2px solid var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase">
+<a href="#" style="text-decoration: none; font-weight: 500">R. Oyong — Log</a>
+<nav aria-label="Primary" style="display: flex; gap: 28px">
+<a href="Work.dc.html" style="text-decoration: none">Work</a>
+<a href="Log.dc.html" style="text-decoration: none">Log</a>
+<a href="#" style="text-decoration: none">CV</a>
+<a href="#contact" style="text-decoration: none">Contact</a>
+</nav>
+<span style="color: var(--ink2)">Vol. 2026 · last entry 2 days ago</span>
+</header>
+
+<main id="main">
+<section class="row">
+<div class="mar" style="--i: 0; padding: 72px 24px 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink2)">§ 00<br>Intro</div>
+<div class="body" style="padding: 64px 0 56px 40px">
+<h1 class="hero" style="margin: 0; font-family: 'Archivo', sans-serif; font-stretch: 72%; font-weight: 700; font-size: 92px; line-height: 0.96; letter-spacing: -0.01em; max-width: 15ch"><span class="ln" style="--i: 0">I build the software</span> <span class="ln" style="--i: 1">that answers the phone<sup style="font-family: 'IBM Plex Mono', monospace; font-size: 18px; font-weight: 500; color: var(--accent); vertical-align: top; margin-left: 4px">1</sup>,</span> <span class="ln" style="--i: 2">bills the residents<sup style="font-family: 'IBM Plex Mono', monospace; font-size: 18px; font-weight: 500; color: var(--accent); vertical-align: top; margin-left: 4px">2</sup></span> <span class="ln" style="--i: 3">and rosters the carers<sup style="font-family: 'IBM Plex Mono', monospace; font-size: 18px; font-weight: 500; color: var(--accent); vertical-align: top; margin-left: 4px">3</sup>.</span></h1>
+<p class="fade" style="--i: 2; margin: 40px 0 0; font-size: 23px; line-height: 1.5; max-width: 34em">AI product engineer at QTX. I take products from a client's first call to the version people rely on every day: voice agents, finance engines, award-pay rules, and the integrations that hold them together.</p>
+<ol class="fade" style="--i: 3; margin: 40px 0 0; padding: 20px 0 0; list-style: none; border-top: 1px solid var(--rule); display: flex; flex-direction: column; gap: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink2)">
+<li><span style="color: var(--accent)">1</span>  Jayne Bandy AI — an AI receptionist for dental practices</li>
+<li><span style="color: var(--accent)">2</span>  A finance system for a retirement-village operator</li>
+<li><span style="color: var(--accent)">3</span>  A workforce and care platform for an NDIS provider</li>
+</ol>
+<p class="fade" style="--i: 4; margin: 28px 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink2)">Based in the Philippines · working with QTX, Sydney · <a href="mailto:oyongrm@gmail.com" style="color: var(--accent)">oyongrm@gmail.com</a></p>
+</div>
+</section>
+
+<section class="row" style="border-top: 1px solid var(--rule)">
+<div class="mar" style="--i: 1; padding: 28px 24px 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink2)">Now<br>24.10.26</div>
+<div class="body fade" style="--i: 5; padding: 24px 0 28px 40px; display: flex; flex-direction: column; gap: 8px; font-size: 19px; line-height: 1.5">
+<p style="margin: 0">Tuning turn-detection so the Jayne Bandy AI voice agent stops talking over callers.</p>
+<p style="margin: 0">Writing the Sprint 2 specs for an aged-care tool that drafts care plans with every sentence linked to its source.</p>
+</div>
+</section>
+
+<section class="row" style="border-top: 1px solid var(--rule)">
+<div class="mar" style="--i: 2; padding: 28px 24px 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink2)">2026<br>in figures</div>
+<div class="figs body" style="display: grid; padding: 0 0 0 40px">
+<sc-for list="{{figs}}" as="f" hint-placeholder-count="4">
+<div style="padding: 28px 20px 32px 0; border-right: 1px solid var(--rule)">
+<div aria-label="{{f.full}}" style="font-family: 'Archivo', sans-serif; font-stretch: 72%; font-weight: 700; font-size: 64px; line-height: 1; font-variant-numeric: tabular-nums">{{f.shown}}</div>
+<div style="margin-top: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink2)">{{f.label}}</div>
+</div>
+</sc-for>
+</div>
+</section>
+
+<section class="row" style="border-top: 2px solid var(--ink)">
+<div class="mar" style="--i: 3; padding: 28px 24px 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink2)">§ 01<br>Work</div>
+<div class="body" style="padding: 24px 0 40px 40px">
+<sc-for list="{{work}}" as="w" hint-placeholder-count="6">
+<a href="{{w.href}}" class="lead sv" style="display: grid; gap: 20px; align-items: baseline; padding: 22px 12px 22px 0; border-bottom: 1px solid var(--rule); text-decoration: none">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink2)">No. {{w.no}}</span>
+<span style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-family: 'Archivo', sans-serif; font-stretch: 78%; font-weight: 700; font-size: 34px; line-height: 1.05"><span class="ttl">{{w.title}}</span><span class="arr" aria-hidden="true">→</span></span>
+<span style="font-size: 18px; line-height: 1.45; color: var(--ink2); max-width: 36em">{{w.line}}</span>
+</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1.6; color: var(--ink2)">{{w.stack}}</span>
+<span style="display: flex; flex-direction: column; align-items: flex-start; gap: 8px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-variant-numeric: tabular-nums">{{w.hours}}</span>
+<span class="stamp" style="--i: {{$index}}; color: {{w.stampColor}}">{{w.status}}</span>
+</span>
+</a>
+</sc-for>
+</div>
+</section>
+
+<section class="row" style="border-top: 2px solid var(--ink)">
+<div class="mar" style="--i: 4; padding: 28px 24px 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink2)">§ 02<br>Recent log</div>
+<div class="body" style="padding: 16px 0 40px 40px">
+<sc-for list="{{log}}" as="e" hint-placeholder-count="7">
+<div class="logrow sv" style="display: grid; gap: 20px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--rule)">
+<time style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-variant-numeric: tabular-nums; color: var(--ink2)">{{e.date}}</time>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em">{{e.project}}</span>
+<span style="font-size: 18px; line-height: 1.45">{{e.text}}</span>
+<span><span class="stamp" style="--i: {{$index}}; color: {{e.stampColor}}">{{e.status}}</span></span>
+</div>
+</sc-for>
+<a href="Log.dc.html" style="display: inline-flex; align-items: center; min-height: 44px; margin-top: 16px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent); text-underline-offset: 4px">Read the full log →</a>
+</div>
+</section>
+
+<section class="row" style="border-top: 2px solid var(--ink)">
+<div class="mar" style="--i: 5; padding: 28px 24px 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink2)">§ 03<br>Before QTX</div>
+<div class="body" style="padding: 16px 0 40px 40px">
+<div class="logrow sv" style="display: grid; gap: 20px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--rule)">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink2)">2024–25</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em">Ortigas Land</span>
+<span style="font-size: 18px; line-height: 1.45">Software Developer Officer. Led the dev team, built the company's first payment gateway, and wrote RPA bots that cut manual SAP processing by 70–80%.</span>
+<span></span>
+</div>
+<div class="logrow sv" style="display: grid; gap: 20px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--rule)">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink2)">2022–23</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em">Ortigas Land</span>
+<span style="font-size: 18px; line-height: 1.45">Senior Software Developer Associate. Web APIs over SAP data; led the shopping module of the first e-commerce site.</span>
+<span></span>
+</div>
+<div class="logrow sv" style="display: grid; gap: 20px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--rule)">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink2)">2019–21</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em">Ortigas Land</span>
+<span style="font-size: 18px; line-height: 1.45">Software Developer Associate. The first digital IT ticketing system; SharePoint report automation.</span>
+<span></span>
+</div>
+<div class="logrow sv" style="display: grid; gap: 20px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--rule)">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink2)">2018–19</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em">OCLP Holdings</span>
+<span style="font-size: 18px; line-height: 1.45">Programmer. The first tenant-portal mobile app, in Xamarin.</span>
+<span></span>
+</div>
+</div>
+</section>
+
+<section id="contact" class="row" style="border-top: 2px solid var(--ink)">
+<div class="mar" style="--i: 6; padding: 28px 24px 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink2)">§ 04<br>Write</div>
+<div class="body sv" style="padding: 40px 0 64px 40px">
+<p style="margin: 0; font-family: 'Archivo', sans-serif; font-stretch: 72%; font-weight: 700; font-size: 56px; line-height: 1; max-width: 18ch">Got a phone line, a ledger or a roster that needs software?</p>
+<a href="mailto:oyongrm@gmail.com" style="display: inline-block; margin-top: 28px; font-size: 30px; color: var(--accent); text-underline-offset: 6px">oyongrm@gmail.com</a>
+<div style="display: flex; flex-wrap: wrap; gap: 28px; margin-top: 24px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em">
+<a href="https://www.linkedin.com/in/raymundo-oyong-4ab94321a/" style="display: inline-flex; align-items: center; min-height: 44px; text-underline-offset: 4px">LinkedIn</a>
+<a href="https://github.com/oyong1926" style="display: inline-flex; align-items: center; min-height: 44px; text-underline-offset: 4px">GitHub</a>
+<a href="#" style="display: inline-flex; align-items: center; min-height: 44px; text-underline-offset: 4px">CV (PDF)</a>
+</div>
+</div>
+</section>
+</main>
+
+<footer style="border-top: 1px solid var(--rule); padding: 20px 0 40px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink2)">
+<span>Set in Archivo, Source Serif 4 and IBM Plex Mono. Built with Astro, hosted on Vercel.</span>
+<div role="group" aria-label="Colour theme" style="display: flex; gap: 0; text-transform: uppercase; letter-spacing: 0.05em">
+<button type="button" class="seg" aria-pressed="{{isPaper}}" onClick="{{setPaper}}">Paper</button>
+<button type="button" class="seg" aria-pressed="{{isNight}}" onClick="{{setNight}}">Night</button>
+<button type="button" class="seg" aria-pressed="{{isAuto}}" onClick="{{setAuto}}">Auto</button>
+</div>
+</footer>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"mode":{"editor":"enum","options":["paper","night"],"default":"paper"},"accent":{"editor":"color","options":["#1D3FD8","#0F6B4F","#141413"],"default":"#1D3FD8"},"$preview":{"width":1440,"height":3000}}'>
+class Component extends DCLogic {
+  componentDidMount() {
+    var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
+    var self = this;
+    var start = null;
+    var dur = 1100;
+    var wait = 700;
+    this.setState({ p: 0 });
+    function tick(ts) {
+      if (start === null) start = ts;
+      var t = Math.min(1, Math.max(0, (ts - start - wait) / dur));
+      var eased = 1 - Math.pow(1 - t, 3);
+      self.setState({ p: eased });
+      if (t < 1) self.raf = window.requestAnimationFrame(tick);
+    }
+    this.raf = window.requestAnimationFrame(tick);
+  }
+  componentWillUnmount() {
+    if (this.raf) window.cancelAnimationFrame(this.raf);
+  }
+  renderVals() {
+    var self = this;
+    var st = this.state || {};
+    var choice = st.choice || (this.props.mode || "paper");
+    var night = choice === "night";
+    if (choice === "auto") {
+      night = !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+    var t = night
+      ? { paper: "#131412", ink: "#ECEBE6", ink2: "#A9A8A1", rule: "#2E2F2B", margin: "#E0604F", accent: "#93A8FF" }
+      : { paper: "#F6F6F3", ink: "#141413", ink2: "#56564F", rule: "#D8D8D2", margin: "#C8322A", accent: this.props.accent || "#1D3FD8" };
+    var stamp = { Live: t.accent, Shipped: t.ink, "In progress": t.margin, "Handed over": t.ink2 };
+    var p = st.p == null ? 1 : st.p;
+    var figs = [
+      { n: 2350, suffix: "+", label: "hours logged" },
+      { n: 9, suffix: "", label: "projects" },
+      { n: 245, suffix: "+", label: "tasks closed" },
+      { n: 15, suffix: "+", label: "integrations shipped" }
+    ].map(function (f) {
+      var v = Math.round(f.n * p);
+      return { label: f.label, shown: v.toLocaleString("en-US") + (p === 1 ? f.suffix : ""), full: f.n.toLocaleString("en-US") + f.suffix + " " + f.label };
+    });
+    var work = [
+      { no: "01", href: "Work.dc.html", title: "Jayne Bandy AI", line: "An AI receptionist that answers calls for dental practices, books into their practice system, and improves under human review.", stack: "Twilio · ElevenLabs · Supabase · Stripe", hours: "650 h", status: "Live" },
+      { no: "02", href: "#", title: "Workforce & care platform", line: "Rostering, award pay rules, timesheets, invoicing and accounting export for an NDIS provider.", stack: "Supabase · MYOB · Azure", hours: "500 h", status: "Live" },
+      { no: "03", href: "#", title: "Retirement-village finance", line: "Deferred management fees, CPI increases, direct debits and statutory reports for a village operator.", stack: "Supabase · Westpac · BAS", hours: "420 h", status: "In progress" },
+      { no: "04", href: "#", title: "Workable modules", line: "What I added to QTX's internal platform: campaigns, certifications, 30/60/90 onboarding, KPIs, ad audiences.", stack: "React · Supabase · Azure Functions", hours: "600 h", status: "Shipped" },
+      { no: "05", href: "#", title: "SEED agents", line: "AI agents for contracts and compliance, with a built-in e-signature flow.", stack: "RAG · Azure Document Intelligence", hours: "115 h", status: "Shipped" },
+      { no: "06", href: "#", title: "Care-plan drafting", line: "Drafts aged-care plans from client records. Every sentence links back to the page it came from.", stack: "LLM · Microsoft Entra · Supabase", hours: "40 h", status: "In progress" }
+    ];
+    var log = [
+      { date: "24.10", project: "Jayne Bandy AI", text: "Callers can ask for a callback; the request lands with the practice.", status: "In progress" },
+      { date: "21.10", project: "Care-plan drafting", text: "Drafts run on the server now, so closing the tab no longer kills a two-minute draft.", status: "Shipped" },
+      { date: "20.10", project: "Care-plan drafting", text: "Moved the database connection to HTTPS; actions went from 6.5 s to about 1 s.", status: "Shipped" },
+      { date: "16.10", project: "NDIS platform", text: "Support workers can clock on from their phone.", status: "Shipped" },
+      { date: "14.10", project: "Village finance", text: "Period locking, so a closed month can't be edited.", status: "In progress" },
+      { date: "17.09", project: "Workable", text: "AI call retries stopped bunching at the start of the window and stopped landing on weekends.", status: "Shipped" },
+      { date: "09.26", project: "NDIS platform", text: "MYOB integration: pay cards, customer cards and the sales journal.", status: "Shipped" }
+    ];
+    return Object.assign({}, t, {
+      figs: figs,
+      work: work.map(function (w) { return Object.assign({}, w, { stampColor: stamp[w.status] }); }),
+      log: log.map(function (e) { return Object.assign({}, e, { stampColor: stamp[e.status] }); }),
+      isPaper: choice === "paper" ? "true" : "false",
+      isNight: choice === "night" ? "true" : "false",
+      isAuto: choice === "auto" ? "true" : "false",
+      setPaper: function () { self.setState({ choice: "paper" }); },
+      setNight: function () { self.setState({ choice: "night" }); },
+      setAuto: function () { self.setState({ choice: "auto" }); }
+    });
+  }
+}
+</script>
+</body>
+</html>

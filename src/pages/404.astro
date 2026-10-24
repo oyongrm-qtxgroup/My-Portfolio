@@ -1,0 +1,54 @@
+---
+import Base from '../layouts/Base.astro';
+import MarginRow from '../components/MarginRow.astro';
+---
+
+<Base title="No entry — R. Oyong" noindex>
+  <MarginRow>
+    <Fragment slot="label">404<br />Not found</Fragment>
+    <div class="missing">
+      <h1 class="display">No entry.</h1>
+      <div class="text">
+        <p>
+          There's nothing logged at <code class="mono" id="missing-path">this address</code>. It may
+          have been retired with the old site.
+        </p>
+        <a href="/" class="mono accent back target">Back to the log →</a>
+      </div>
+    </div>
+  </MarginRow>
+</Base>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const el = document.getElementById('missing-path');
+    if (el) el.textContent = location.pathname;
+  });
+</script>
+
+<style>
+  .missing {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 24px 48px;
+    padding: 40px 0 80px;
+  }
+
+  h1 {
+    font-size: clamp(64px, 10vw, 120px);
+    line-height: 0.9;
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 30em;
+    font-size: 19px;
+  }
+
+  .back {
+    text-transform: uppercase;
+  }
+</style>

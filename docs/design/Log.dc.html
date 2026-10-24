@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Log — Raymundo Oyong</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Source+Serif+4:opsz,wght@8..60,400..600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:inherit}
+.row{display:grid;grid-template-columns:168px minmax(0,1fr)}
+.logrow{grid-template-columns:72px 200px minmax(0,1fr) 132px}
+@media (max-width:760px){
+.row{grid-template-columns:minmax(0,1fr)}
+.row>.mar{border-right:0 !important;padding:24px 0 0 0 !important}
+.logrow{grid-template-columns:minmax(0,1fr)}
+}
+</style>
+</helmet>
+<div style="--paper: #F6F6F3; --ink: #141413; --ink2: #56564F; --rule: #D8D8D2; --accent: #1D3FD8; --margin: #C8322A; background: var(--paper); color: var(--ink); font-family: 'Source Serif 4', Georgia, serif; min-height: 100vh">
+<div style="max-width: 1240px; margin: 0 auto; padding: 0 32px">
+
+<header style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 24px; padding: 20px 0; border-bottom: 2px solid var(--ink); font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.04em; text-transform: uppercase">
+<a href="Main.dc.html" style="text-decoration: none; font-weight: 500">R. Oyong — Log</a>
+<nav aria-label="Primary" style="display: flex; gap: 28px">
+<a href="Main.dc.html" style="text-decoration: none">Work</a>
+<a href="Log.dc.html" style="text-decoration: underline; text-underline-offset: 5px">Log</a>
+<a href="#" style="text-decoration: none">CV</a>
+<a href="Main.dc.html#contact" style="text-decoration: none">Contact</a>
+</nav>
+<span style="color: var(--ink2)">RSS</span>
+</header>
+
+<section class="row">
+<div class="mar" style="border-right: 1.5px solid var(--margin); padding: 64px 24px 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink2)">Index</div>
+<div style="padding: 56px 0 32px 40px">
+<h1 style="margin: 0; font-family: 'Archivo', sans-serif; font-stretch: 72%; font-weight: 700; font-size: 112px; line-height: 0.9">The log</h1>
+<p style="margin: 20px 0 0; font-size: 22px; line-height: 1.5; max-width: 34em">What shipped, week by week, written the way I write it for clients: what changed and why it matters to the person using it.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em">
+<a href="#" aria-current="true" style="text-decoration: none; padding: 10px 14px; background: var(--ink); color: var(--paper)">All · 42</a>
+<a href="#" style="text-decoration: none; padding: 10px 14px; border: 1px solid var(--ink)">Jayne Bandy AI</a>
+<a href="#" style="text-decoration: none; padding: 10px 14px; border: 1px solid var(--ink)">NDIS platform</a>
+<a href="#" style="text-decoration: none; padding: 10px 14px; border: 1px solid var(--ink)">Village finance</a>
+<a href="#" style="text-decoration: none; padding: 10px 14px; border: 1px solid var(--ink)">Care-plan drafting</a>
+<a href="#" style="text-decoration: none; padding: 10px 14px; border: 1px solid var(--ink)">SEED</a>
+<a href="#" style="text-decoration: none; padding: 10px 14px; border: 1px solid var(--ink)">Workable</a>
+</div>
+</div>
+</section>
+
+<sc-for list="{{months}}" as="m" hint-placeholder-count="4">
+<section class="row" style="border-top: 2px solid var(--ink)">
+<div class="mar" style="border-right: 1.5px solid var(--margin); padding: 24px 24px 0 0">
+<div style="font-family: 'Archivo', sans-serif; font-stretch: 72%; font-weight: 700; font-size: 34px; line-height: 1">{{m.month}}</div>
+<div style="margin-top: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink2)">{{m.year}}</div>
+</div>
+<div style="padding: 8px 0 24px 40px">
+<sc-for list="{{m.entries}}" as="e" hint-placeholder-count="3">
+<div class="logrow" style="display: grid; gap: 20px; align-items: baseline; padding: 16px 0; border-bottom: 1px solid var(--rule)">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-variant-numeric: tabular-nums; color: var(--ink2)">{{e.day}}</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em">{{e.project}}</span>
+<span style="font-size: 18px; line-height: 1.45">{{e.text}}</span>
+<span><span style="display: inline-block; border: 1.5px solid currentColor; padding: 3px 8px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; transform: rotate(-2deg); color: {{e.stampColor}}">{{e.status}}</span></span>
+</div>
+</sc-for>
+</div>
+</section>
+</sc-for>
+
+<footer style="border-top: 2px solid var(--ink); padding: 20px 0 40px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink2)">Earlier entries: March 2026 and before · <a href="#" style="color: var(--accent)">load more</a></footer>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var stamp = { Live: "#1D3FD8", Shipped: "#141413", "In progress": "#C8322A", "Handed over": "#56564F" };
+    var months = [
+      { month: "October", year: "2026", entries: [
+        { day: "24", project: "Jayne Bandy AI", text: "Callers can ask for a callback; the request lands with the practice.", status: "In progress" },
+        { day: "21", project: "Care-plan drafting", text: "Drafts run on the server, so closing the tab no longer kills a two-minute draft.", status: "Shipped" },
+        { day: "20", project: "Care-plan drafting", text: "Moved the database connection to HTTPS; actions went from 6.5 s to about 1 s.", status: "Shipped" },
+        { day: "16", project: "NDIS platform", text: "Support workers can clock on from their phone.", status: "Shipped" },
+        { day: "14", project: "Village finance", text: "Period locking, so a closed month can't be edited.", status: "In progress" }
+      ] },
+      { month: "September", year: "2026", entries: [
+        { day: "17", project: "Workable", text: "AI call retries stopped bunching at the start of the window and stopped landing on weekends.", status: "Shipped" },
+        { day: "09", project: "NDIS platform", text: "MYOB integration: pay cards, customer cards and the sales journal.", status: "Shipped" },
+        { day: "02", project: "Jayne Bandy AI", text: "CareStack patient matching, so the agent knows who is calling.", status: "Live" }
+      ] },
+      { month: "July", year: "2026", entries: [
+        { day: "28", project: "Village finance", text: "Deferred management fee engine: CPI increases, daily and capped accrual.", status: "In progress" },
+        { day: "15", project: "NDIS platform", text: "SCHADS award pay rates and penalties applied to every shift.", status: "Shipped" },
+        { day: "03", project: "Workable", text: "30/60/90-day onboarding plans with check-ins and shared notes.", status: "Shipped" }
+      ] },
+      { month: "May", year: "2026", entries: [
+        { day: "15", project: "SEED", text: "SEED Sign: a standalone e-signature flow for the Contract Manager agent.", status: "Shipped" },
+        { day: "06", project: "Jayne Bandy AI", text: "Prompt version history, with restore and scoring of each version.", status: "Live" }
+      ] },
+      { month: "April", year: "2026", entries: [
+        { day: "22", project: "Workable", text: "Certification tracking, synced from Microsoft Learn through an Azure Function.", status: "Shipped" },
+        { day: "09", project: "Workable", text: "Marketing campaigns module under the CRM.", status: "Shipped" }
+      ] }
+    ];
+    return {
+      months: months.map(function (m) {
+        return Object.assign({}, m, { entries: m.entries.map(function (e) { return Object.assign({}, e, { stampColor: stamp[e.status] }); }) });
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

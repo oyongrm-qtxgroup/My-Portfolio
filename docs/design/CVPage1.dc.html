@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Raymundo Oyong CV page 1</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Source+Serif+4:opsz,wght@8..60,400..600&amp;display=swap">
+<style>
+body{margin:0;background:#FFFFFF}
+a{color:#141413}
+.cv-h2{margin:0 0 8px;padding-bottom:4px;border-bottom:1px solid #141413;font-family:'Archivo',sans-serif;font-stretch:80%;font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase}
+.cv-row{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.cv-org{font-weight:600}
+.cv-date{white-space:nowrap;font-variant-numeric:tabular-nums}
+.cv-sub{margin:10px 0 2px;font-weight:600;font-size:13.5px}
+.cv-sub span{font-weight:400;font-style:italic;color:#3E3E39}
+.cv-ul{margin:2px 0 0;padding:0 0 0 18px;display:flex;flex-direction:column;gap:2px}
+.cv-fill{color:#1D3FD8}
+</style>
+</helmet>
+<div style="width: 794px; height: 1123px; box-sizing: border-box; padding: 52px 60px 44px; background: #FFFFFF; color: #141413; font-family: 'Source Serif 4', Georgia, serif; font-size: 13.5px; line-height: 1.42; border-top: 4px solid #C8322A">
+
+<header style="padding-bottom: 12px">
+<h1 style="margin: 0; font-family: 'Archivo', sans-serif; font-stretch: 72%; font-weight: 700; font-size: 38px; line-height: 1; letter-spacing: 0.005em">Raymundo M. Oyong</h1>
+<p style="margin: 4px 0 0; font-family: 'Archivo', sans-serif; font-stretch: 85%; font-weight: 500; font-size: 15px">AI Product Engineer</p>
+<p style="margin: 8px 0 0; font-size: 12.5px; color: #3E3E39">Bulacan, Philippines · oyongrm@gmail.com · linkedin.com/in/raymundo-oyong-4ab94321a · github.com/oyong1926 · <span class="cv-fill">raymundo-oyong.vercel.app</span></p>
+</header>
+
+<section style="margin-top: 10px">
+<h2 class="cv-h2">Summary</h2>
+<p style="margin: 0">Software engineer with eight years of delivery, the most recent year spent shipping production AI products for Australian health, disability-care, aged-care and finance clients: voice agents, source-linked document drafting, award-pay and fee engines, and the integrations that connect them. Comfortable owning a product from the first client call to live support.</p>
+</section>
+
+<section style="margin-top: 16px">
+<h2 class="cv-h2">Professional Experience</h2>
+
+<div class="cv-row"><span class="cv-org">QTX (Qualiticks Pty Ltd)</span><span>Sydney, Australia (remote)</span></div>
+<div class="cv-row"><span style="font-style: italic">Senior AI Software Engineer</span><span class="cv-date">January 2026 – Present</span></div>
+
+<p class="cv-sub">Jayne Bandy AI <span>— AI voice receptionist for dental practices; lead engineer since April 2026</span></p>
+<ul class="cv-ul">
+<li>Led engineering of a live AI receptionist that answers and books calls for dental practices, covering voice quality, practice-system integrations and billing.</li>
+<li>Added failure alerts and a 15-minute health check after an unnoticed AI-provider outage, and fixed patient matching by caller number when names on file differed.</li>
+<li>Integrated three practice-management systems (CareStack, Core Practice, Dentally) behind one receptionist script, with caller-identity matching against patient records.</li>
+<li>Designed a review workflow that tests every script change against simulated and replayed real calls before approval, with version history, scoring and one-click restore.</li>
+<li>Launched automatic trials, a premium tier with custom voices, Stripe subscription sync, and per-country demo numbers on a new landing page.</li>
+</ul>
+
+<p class="cv-sub">Workforce and care platform <span>— provider under the National Disability Insurance Scheme (NDIS)</span></p>
+<ul class="cv-ul">
+<li>Delivered 68 of 73 work packages: rostering, SCHADS award pay rates and penalties, timesheets, invoicing by funding type, and MYOB payroll and sales-journal export.</li>
+<li>Hardened data access with row-level security and led the platform's migration to Microsoft Azure.</li>
+</ul>
+
+<p class="cv-sub">Care-plan drafting <span>— aged-care provider; technical lead</span></p>
+<ul class="cv-ul">
+<li>Specified Sprint 2 for the development team and built AI drafting in which every statement cites its source page, with contradictions raised for a clinician to review.</li>
+<li>Reduced the time per action from 6.5 seconds to about 1 second by moving the database connection to HTTPS.</li>
+</ul>
+
+<p class="cv-sub">Retirement-village finance system <span>— in development</span></p>
+<ul class="cv-ul">
+<li>Building a deferred management fee engine with CPI-based increases and daily, capped accrual, plus Westpac direct-debit files, period locking, and profit-and-loss, balance-sheet and trial-balance reports.</li>
+</ul>
+
+<p class="cv-sub">Internal operations platform and AI agents</p>
+<ul class="cv-ul">
+<li>Added six modules to the company platform: marketing campaigns, certification tracking synced from Microsoft Learn, 30/60/90-day onboarding, KPI reviews, ad-audience sync and sales booking links.</li>
+<li>Resolved recurring database-connection exhaustion by removing unfiltered real-time subscriptions.</li>
+<li>Built a contract-management agent and a standalone e-signature flow with tenant isolation and retrieval-augmented chat.</li>
+</ul>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":794,"height":1123}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

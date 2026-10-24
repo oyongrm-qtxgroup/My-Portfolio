@@ -1,0 +1,60 @@
+---
+no: '03'
+order: 3
+title: Care-plan drafting
+short: Drafts aged-care plans from client records, with every sentence linked to the page it came from.
+line: Drafts aged-care plans from a client's records. Every statement links back to the page it came from, and contradictions go to a clinician instead of being smoothed over.
+client: An aged-care provider
+role: Technical lead
+period: Oct 2026 – now
+stack: [Large language model, Microsoft Entra ID, Supabase]
+status: in-progress
+skills: [document-ai, security, architecture, leadership]
+---
+
+import Flow from '../../components/Flow.astro';
+import Section from '../../components/Section.astro';
+
+<Section label="§ 1 The challenge" ruled>
+
+Aged-care staff write each client's care plan from a stack of assessments, letters and notes. An AI can draft one in minutes, but a draft is only useful if a clinician can check it quickly and trust what they sign.
+
+</Section>
+
+<Flow
+  label="Fig. 1 From records to a plan"
+  caption="Documents become a sourced record; the draft cites it, and anything uncertain goes to a reviewer."
+  steps={[
+    { title: 'Records', note: 'documents and the risk assessment' },
+    { title: 'Clinical record', note: 'facts by domain, each linked to its page' },
+    { title: 'Draft', note: 'marked AI-assisted, names the model', key: true },
+    { title: 'Review items', note: 'contradictions, gaps, outdated evidence' },
+    { title: 'Approved plan', note: 'by a clinical reviewer, audited' },
+  ]}
+/>
+
+<Section
+  label="§ 2 The approach"
+  ruled
+  notes={["No client records were opened while reviewing the provider's current system; structure was compared using de-identified documents only."]}
+>
+
+### Evidence first
+
+Every statement in a draft links to the document page, quoted passage or assessment answer it came from. Contradictions, gaps and outdated or unreadable evidence become review items a clinician acknowledges; nothing is resolved silently.
+
+### Drafts that survive a closed tab
+
+Drafting runs on the server, so a two-minute draft keeps going if someone reloads or closes the tab. Only clinical reviewers can approve a plan, and every return, resubmission and approval is recorded.
+
+### A specification people can build from
+
+As technical lead I wrote the specification for each task in the second sprint from the signed proposal and the provider's requirements, and mapped their risk scoring onto the new system.
+
+</Section>
+
+<Section label="§ 3 The result" ruled>
+
+Each action now takes about 1 second instead of 6.5, after I moved the database connection to Supabase's secure HTTPS connection with encryption switched back on; the model didn't change. Reviewers see the source of every sentence, so checking a draft means following links rather than rereading the records. The tool is still being built with the provider.
+
+</Section>

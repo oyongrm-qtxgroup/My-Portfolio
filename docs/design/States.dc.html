@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Motion and states</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Source+Serif+4:opsz,wght@8..60,400..600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:inherit}
+:focus-visible{outline:2px solid #1D3FD8;outline-offset:3px}
+.s-sec{display:grid;grid-template-columns:200px minmax(0,1fr);gap:40px;padding:36px 0;border-top:2px solid #141413}
+.s-lab{font-family:'IBM Plex Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#56564F;border-right:1.5px solid #C8322A;padding-right:16px;line-height:1.6}
+.s-btn{min-height:44px;padding:0 16px;background:#141413;color:#F6F6F3;border:1px solid #141413;font-family:'IBM Plex Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:.06em;cursor:pointer}
+.s-btn:hover{background:#1D3FD8;border-color:#1D3FD8}
+.s-btn[disabled]{opacity:.7;cursor:progress}
+.s-ghost{min-height:44px;padding:0 14px;background:none;color:#141413;border:1px solid #56564F;font-family:'IBM Plex Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:.06em;cursor:pointer}
+.s-ghost[aria-pressed="true"]{background:#141413;color:#F6F6F3;border-color:#141413}
+.s-cap{margin:12px 0 0;font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.6;color:#56564F;max-width:60em}
+.s-ln{display:inline-block;animation:s-rise .7s cubic-bezier(.2,.7,0,1) both;animation-delay:calc(var(--i,0)*90ms + 150ms)}
+.s-draw{position:absolute;left:120px;top:0;bottom:0;width:1.5px;background:#C8322A;transform-origin:top;animation:s-drawy .8s cubic-bezier(.2,.7,0,1) both}
+.s-stamp{display:inline-block;border:1.5px solid currentColor;padding:3px 8px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;transform:rotate(-2deg);animation:s-press .45s cubic-bezier(.3,.7,.4,1) both;animation-delay:var(--d,0s)}
+.s-rule{height:1px;background:#141413;transform-origin:left;animation:s-ink 1.4s cubic-bezier(.4,0,.2,1) infinite;animation-delay:calc(var(--i,0)*140ms)}
+.s-in{animation:s-rise .5s cubic-bezier(.2,.7,0,1) both;animation-delay:calc(var(--i,0)*90ms)}
+.s-dots::after{content:"";display:inline-block;width:1.5em;text-align:left;animation:s-dots 1.2s steps(4,end) infinite}
+.s-field{display:flex;flex-direction:column;gap:6px}
+.s-field label{font-family:'IBM Plex Mono',monospace;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+.s-field input,.s-field textarea{font-family:'Source Serif 4',Georgia,serif;font-size:18px;padding:10px 0;border:0;border-bottom:1.5px solid #56564F;background:transparent;color:#141413;min-height:44px;box-sizing:border-box}
+.s-field input:focus,.s-field textarea:focus{outline:none;border-bottom:2px solid #1D3FD8}
+.s-field input[aria-invalid="true"]{border-bottom-color:#C8322A}
+.s-field input::placeholder,.s-field textarea::placeholder{color:#56564F;opacity:1}
+.rm *,.rm *::after{animation:none !important;transition:none !important}
+@keyframes s-rise{from{opacity:0;transform:translateY(.35em)}to{opacity:1;transform:none}}
+@keyframes s-drawy{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes s-press{0%{opacity:0;transform:scale(1.6) rotate(-9deg)}70%{opacity:1;transform:scale(.96) rotate(-1deg)}100%{opacity:1;transform:rotate(-2deg)}}
+@keyframes s-ink{0%{transform:scaleX(0);opacity:1}60%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:.25}}
+@keyframes s-dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+@media (prefers-reduced-motion:reduce){*,*::after{animation:none !important;transition:none !important}}
+</style>
+</helmet>
+<div class="{{rootClass}}" style="width: 1440px; height: 2600px; box-sizing: border-box; padding: 56px 80px; background: #F6F6F3; color: #141413; font-family: 'Source Serif 4', Georgia, serif; overflow: hidden">
+
+<header style="display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding-bottom: 20px">
+<div>
+<h1 style="margin: 0; font-family: 'Archivo', sans-serif; font-stretch: 72%; font-weight: 700; font-size: 72px; line-height: 0.95">Motion &amp; states</h1>
+<p style="margin: 12px 0 0; font-size: 19px; line-height: 1.5; max-width: 40em">Press the buttons. Everything moves once, for a reason, and stops. Nothing loops except an indicator that is actually waiting on something.</p>
+</div>
+<button type="button" class="s-ghost" aria-pressed="{{rmPressed}}" onClick="{{toggleRm}}">Simulate “reduce motion”</button>
+</header>
+
+<section class="s-sec">
+<div class="s-lab">A · Page load<br>0.0–1.4 s</div>
+<div>
+<div style="position: relative; height: 300px; border: 1px solid #141413; overflow: hidden; background: #F6F6F3">
+<sc-if value="{{showA}}" hint-placeholder-val="{{ true }}">
+<div style="position: absolute; inset: 0">
+<span class="s-draw" aria-hidden="true"></span>
+<div style="position: absolute; left: 0; right: 0; top: 0; padding: 12px 20px; border-bottom: 2px solid #141413; font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em">R. Oyong — Log</div>
+<div style="position: absolute; left: 148px; top: 70px; right: 24px">
+<div style="font-family: 'Archivo', sans-serif; font-stretch: 72%; font-weight: 700; font-size: 46px; line-height: 0.98"><span class="s-ln" style="--i: 0">I build the software</span> <span class="s-ln" style="--i: 1">that answers the phone,</span> <span class="s-ln" style="--i: 2">bills the residents</span> <span class="s-ln" style="--i: 3">and rosters the carers.</span></div>
+<div style="margin-top: 22px; display: flex; gap: 14px">
+<span class="s-stamp" style="--d: 0.9s; color: #1D3FD8">Live</span>
+<span class="s-stamp" style="--d: 0.98s; color: #141413">Shipped</span>
+<span class="s-stamp" style="--d: 1.06s; color: #C8322A">In progress</span>
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+<div style="display: flex; align-items: center; gap: 16px; margin-top: 16px">
+<button type="button" class="s-btn" onClick="{{replayA}}">Replay load</button>
+<p class="s-cap" style="margin: 0">The margin line draws down (0–0.8 s), the headline sets line by line (90 ms apart), figures count up, stamps press in last. Once per visit.</p>
+</div>
+</div>
+</section>
+
+<section class="s-sec">
+<div class="s-lab">B · Opening a project<br>View Transitions</div>
+<div>
+<div style="position: relative; height: 300px; border: 1px solid #141413; overflow: hidden">
+<div style="position: absolute; left: 24px; right: 24px; top: 24px; display: flex; flex-direction: column">
+<div style="opacity: {{vtOthers}}; transition: opacity .3s ease; padding: 12px 0; border-bottom: 1px solid #D8D8D2; font-family: 'Archivo', sans-serif; font-stretch: 78%; font-weight: 700; font-size: 26px">Workforce &amp; care platform</div>
+<div style="height: 54px; border-bottom: 1px solid #D8D8D2; opacity: {{vtOthers}}; transition: opacity .3s ease"></div>
+<div style="opacity: {{vtOthers}}; transition: opacity .3s ease; padding: 12px 0; border-bottom: 1px solid #D8D8D2; font-family: 'Archivo', sans-serif; font-stretch: 78%; font-weight: 700; font-size: 26px">Retirement-village finance</div>
+</div>
+<div style="position: absolute; left: 24px; top: {{vtTop}}; font-family: 'Archivo', sans-serif; font-stretch: 72%; font-weight: 700; font-size: {{vtSize}}; line-height: 0.95; color: #141413; transition: top .55s cubic-bezier(.2,.7,0,1), font-size .55s cubic-bezier(.2,.7,0,1)">Jayne Bandy AI</div>
+<div style="position: absolute; left: 24px; right: 24px; top: 190px; font-size: 20px; line-height: 1.4; opacity: {{vtBody}}; transition: opacity .35s ease .35s">An AI receptionist for dental practices. It answers the phone, finds a free slot, books it.</div>
+</div>
+<div style="display: flex; align-items: center; gap: 16px; margin-top: 16px">
+<button type="button" class="s-btn" onClick="{{toggleVt}}">{{vtLabel}}</button>
+<p class="s-cap" style="margin: 0">The project title is the same element on both pages, so it travels from the list into the headline while the other rows fade. Back does the reverse. Browsers without View Transitions get a plain page load.</p>
+</div>
+</div>
+</section>
+
+<section class="s-sec">
+<div class="s-lab">C · Loading<br>three cases</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px">
+
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em">C1 · Between pages</div>
+<div style="position: relative; height: 200px; border: 1px solid #141413; overflow: hidden">
+<div style="position: absolute; left: 0; top: 0; height: 3px; background: #1D3FD8; width: {{navW}}; opacity: {{navO}}; transition: {{navT}}"></div>
+<div style="padding: 14px 16px; border-bottom: 2px solid #141413; font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase">R. Oyong — Log</div>
+<div style="padding: 16px; font-family: 'Archivo', sans-serif; font-stretch: 72%; font-weight: 700; font-size: 30px; line-height: 1">{{navTitle}}</div>
+</div>
+<button type="button" class="s-btn" onClick="{{navigate}}">Navigate</button>
+<p class="s-cap" style="margin: 0">An ink line under the header, only if a page takes longer than 150 ms. Static pages usually beat it.</p>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em">C2 · A figure</div>
+<div role="img" aria-label="{{figLabel}}" aria-busy="{{figBusy}}" style="position: relative; height: 200px; border: 1px solid #141413; overflow: hidden; padding: 24px; box-sizing: border-box">
+<sc-if value="{{figLoading}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 22px; padding-top: 6px">
+<div class="s-rule" style="--i: 0"></div>
+<div class="s-rule" style="--i: 1; width: 86%"></div>
+<div class="s-rule" style="--i: 2; width: 92%"></div>
+<div class="s-rule" style="--i: 3; width: 64%"></div>
+<div class="s-rule" style="--i: 4; width: 78%"></div>
+</div>
+</sc-if>
+<sc-if value="{{figLoaded}}" hint-placeholder-val="{{ false }}">
+<div class="s-in" style="display: flex; align-items: center; gap: 10px; height: 100%; font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase">
+<span style="flex: 1; border: 1.5px solid #141413; padding: 12px 8px; text-align: center">Caller</span>
+<span aria-hidden="true">→</span>
+<span style="flex: 1.3; border: 2px solid #1D3FD8; color: #1D3FD8; padding: 12px 8px; text-align: center">Agent</span>
+<span aria-hidden="true">→</span>
+<span style="flex: 1; border: 1.5px solid #141413; padding: 12px 8px; text-align: center">Booked</span>
+</div>
+</sc-if>
+<sc-if value="{{figIdle}}" hint-placeholder-val="{{ true }}">
+<div style="height: 100%; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #56564F">Not loaded</div>
+</sc-if>
+</div>
+<button type="button" class="s-btn" onClick="{{loadFig}}">{{figBtn}}</button>
+<p class="s-cap" style="margin: 0">Placeholder lines are ruled in pen, left to right, at the figure's real size so nothing jumps. No grey shimmer.</p>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em">C3 · More log entries</div>
+<div aria-live="polite" style="height: 200px; border: 1px solid #141413; overflow: hidden; padding: 0 16px">
+<div style="padding: 12px 0; border-bottom: 1px solid #D8D8D2; font-size: 15px; line-height: 1.4"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #56564F">04.26 · </span>Marketing campaigns module.</div>
+<sc-if value="{{moreLoaded}}" hint-placeholder-val="{{ false }}">
+<div class="s-in" style="--i: 0; padding: 12px 0; border-bottom: 1px solid #D8D8D2; font-size: 15px; line-height: 1.4"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #56564F">03.26 · </span>Replaced a six-hourly sync with a cached Azure Function.</div>
+<div class="s-in" style="--i: 1; padding: 12px 0; border-bottom: 1px solid #D8D8D2; font-size: 15px; line-height: 1.4"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #56564F">03.26 · </span>Interview rescheduling with calendar view.</div>
+</sc-if>
+<sc-if value="{{moreLoading}}" hint-placeholder-val="{{ false }}">
+<div style="padding: 14px 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; color: #56564F"><span class="s-dots">Fetching March</span></div>
+</sc-if>
+</div>
+<button type="button" class="s-btn" onClick="{{loadMore}}" disabled="{{moreBusy}}">{{moreBtn}}</button>
+<p class="s-cap" style="margin: 0">New rows set in one after another; screen readers hear "2 entries added".</p>
+</div>
+
+</div>
+</section>
+
+<section class="s-sec">
+<div class="s-lab">D · Contact form<br>every state</div>
+<div style="display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 48px">
+<form onSubmit="{{submit}}" style="display: flex; flex-direction: column; gap: 22px">
+<div class="s-field">
+<label for="s-name">Your name</label>
+<input id="s-name" name="name" type="text" autocomplete="name" placeholder="Alex Rivera">
+</div>
+<div class="s-field">
+<label for="s-email">Email</label>
+<input id="s-email" name="email" type="text" inputmode="email" autocomplete="email" aria-invalid="{{emailInvalid}}" aria-describedby="s-email-err" placeholder="alex@clinic.com.au">
+<sc-if value="{{showError}}" hint-placeholder-val="{{ false }}">
+<p id="s-email-err" style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #C8322A">Enter an email like name@company.com so I can reply.</p>
+</sc-if>
+</div>
+<div class="s-field">
+<label for="s-msg">What needs building?</label>
+<textarea id="s-msg" name="message" rows="3" placeholder="A booking line for three clinics." style="resize: vertical"></textarea>
+</div>
+<div style="display: flex; align-items: center; gap: 20px; min-height: 52px">
+<button type="submit" class="s-btn" disabled="{{sending}}"><span class="{{sendClass}}">{{sendLabel}}</span></button>
+<sc-if value="{{showSent}}" hint-placeholder-val="{{ false }}">
+<span class="s-stamp" style="color: #1D3FD8">Received · 24.10 · 14:32</span>
+</sc-if>
+</div>
+<sc-if value="{{showSent}}" hint-placeholder-val="{{ false }}">
+<p class="s-in" role="status" style="margin: 0; font-size: 18px; line-height: 1.5">Thanks. It's in my inbox, and a copy is on its way to you.</p>
+</sc-if>
+<sc-if value="{{showFailed}}" hint-placeholder-val="{{ false }}">
+<p role="alert" style="margin: 0; font-size: 18px; line-height: 1.5; color: #C8322A">That didn't send. Your message is still here, so try again, or write to <a href="mailto:oyongrm@gmail.com" style="color: #1D3FD8">oyongrm@gmail.com</a>.</p>
+</sc-if>
+</form>
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em">Jump to a state</div>
+<div role="group" aria-label="Form state" style="display: flex; flex-wrap: wrap; gap: 8px">
+<button type="button" class="s-ghost" aria-pressed="{{fIdle}}" onClick="{{fsIdle}}">Idle</button>
+<button type="button" class="s-ghost" aria-pressed="{{fError}}" onClick="{{fsError}}">Invalid email</button>
+<button type="button" class="s-ghost" aria-pressed="{{fSending}}" onClick="{{fsSending}}">Sending</button>
+<button type="button" class="s-ghost" aria-pressed="{{fSent}}" onClick="{{fsSent}}">Sent</button>
+<button type="button" class="s-ghost" aria-pressed="{{fFailed}}" onClick="{{fsFailed}}">Failed</button>
+</div>
+<p class="s-cap">Or press Send with the email empty or mistyped. Errors appear under the field, in words, and are announced. The spam check (Cloudflare Turnstile) runs invisibly; a bot gets the same "Received" stamp and goes nowhere.</p>
+</div>
+</div>
+</section>
+
+<section class="s-sec">
+<div class="s-lab">E · Theme<br>paper / night / auto</div>
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: start">
+<div style="height: 180px; border: 1px solid #141413; background: {{thPaper}}; color: {{thInk}}; transition: background-color .3s ease, color .3s ease; padding: 20px; box-sizing: border-box; position: relative">
+<span style="position: absolute; left: 96px; top: 0; bottom: 0; width: 1.5px; background: {{thMargin}}; transition: background-color .3s ease"></span>
+<div style="padding-left: 96px; font-family: 'Archivo', sans-serif; font-stretch: 72%; font-weight: 700; font-size: 34px; line-height: 1">Bills the residents.</div>
+<div style="padding-left: 96px; margin-top: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: {{thAccent}}; transition: color .3s ease">oyongrm@gmail.com</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div role="group" aria-label="Colour theme" style="display: flex; gap: 8px">
+<button type="button" class="s-ghost" aria-pressed="{{tPaper}}" onClick="{{thSetPaper}}">Paper</button>
+<button type="button" class="s-ghost" aria-pressed="{{tNight}}" onClick="{{thSetNight}}">Night</button>
+<button type="button" class="s-ghost" aria-pressed="{{tAuto}}" onClick="{{thSetAuto}}">Auto</button>
+</div>
+<p class="s-cap" style="margin: 0">Auto follows the phone or laptop setting and is the default. A 300 ms ink-and-paper cross-fade, no flash on first load (the choice is applied before the page paints).</p>
+</div>
+</div>
+</section>
+
+<section class="s-sec">
+<div class="s-lab">F · Not found<br>404</div>
+<div style="display: flex; align-items: baseline; gap: 40px; flex-wrap: wrap">
+<div style="font-family: 'Archivo', sans-serif; font-stretch: 72%; font-weight: 700; font-size: 96px; line-height: 0.9">No entry.</div>
+<div style="display: flex; flex-direction: column; gap: 10px; font-size: 19px; line-height: 1.5; max-width: 30em">
+<p style="margin: 0">There's nothing logged at <span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px">/work/bayani-quest</span>. It may have been retired with the old site.</p>
+<a href="Main.dc.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; text-transform: uppercase; color: #1D3FD8">Back to the log →</a>
+</div>
+</div>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2600}}'>
+class Component extends DCLogic {
+  later(fn, ms) {
+    this.timers = this.timers || [];
+    this.timers.push(setTimeout(fn, ms));
+  }
+  componentWillUnmount() {
+    (this.timers || []).forEach(function (t) { clearTimeout(t); });
+  }
+  renderVals() {
+    var self = this;
+    var st = this.state || {};
+    var showA = st.showA !== false;
+    var vt = !!st.vt;
+    var nav = st.nav || "idle";
+    var fig = st.fig || "idle";
+    var more = st.more || "idle";
+    var form = st.form || "idle";
+    var theme = st.theme || "paper";
+    var rm = !!st.rm;
+    var navMap = {
+      idle: ["0%", "0", "none"],
+      loading: ["72%", "1", "width 1.2s cubic-bezier(.2,.7,0,1)"],
+      done: ["100%", "0", "width .2s ease, opacity .3s ease .25s"]
+    }[nav];
+    var dark = theme === "night";
+    if (theme === "auto") dark = !!(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    function set(o) { return function () { self.setState(o); }; }
+    return {
+      rootClass: rm ? "rm" : "",
+      rmPressed: rm ? "true" : "false",
+      toggleRm: function () { self.setState({ rm: !rm }); },
+      showA: showA,
+      replayA: function () { self.setState({ showA: false }); self.later(function () { self.setState({ showA: true }); }, 40); },
+      vtTop: vt ? "24px" : "92px",
+      vtSize: vt ? "96px" : "26px",
+      vtOthers: vt ? "0" : "1",
+      vtBody: vt ? "1" : "0",
+      vtLabel: vt ? "Back to list" : "Open Jayne Bandy AI",
+      toggleVt: function () { self.setState({ vt: !vt }); },
+      navW: navMap[0], navO: navMap[1], navT: navMap[2],
+      navTitle: nav === "idle" ? "Work" : "The log",
+      navigate: function () {
+        self.setState({ nav: "loading" });
+        self.later(function () { self.setState({ nav: "done" }); }, 1300);
+        self.later(function () { self.setState({ nav: "idle" }); }, 2000);
+      },
+      figIdle: fig === "idle", figLoading: fig === "loading", figLoaded: fig === "loaded",
+      figBusy: fig === "loading" ? "true" : "false",
+      figLabel: fig === "loaded" ? "Diagram: caller to agent to booked" : "Figure loading",
+      figBtn: fig === "loaded" ? "Reset" : "Load figure",
+      loadFig: function () {
+        if (fig === "loaded") { self.setState({ fig: "idle" }); return; }
+        self.setState({ fig: "loading" });
+        self.later(function () { self.setState({ fig: "loaded" }); }, 1800);
+      },
+      moreLoaded: more === "loaded", moreLoading: more === "loading",
+      moreBusy: more === "loading",
+      moreBtn: more === "loaded" ? "Reset" : (more === "loading" ? "Loading" : "Load March"),
+      loadMore: function () {
+        if (more === "loaded") { self.setState({ more: "idle" }); return; }
+        self.setState({ more: "loading" });
+        self.later(function () { self.setState({ more: "loaded" }); }, 1400);
+      },
+      emailInvalid: form === "error" ? "true" : "false",
+      showError: form === "error",
+      sending: form === "sending",
+      sendLabel: form === "sending" ? "Sending" : (form === "failed" ? "Try again" : "Send"),
+      sendClass: form === "sending" ? "s-dots" : "",
+      showSent: form === "sent",
+      showFailed: form === "failed",
+      submit: function (e) {
+        e.preventDefault();
+        var el = e.target && e.target.elements ? e.target.elements.email : null;
+        var v = el ? String(el.value).trim() : "";
+        if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) { self.setState({ form: "error" }); if (el) el.focus(); return; }
+        self.setState({ form: "sending" });
+        self.later(function () { self.setState({ form: "sent" }); }, 1400);
+      },
+      fIdle: form === "idle" ? "true" : "false",
+      fError: form === "error" ? "true" : "false",
+      fSending: form === "sending" ? "true" : "false",
+      fSent: form === "sent" ? "true" : "false",
+      fFailed: form === "failed" ? "true" : "false",
+      fsIdle: set({ form: "idle" }), fsError: set({ form: "error" }), fsSending: set({ form: "sending" }), fsSent: set({ form: "sent" }), fsFailed: set({ form: "failed" }),
+      thPaper: dark ? "#131412" : "#F6F6F3",
+      thInk: dark ? "#ECEBE6" : "#141413",
+      thMargin: dark ? "#E0604F" : "#C8322A",
+      thAccent: dark ? "#93A8FF" : "#1D3FD8",
+      tPaper: theme === "paper" ? "true" : "false",
+      tNight: theme === "night" ? "true" : "false",
+      tAuto: theme === "auto" ? "true" : "false",
+      thSetPaper: set({ theme: "paper" }), thSetNight: set({ theme: "night" }), thSetAuto: set({ theme: "auto" })
+    };
+  }
+}
+</script>
+</body>
+</html>

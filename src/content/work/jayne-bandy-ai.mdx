@@ -1,0 +1,60 @@
+---
+no: '01'
+order: 1
+title: Jayne Bandy AI
+short: An AI receptionist that answers calls for dental practices and books them into the practice's own system.
+line: An AI receptionist for dental practices. It answers the phone, finds a free slot in the practice's own system and books it, and every change to what it says is tested before a caller hears it.
+client: A QTX product
+role: Lead engineer, from April 2026
+period: Apr 2026 – now
+stack: [Twilio, ElevenLabs, Supabase, Stripe, CareStack, Core Practice, Dentally]
+status: live
+skills: [voice-ai, integrations, reliability, leadership]
+---
+
+import Flow from '../../components/Flow.astro';
+import Section from '../../components/Section.astro';
+
+<Section label="§ 1 The challenge" ruled>
+
+A dental receptionist can't answer the phone while checking a patient in, and a missed call is often a lost booking. Practices needed something that answers every call, books into the diary they already use, and sounds like part of their team rather than a phone menu.
+
+</Section>
+
+<Flow
+  label="Fig. 1 One call"
+  caption="A patient rings the practice's own number; the agent books into the practice system or takes a callback."
+  steps={[
+    { title: 'Caller', note: 'a patient rings the practice' },
+    { title: 'Twilio number', note: "the practice's own line" },
+    { title: 'Voice agent', note: 'ElevenLabs voice + the reviewed script', key: true, link: 'two' },
+    { title: 'Practice system', note: 'CareStack · Core Practice · Dentally' },
+    { title: 'Booked', note: 'or a callback request' },
+  ]}
+/>
+
+<Section
+  label="§ 2 The approach"
+  ruled
+  notes={['Prospects hear their own accent: each country has its own demo number.']}
+>
+
+### Sound like the practice's own receptionist
+
+Each practice gets one voice that stays the same from call to call, turn-taking that stops the agent talking over people, and the real date and time on every call, so "next Tuesday" means the right day.
+
+### One script, three booking systems
+
+CareStack, Core Practice and Dentally sit behind a single receptionist script. Callers are recognised by the number they ring from, even when the name on file is spelt differently, so the agent finds their appointment instead of asking twice.
+
+### Test every change before a caller hears it
+
+Practices ask for script changes in plain English. Before an admin approves one, it runs against standard scenarios and replays of real calls, and every version can be restored. Practices can't see or copy the prompt behind their receptionist.
+
+</Section>
+
+<Section label="§ 3 The result" ruled>
+
+Jayne Bandy AI is live, answering and booking calls in practices' own systems. A health check runs every 15 minutes and failures raise an alert, so a problem with an AI provider is caught in minutes rather than noticed by a practice. New practices start on an automatic trial and can move to a premium tier with a custom voice, with subscriptions kept in step with Stripe.
+
+</Section>

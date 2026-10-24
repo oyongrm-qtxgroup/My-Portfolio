@@ -1,0 +1,85 @@
+---
+// A case-study section: label in the margin, prose in the middle, and optional
+// margin notes on the right (inline under the text on narrow screens).
+interface Props {
+  label: string;
+  title?: string;
+  notes?: string[];
+  ruled?: boolean;
+}
+
+const { label, title, notes = [], ruled = false } = Astro.props;
+// '§ 1 What I built' → '§ 1' / 'What I built'; 'Fig. 1 One call' → 'Fig. 1' / 'One call'.
+const [, num = label, name = ''] = label.match(/^(\S+ \S+) (.*)$/) ?? [];
+---
+
+<section class:list={['row', 'cs', { ruled }]}>
+  <div class="mar label">{num}<br />{name}</div>
+  <div class="body cs-body">
+    <div class="prose">
+      {title ? <h2 class="title cs-title">{title}</h2> : <h2 class="visually-hidden">{name || num}</h2>}
+      <slot />
+    </div>
+    {
+      notes.length > 0 && (
+        <aside class="cs-notes" aria-label="Margin notes">
+          {notes.map((n) => (
+            <p class="sidenote">{n}</p>
+          ))}
+        </aside>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .cs-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 240px;
+    gap: 40px;
+  }
+
+  .cs-title {
+    font-size: 34px;
+    margin-bottom: 16px;
+  }
+
+  .prose :global(h3) {
+    font-family: var(--font-display);
+    font-stretch: 78%;
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1.1;
+    margin: 32px 0 8px;
+  }
+
+  .prose :global(h3:first-child) {
+    margin-top: 0;
+  }
+
+  .prose :global(p + p) {
+    margin-top: 16px;
+  }
+
+  .prose :global(ul) {
+    margin: 12px 0 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .cs-notes {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding-top: 6px;
+  }
+
+  @media (max-width: 1040px) {
+    .cs-body {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 24px;
+    }
+  }
+</style>

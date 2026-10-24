@@ -1,0 +1,50 @@
+---
+const choices = [
+  { value: 'paper', label: 'Paper' },
+  { value: 'night', label: 'Night' },
+  { value: 'auto', label: 'Auto' },
+];
+---
+
+<div class="theme-switch" role="group" aria-label="Colour theme">
+  {
+    choices.map((c) => (
+      <button type="button" class="seg" data-theme-set={c.value} aria-pressed="false">
+        {c.label}
+      </button>
+    ))
+  }
+</div>
+
+<script>
+  function sync() {
+    const choice = document.documentElement.dataset.themeChoice ?? 'auto';
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-set]').forEach((btn) => {
+      btn.setAttribute('aria-pressed', String(btn.dataset.themeSet === choice));
+    });
+  }
+
+  function bind() {
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-set]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        try {
+          localStorage.setItem('theme', btn.dataset.themeSet ?? 'auto');
+        } catch {
+          // Storage blocked: the choice lasts for this page only.
+          document.documentElement.dataset.themeChoice = btn.dataset.themeSet;
+        }
+        document.dispatchEvent(new Event('theme:change'));
+        sync();
+      });
+    });
+    sync();
+  }
+
+  document.addEventListener('astro:page-load', bind);
+</script>
+
+<style>
+  .theme-switch {
+    display: flex;
+  }
+</style>
