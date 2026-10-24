@@ -82,11 +82,13 @@ Status values: `live | shipped | in-progress | handed-over` → stamp colours: a
 
 Each phase ends with a Vercel preview and a review against the canvas before the next starts.
 
-### Phase 0 — Prep (S)
-- Tag the current site `v1-legacy`; record the current production deployment for rollback.
-- Export the current portfolio Supabase content to JSON as a backup. The project is the one in Vercel's `VITE_SUPABASE_URL` (it is not the Workable project).
-- Delete `PORTFOLIO_VIBE_PROMPT.md` and `.github/prompts/*` (they describe the old neon look and will steer agents back to it). Rewrite `README.md`.
-- **Done when:** backup file exists, tag pushed.
+### Phase 0 — Prep (S) — done 24 Oct 2026, except the content export
+
+- [x] Rollback point recorded: legacy site is `main` at `06fde79` (2026-03-07); last legacy production deployment `dpl_ZXiT92GCh2EKgtwRFh4n4BTGZ1nN`. (A `v1-legacy` git tag could not be pushed from the build session; create it from GitHub if wanted.)
+- [x] Deleted `PORTFOLIO_VIBE_PROMPT.md` and `.github/prompts/*` (old neon-look instructions).
+- [x] README rewritten for the rebuild.
+- [x] Removed the personal phone number and street address from `supabase/seed_resume.sql`. **They remain in public git history** (commit `344c8a0` on `main`); purging them needs a history rewrite and force-push, which is the owner's decision.
+- [ ] **Export of the legacy Supabase content.** The legacy database is in a Supabase account this build session can't reach (none of the 18 accessible projects has the portfolio tables). Options: (a) the owner exports the tables as CSV from the Supabase dashboard; or (b) the seed SQL files in git history are accepted as the backup, since all new content is written from scratch. Contact-form messages (`contact_submissions`) contain visitors' personal data and must never be committed; export them privately before the project is retired in Phase 6.
 
 ### Phase 1 — Foundation (M)
 - Replace the Vite SPA with Astro + TypeScript strict + Vercel adapter. Remove three/r3f/drei/postprocessing/maath, framer-motion, shadcn/radix, dnd-kit, jspdf, react-router, next-themes, Supabase client, admin pages/hooks/contexts.
