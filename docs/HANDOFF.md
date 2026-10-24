@@ -21,7 +21,7 @@
 
 ## Next step
 
-Phases 3–5 are built. Turnstile and Resend keys are set in Vercel for Production only (24 Oct 2026); `/privacy/` references Cloudflare's Turnstile Privacy Addendum, which invisible mode requires. Next: Phase 6 (launch) when the owner says so. After any content change: `npm run build && npm run cv:pdf && npm run build` and commit the PDF.
+Phases 3–5 are built and Phase 6 is prepared (SEO, share images, redirects, performance); only the launch itself remains, on the owner's go-ahead (checklist in the plan, Phase 6). Turnstile and Resend keys are set in Vercel for Production only (24 Oct 2026); `/privacy/` references Cloudflare's Turnstile Privacy Addendum, which invisible mode requires. After any content change: `npm run build && npm run cv:pdf && npm run og && npm run build`, then commit the PDF and the cards.
 
 ## Practical notes
 

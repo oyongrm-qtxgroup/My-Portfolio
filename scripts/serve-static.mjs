@@ -4,6 +4,7 @@
 import { createServer } from 'node:http';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { extname, join, normalize } from 'node:path';
+import { brotliCompressSync } from 'node:zlib';
 
 const ROOT = new URL('../.vercel/output/static/', import.meta.url).pathname;
 const TYPES = {
@@ -27,8 +28,17 @@ export async function serveStatic(port) {
       (f) => f.startsWith(ROOT) && existsSync(f) && statSync(f).isFile(),
     );
     const served = file ?? join(ROOT, '404.html');
-    res.writeHead(file ? 200 : 404, { 'content-type': TYPES[extname(served)] ?? 'application/octet-stream' });
-    res.end(readFileSync(served));
+    const type = TYPES[extname(served)] ?? 'application/octet-stream';
+    const headers = { 'content-type': type };
+    // Like Vercel: hashed assets cache for a year, text is brotli-compressed.
+    if (path.startsWith('/_astro/')) headers['cache-control'] = 'public, max-age=31536000, immutable';
+    let body = readFileSync(served);
+    if (/text|javascript|xml|svg/.test(type) && /\bbr\b/.test(req.headers['accept-encoding'] ?? '')) {
+      body = brotliCompressSync(body);
+      headers['content-encoding'] = 'br';
+    }
+    res.writeHead(file ? 200 : 404, headers);
+    res.end(body);
   });
   await new Promise((resolve) => server.listen(port, resolve));
   return { base, close: () => new Promise((resolve) => server.close(resolve)) };

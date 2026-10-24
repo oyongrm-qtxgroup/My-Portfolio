@@ -27,3 +27,5 @@ jobs:
       - run: npm run verify
       # The committed CV PDF must match the content and pass the Harvard checks.
       - run: npm run cv:pdf -- --check
+      # Likewise the share images in public/og.
+      - run: npm run og -- --check

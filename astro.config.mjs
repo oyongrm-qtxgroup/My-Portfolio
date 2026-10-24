@@ -9,7 +9,10 @@ export default defineConfig({
   adapter: vercel(),
   integrations: [mdx()],
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
-  build: { inlineStylesheets: 'auto' },
+  // Inline all CSS: it is small, and separate files blocked the first paint.
+  build: { inlineStylesheets: 'always' },
+  // The old site's blog is gone; its links go home (posts: src/pages/blog/[...slug].ts).
+  redirects: { '/blog': '/' },
   // Contact form (src/actions). Pages stay static; only the action runs on demand.
   // Secrets are optional at build time: the action refuses to run in production
   // without them, and falls back to Cloudflare's test keys and a dry run elsewhere.

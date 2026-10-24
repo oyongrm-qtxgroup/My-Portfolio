@@ -1,0 +1,122 @@
+---
+// Share-image source: a 1200×630 card per public page, screenshotted to
+// public/og/<slug>.png by `npm run og`. Not linked, not in the sitemap, noindex.
+import { palettes } from '../../design/tokens';
+import { getPublicPages, type PublicPage } from '../../lib/pages';
+import '../../styles/fonts.css';
+
+export async function getStaticPaths() {
+  return (await getPublicPages()).map((page) => ({ params: { slug: page.slug }, props: { page } }));
+}
+
+interface Props {
+  page: PublicPage;
+}
+
+const { page } = Astro.props;
+const t = palettes.paper;
+const long = page.title.length > 40;
+// define:vars emits nothing on an is:inline style, so write the palette out directly.
+const vars = `:root{--paper:${t.paper};--ink:${t.ink};--ink2:${t.ink2};--rule:${t.rule};--accent:${t.accent};--margin:${t.margin}}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>Share image: {page.title}</title>
+    <style is:inline set:html={vars} />
+    <style is:inline>
+      html,
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+      }
+      .card {
+        position: relative;
+        width: 1200px;
+        height: 630px;
+        box-sizing: border-box;
+        display: grid;
+        grid-template-columns: 200px 1fr;
+        overflow: hidden;
+      }
+      .card::before {
+        content: '';
+        position: absolute;
+        left: 200px;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--margin);
+      }
+      .mar {
+        padding: 56px 24px 0 56px;
+        font: 500 18px/1.5 'IBM Plex Mono', monospace;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ink2);
+      }
+      .body {
+        display: flex;
+        flex-direction: column;
+        padding: 56px 72px 56px 56px;
+      }
+      .kicker {
+        font: 500 22px/1.4 'IBM Plex Mono', monospace;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--ink2);
+      }
+      h1 {
+        margin: 28px 0 0;
+        font-family: 'Archivo Variable', sans-serif;
+        font-stretch: 72%;
+        font-weight: 700;
+        line-height: 0.95;
+        letter-spacing: -0.01em;
+        font-size: 120px;
+        text-wrap: balance;
+      }
+      h1.long {
+        font-size: 86px;
+      }
+      .line {
+        margin: 28px 0 0;
+        max-width: 26em;
+        font: 30px/1.35 'Source Serif 4 Variable', Georgia, serif;
+      }
+      .foot {
+        margin-top: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        padding-top: 20px;
+        border-top: 2px solid var(--ink);
+        gap: 24px;
+        font: 500 18px 'IBM Plex Mono', monospace;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+      }
+      .foot .site {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="mar">R. Oyong<br />— Log</div>
+      <div class="body">
+        <div class="kicker">{page.kicker}</div>
+        <h1 class:list={{ long }}>{page.title}</h1>
+        {page.line && <p class="line">{page.line}</p>}
+        <div class="foot">
+          <span>Based in the Philippines · working with QTX, Sydney</span>
+          <span class="site">raymundo-oyong.vercel.app</span>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

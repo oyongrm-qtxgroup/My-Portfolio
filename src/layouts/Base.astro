@@ -1,10 +1,11 @@
 ---
 import { ClientRouter } from 'astro:transitions';
-import archivoLatin from '@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2?url';
-import serifLatin from '@fontsource-variable/source-serif-4/files/source-serif-4-latin-opsz-normal.woff2?url';
+import archivoLatin from '../assets/fonts/archivo-subset.woff2?url';
+import serifLatin from '../assets/fonts/source-serif-4-subset.woff2?url';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import { tokensCss } from '../design/tokens';
+import { ogImageFor } from '../lib/pages';
 import '../styles/fonts.css';
 import '../styles/base.css';
 import '../styles/motion.css';
@@ -13,15 +14,19 @@ interface Props {
   title?: string;
   description?: string;
   noindex?: boolean;
+  /** Structured data (schema.org) for this page, rendered as JSON-LD. */
+  jsonLd?: Record<string, unknown>;
 }
 
 const {
   title = 'Raymundo Oyong — AI and automation engineer',
   description = 'Raymundo Oyong builds AI and software that does the work people shouldn\'t have to: voice agents, document AI with sources, and process automation.',
   noindex = false,
+  jsonLd,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
+const image = new URL(await ogImageFor(Astro.url.pathname), Astro.site);
 ---
 
 <!doctype html>
@@ -33,6 +38,19 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex" />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Raymundo Oyong" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={image} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#F6F6F3" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#131412" media="(prefers-color-scheme: dark)" />
+    <link rel="sitemap" href="/sitemap.xml" />
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href={archivoLatin} as="font" type="font/woff2" crossorigin />

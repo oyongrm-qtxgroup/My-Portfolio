@@ -157,7 +157,12 @@ First version (6 case studies, 49-entry dated log, "2026 in figures" with hours 
 - Automated Harvard checks (§7), plus a check that no phone number appears in the PDF. Footer "CV (PDF)" links to the file.
 - **Done when:** the PDF is 2 pages, passes the checks, and you've signed off the wording.
 
-### Phase 6 — SEO, performance, launch (M, needs open item 3)
+### Phase 6 — SEO, performance, launch (M) — prepared 24 Oct 2026; launch waits for the owner
+- [x] Per-page titles and descriptions; Open Graph + Twitter tags with a 1200×630 share card per page (`src/pages/og/[slug].astro` → `npm run og` → `public/og/*.png`; CI fails if stale). JSON-LD `Person` on the home page. `sitemap.xml` and `robots.txt` generated from `src/lib/pages.ts`. No RSS: the notes it was for are gone.
+- [x] Redirects: `/blog` and `/blog/*` → `/` (301). `/admin*` falls through to the 404 ("No entry.").
+- [x] Performance: all CSS inlined (no render-blocking requests); the two variable fonts cut to the axes and characters used (`scripts/subset-fonts.sh`, 212 KB → 76 KB); the intro paragraph no longer fades in (it is the LCP element on phones). Lighthouse on the local build, mobile, simulated slow 4G: 99–100 in all four categories on `/`, a project page, `/cv/` and `/privacy/`; CLS 0; LCP 1.7–1.8 s (budget 1.5 s not met under this harsh profile; re-measure on production).
+- [ ] **Launch (owner's go-ahead):** merge the branch to `main` (production deploys from `main`), set the Vercel framework to Astro, set Deployment Protection to Standard (previews protected, production public), add `raymundo-oyong.vercel.app`, check from a logged-out browser, send a real message through the form, then remove `VITE_SUPABASE_*` and retire the legacy Supabase project.
+- Original scope, kept for reference:
 - Per-page title/description, OG images generated at build in the logbook style, sitemap, robots, JSON-LD `Person`, RSS.
 - Redirects: `/blog/*` → `/log`, `/admin*` → 404.
 - Vercel: connect the GitHub repo for a preview per PR (deploys are currently manual), set framework to Astro, add `TURNSTILE_SECRET`, `RESEND_API_KEY`, `CONTACT_TO`; remove `VITE_SUPABASE_*` and `VITE_TURNSTILE_SITE_KEY` after cutover (the new site key is `PUBLIC_TURNSTILE_SITE_KEY`).

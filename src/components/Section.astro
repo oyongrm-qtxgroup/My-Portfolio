@@ -17,7 +17,7 @@ const [, num = label, name = ''] = label.match(/^(\S+ \S+) (.*)$/) ?? [];
   <div class="mar label">{num}<br />{name}</div>
   <div class="body cs-body">
     <div class="prose">
-      {title && <h2 class="title cs-title">{title}</h2>}
+      {title ? <h2 class="title cs-title">{title}</h2> : <h2 class="visually-hidden">{name || num}</h2>}
       <slot />
     </div>
     {

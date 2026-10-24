@@ -17,16 +17,34 @@ const [profile, skills, principles, work, roles] = await Promise.all([
 const lead = skills.filter((s) => s.data.tier === 'lead');
 const foundation = skills.filter((s) => s.data.tier === 'foundation');
 const skillName = new Map(skills.map((s) => [s.id, s.data.name]));
+
+// schema.org Person for search engines: who, what, where, and the profiles that confirm it.
+const currentRole = roles.find((r) => r.data.current);
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  jobTitle: profile.title,
+  description: profile.summary,
+  url: Astro.site?.href,
+  email: `mailto:${profile.email}`,
+  image: new URL('/og/home.png', Astro.site).href,
+  address: { '@type': 'PostalAddress', addressCountry: 'PH' },
+  ...(currentRole && { worksFor: { '@type': 'Organization', name: currentRole.data.org } }),
+  knowsAbout: skills.map((s) => s.data.name),
+  sameAs: [profile.links.linkedin, profile.links.github],
+};
 ---
 
-<Base description={profile.summary}>
+<Base description={profile.summary} jsonLd={person}>
   <MarginRow index={0}>
     <Fragment slot="label">§ 00<br />Intro</Fragment>
     <div class="hero">
       <h1 class="display headline">
         {profile.headline.map((line, i) => <span class="ln" style={`--i: ${i}`}>{line}</span>)}
       </h1>
-      <p class="lede fade" style="--i: 2">{profile.lede}</p>
+      <!-- Not faded: the largest text block on a phone must paint at once (LCP). -->
+      <p class="lede">{profile.lede}</p>
       <p class="mono muted where fade" style="--i: 3">
         {profile.title} · {profile.location} ·{' '}
         <a href={`mailto:${profile.email}`} class="accent">{profile.email}</a>
