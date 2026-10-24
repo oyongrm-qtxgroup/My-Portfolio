@@ -37,6 +37,11 @@ const linkText = (url: string) => url.replace(/^https:\/\/(www\.)?/, '').replace
           <a href={profile.links.github}>{linkText(profile.links.github)}</a> ·{' '}
           <a href="/">{cv.site}</a>
         </p>
+        <p class="cv-pdf">
+          <a href="/raymundo-oyong-cv.pdf" class="mono accent target" download>
+            Download the PDF (A4, 2 pages) →
+          </a>
+        </p>
       </header>
     </MarginRow>
 
@@ -74,7 +79,7 @@ const linkText = (url: string) => url.replace(/^https:\/\/(www\.)?/, '').replace
                       </h4>
                       <ul class="cv-ul">
                         {p.bullets.map((b) => (
-                          <li>{b}</li>
+                          <li data-cv-bullet>{b}</li>
                         ))}
                       </ul>
                     </>
@@ -83,7 +88,7 @@ const linkText = (url: string) => url.replace(/^https:\/\/(www\.)?/, '').replace
                 {r.data.highlights.length > 0 && (
                   <ul class="cv-ul">
                     {r.data.highlights.map((b) => (
-                      <li>{b}</li>
+                      <li data-cv-bullet>{b}</li>
                     ))}
                   </ul>
                 )}
@@ -146,6 +151,9 @@ const linkText = (url: string) => url.replace(/^https:\/\/(www\.)?/, '').replace
           </div>
         ))
       }
+      <p class="cv-more">
+        Skills, project pages and working principles: <a href="/">{cv.site}</a>
+      </p>
     </MarginRow>
   </article>
 </Base>
@@ -175,6 +183,18 @@ const linkText = (url: string) => url.replace(/^https:\/\/(www\.)?/, '').replace
   .cv-contact a {
     color: inherit;
     text-underline-offset: 4px;
+  }
+
+  .cv-pdf {
+    margin-top: 18px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* The closing pointer to the site is for paper only. */
+  .cv-more {
+    display: none;
   }
 
   /* On screen the margin label names each section; the heading is for print. */
@@ -339,6 +359,19 @@ const linkText = (url: string) => url.replace(/^https:\/\/(www\.)?/, '').replace
 
     .cv-head {
       padding: 0 0 8pt;
+    }
+
+    .cv-pdf {
+      display: none;
+    }
+
+    .cv-more {
+      display: block;
+      margin-top: 14pt;
+      padding-top: 5pt;
+      border-top: 1px solid #d8d8d2;
+      font-size: 9pt;
+      color: #3e3e39;
     }
 
     .cv-name {

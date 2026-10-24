@@ -1,14 +1,14 @@
 // Builds nothing: run `npm run build` first. Serves the built static pages
-// (.vercel/output/static), then checks every route at phone, tablet and desktop
+// (scripts/serve-static.mjs), then checks every route at phone, tablet and desktop
 // widths in both themes: axe-core (WCAG 2.2 A/AA), no sideways scrolling, and a
 // screenshot of each. The contact action and Turnstile are mocked in the browser;
 // the real action is exercised on the Vercel preview.
 // Usage: node scripts/verify.mjs [screenshot-dir]
-import { createServer } from 'node:http';
-import { existsSync, mkdirSync, readFileSync, statSync } from 'node:fs';
+import { mkdirSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { extname, join, normalize } from 'node:path';
+import { join } from 'node:path';
 import { chromium } from 'playwright';
+import { serveStatic } from './serve-static.mjs';
 
 const require = createRequire(import.meta.url);
 const axeSource = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
@@ -22,21 +22,7 @@ const THEMES = ['paper', 'night'];
 const outDir = process.argv[2];
 if (outDir) mkdirSync(outDir, { recursive: true });
 
-// `astro preview` can't serve a build with a Vercel function in it, so serve the
-// static output the way Vercel does: /path/ → /path/index.html, unknown → 404.html.
-const ROOT = new URL('../.vercel/output/static/', import.meta.url).pathname;
-const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.xml': 'application/xml', '.txt': 'text/plain', '.pdf': 'application/pdf' };
-const server = createServer((req, res) => {
-  const path = normalize(decodeURIComponent(new URL(req.url, BASE).pathname)).replace(/^(\.\.[/\\])+/, '');
-  const file = [join(ROOT, path), join(ROOT, path, 'index.html'), join(ROOT, `${path}.html`)].find(
-    (f) => f.startsWith(ROOT) && existsSync(f) && statSync(f).isFile(),
-  );
-  const served = file ?? join(ROOT, '404.html');
-  res.writeHead(file ? 200 : 404, { 'content-type': TYPES[extname(served)] ?? 'application/octet-stream' });
-  res.end(readFileSync(served));
-});
-await new Promise((resolve) => server.listen(PORT, resolve));
-const stop = () => new Promise((resolve) => server.close(resolve));
+const { close: stop } = await serveStatic(PORT);
 
 // Turnstile stub: renders nothing and hands out a token at once.
 const TURNSTILE_STUB = `window.turnstile = { render: () => 'w1', getResponse: () => 'test-token', reset: () => {} };`;

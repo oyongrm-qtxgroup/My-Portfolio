@@ -26,4 +26,5 @@ npm run check          # type check
 npm run lint:design    # fail on template-look patterns (gradients, shadows, glass, buzzwords)
 npm run lint:denylist  # fail on confidential names (DENYLIST env var)
 npm run verify         # after build: axe + layout checks + screenshots: npm run verify -- ./shots
+npm run cv:pdf         # after build: render public/raymundo-oyong-cv.pdf, then build again to ship it
 ```

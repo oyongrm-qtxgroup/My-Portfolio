@@ -21,7 +21,7 @@
 
 ## Next step
 
-Phases 3 and 4 are built. The contact form needs the owner's Turnstile and Resend keys in Vercel (Production only; see the plan, Phase 4). Next: Phase 5 (PDF from `/cv/`; the print stylesheet already fits 2 A4 pages), then Phase 6 (launch).
+Phases 3–5 are built. Turnstile and Resend keys are set in Vercel for Production only (24 Oct 2026); `/privacy/` references Cloudflare's Turnstile Privacy Addendum, which invisible mode requires. Next: Phase 6 (launch) when the owner says so. After any content change: `npm run build && npm run cv:pdf && npm run build` and commit the PDF.
 
 ## Practical notes
 

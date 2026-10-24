@@ -146,7 +146,12 @@ First version (6 case studies, 49-entry dated log, "2026 in figures" with hours 
 - Contact via Astro Action (sends to oyongrm@gmail.com through Resend; nothing stored), progressively enhanced (works without JS via normal POST). Invisible Turnstile + honeypot + rate limit; errors written under the field and announced.
 - **Done when:** every state on `States.dc.html` is reproducible on the preview; CLS < 0.02; reduced-motion verified.
 
-### Phase 5 — CV (S, needs open items 1 and 3)
+### Phase 5 — CV (S) — built 24 Oct 2026, awaiting sign-off
+- [x] `npm run cv:pdf` renders `/cv/` to `public/raymundo-oyong-cv.pdf` (A4, 2 pages, tagged, every font maps to Unicode so text copies out; name · email · page n of 2 in the footer of each page; closing line pointing to the site). It also writes `public/raymundo-oyong-cv.sha256`, a hash of the CV text.
+- [x] Checks (fail the script): exactly 2 pages; no I/my/me; nothing phone-like; email present; every experience bullet starts with an allow-listed action verb. Proven to fail on a "Responsible for…" bullet.
+- [x] CI runs `cv:pdf -- --check`: fails if the CV text changed since the PDF was made (more reliable than file dates, which git doesn't keep). Release order after a content change: `npm run build && npm run cv:pdf && npm run build`.
+- [x] "CV (PDF)" in the site footer and a download link on `/cv/`.
+- Original scope, kept for reference:
 - `/cv` renders from the content collections (`roles`, work bullets flagged `cv: true`, education, certifications) with `print.css` matching `CVPage1/2.dc.html`.
 - `npm run cv:pdf` renders it to `public/raymundo-oyong-cv.pdf` (A4, selectable text, fonts embedded). Run as part of every content release; CI fails if any `src/content` file is newer than the PDF.
 - Automated Harvard checks (§7), plus a check that no phone number appears in the PDF. Footer "CV (PDF)" links to the file.
