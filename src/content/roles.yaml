@@ -30,11 +30,11 @@
         - Reduced the time per action from 6.5 seconds to about 1 second by moving the database connection to HTTPS.
     - heading: RL Finance — finance system for a retirement-village operator
       bullets:
-        - Building a deferred management fee engine with CPI-based increases behind an approval step, matched to the client's own spreadsheet to the cent and kept as an automated test.
+        - Building a deferred management fee engine with Consumer Price Index (CPI) increases behind an approval step, matched to the client's own spreadsheet to the cent and kept as an automated test.
         - Delivered direct-debit files, period locking, and group profit-and-loss, balance-sheet and trial-balance reports across entities.
     - heading: Internal operations platform (Workable) and SEED AI agents
       bullets:
-        - Added six modules to the company platform, covering marketing campaigns, certification tracking synced from Microsoft Learn, 30/60/90-day onboarding, KPI reviews, ad-audience sync and sales booking links.
+        - Added six modules to the company platform, covering marketing campaigns, certification tracking synced from Microsoft Learn, 30/60/90-day onboarding, key performance indicator (KPI) reviews, ad-audience sync and sales booking links.
         - Resolved recurring database-connection exhaustion by removing unfiltered real-time subscriptions.
         - Built a contract-management agent and a standalone e-signature flow with tenant isolation and retrieval-augmented chat.
 

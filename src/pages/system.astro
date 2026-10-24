@@ -97,7 +97,7 @@ const cssVar: Record<Token, string> = {
       </div>
       <div>
         <p class="label">Margin note</p>
-        <p class="sidenote">One practice owner's script went through eleven rounds of review.</p>
+        <p class="sidenote">Prospects hear their own accent: each country has its own demo number.</p>
       </div>
       <div class="wide">
         <p class="label">Log row</p>
@@ -181,7 +181,7 @@ const cssVar: Record<Token, string> = {
   .type-grid,
   .parts {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
     gap: 32px;
   }
 
@@ -230,7 +230,7 @@ const cssVar: Record<Token, string> = {
   }
 
   .parts > .wide {
-    grid-column: span 2;
+    grid-column: 1 / -1;
   }
 
   .stamps {

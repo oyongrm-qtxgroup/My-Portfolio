@@ -1,0 +1,436 @@
+---
+// The CV, generated from the same content as the site. Follows the Harvard
+// Extension School OCS guide (docs/REDESIGN_PLAN.md §7): no "I", reverse
+// chronological, email only. On screen it sits in the logbook frame; in print
+// it becomes the A4 sheet from docs/design/CVPage1/2.
+import Base from '../layouts/Base.astro';
+import MarginRow from '../components/MarginRow.astro';
+import { getProfile, getRoles, type Role } from '../lib/content';
+
+const [profile, roles] = await Promise.all([getProfile(), getRoles()]);
+const cv = profile.cv;
+
+// Consecutive roles at the same organisation share one heading (as on the design).
+const orgs: { org: string; place: string; roles: Role[] }[] = [];
+for (const r of roles) {
+  const last = orgs.at(-1);
+  if (last && last.org === r.data.org) last.roles.push(r);
+  else orgs.push({ org: r.data.org, place: r.data.place, roles: [r] });
+}
+
+const linkText = (url: string) => url.replace(/^https:\/\/(www\.)?/, '').replace(/\/$/, '');
+---
+
+<Base
+  title={`CV — ${profile.name}`}
+  description={`CV of ${profile.name}, ${profile.title}: experience, skills, education and certifications.`}
+>
+  <article class="cv">
+    <MarginRow index={0}>
+      <Fragment slot="label">Curriculum<br />vitae</Fragment>
+      <header class="cv-head">
+        <h1 class="display cv-name">{cv.name}</h1>
+        <p class="title cv-title">{cv.title}</p>
+        <p class="cv-contact">
+          {cv.location} · <a href={`mailto:${profile.email}`}>{profile.email}</a> ·{' '}
+          <a href={profile.links.linkedin}>{linkText(profile.links.linkedin)}</a> ·{' '}
+          <a href={profile.links.github}>{linkText(profile.links.github)}</a> ·{' '}
+          <a href="/">{cv.site}</a>
+        </p>
+      </header>
+    </MarginRow>
+
+    <MarginRow index={1} ruled>
+      <Fragment slot="label">Summary</Fragment>
+      <h2 class="cv-h2">Summary</h2>
+      <p class="cv-summary">{profile.summary}</p>
+    </MarginRow>
+
+    <MarginRow index={2} ruled>
+      <Fragment slot="label">Professional<br />experience</Fragment>
+      <h2 class="cv-h2">Professional Experience</h2>
+      {
+        orgs.map((o) => (
+          <section class="cv-org-block">
+            <div class="cv-row">
+              <h3 class="cv-org">{o.org}</h3>
+              <span>{o.place}</span>
+            </div>
+            {o.roles.map((r) => (
+              <div class="cv-role">
+                <div class="cv-row">
+                  <span class="cv-role-title">{r.data.title}</span>
+                  <span class="cv-date">
+                    {r.data.start} – {r.data.end ?? 'Present'}
+                  </span>
+                </div>
+                {r.data.projects.map((p) => {
+                  const [name, detail] = p.heading.split(' — ');
+                  return (
+                    <>
+                      <h4 class="cv-sub">
+                        {name}
+                        {detail && <span> — {detail}</span>}
+                      </h4>
+                      <ul class="cv-ul">
+                        {p.bullets.map((b) => (
+                          <li>{b}</li>
+                        ))}
+                      </ul>
+                    </>
+                  );
+                })}
+                {r.data.highlights.length > 0 && (
+                  <ul class="cv-ul">
+                    {r.data.highlights.map((b) => (
+                      <li>{b}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </section>
+        ))
+      }
+    </MarginRow>
+
+    <MarginRow index={3} ruled>
+      <Fragment slot="label">Technical<br />skills</Fragment>
+      <h2 class="cv-h2">Technical Skills</h2>
+      <dl class="cv-skills">
+        {
+          cv.skills.map((s) => (
+            <div>
+              <dt>{s.label}:</dt>
+              <dd>{s.items}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </MarginRow>
+
+    <MarginRow index={4} ruled>
+      <Fragment slot="label">Education</Fragment>
+      <h2 class="cv-h2">Education</h2>
+      {
+        cv.education.map((e) => (
+          <section class="cv-org-block">
+            <div class="cv-row">
+              <h3 class="cv-org">{e.school}</h3>
+              <span>{e.place}</span>
+            </div>
+            <div class="cv-row">
+              <span class="cv-role-title">{e.degree}</span>
+              <span class="cv-date">{e.year}</span>
+            </div>
+            {e.notes.length > 0 && (
+              <ul class="cv-ul">
+                {e.notes.map((n) => (
+                  <li>{n}</li>
+                ))}
+              </ul>
+            )}
+          </section>
+        ))
+      }
+    </MarginRow>
+
+    <MarginRow index={5} ruled>
+      <Fragment slot="label">Certifications</Fragment>
+      <h2 class="cv-h2">Certifications</h2>
+      {
+        cv.certifications.map((c) => (
+          <div class="cv-row cv-cert">
+            <span>{c.name}</span>
+            <span class="cv-date">{c.date}</span>
+          </div>
+        ))
+      }
+    </MarginRow>
+  </article>
+</Base>
+
+<style>
+  .cv-head {
+    padding: 32px 0 20px;
+  }
+
+  .cv-name {
+    font-size: clamp(44px, 7vw, 76px);
+  }
+
+  .cv-title {
+    margin-top: 8px;
+    font-size: clamp(20px, 2.4vw, 26px);
+    font-stretch: 85%;
+    font-weight: 500;
+  }
+
+  .cv-contact {
+    margin-top: 14px;
+    font: 14px/1.6 var(--font-mono);
+    color: var(--ink-2);
+  }
+
+  .cv-contact a {
+    color: inherit;
+    text-underline-offset: 4px;
+  }
+
+  /* On screen the margin label names each section; the heading is for print. */
+  .cv-h2 {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .cv-summary {
+    padding: 24px 0;
+    font-size: 19px;
+    line-height: 1.55;
+    max-width: 40em;
+  }
+
+  .cv-org-block {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .cv-org-block:last-child {
+    border-bottom: 0;
+  }
+
+  .cv-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 4px 16px;
+  }
+
+  .cv-org {
+    font-family: var(--font-display);
+    font-stretch: 78%;
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1.1;
+  }
+
+  .cv-row > span,
+  .cv-date {
+    font: 13px/1.5 var(--font-mono);
+    color: var(--ink-2);
+  }
+
+  .cv-date {
+    white-space: nowrap;
+  }
+
+  .cv-role {
+    margin-top: 14px;
+  }
+
+  .cv-row > .cv-role-title {
+    font: italic 18px/1.4 var(--font-body);
+    color: var(--ink);
+  }
+
+  .cv-sub {
+    margin: 16px 0 4px;
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .cv-sub span {
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ink-2);
+  }
+
+  .cv-ul {
+    margin: 6px 0 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 46em;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+
+  .cv-skills {
+    margin: 0;
+    padding: 24px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+
+  .cv-skills dt {
+    display: inline;
+    font-weight: 600;
+  }
+
+  .cv-skills dd {
+    display: inline;
+    margin: 0 0 0 4px;
+  }
+
+  .cv-cert {
+    padding: 24px 0;
+  }
+
+  .cv-cert > span:first-child {
+    font: 17px/1.5 var(--font-body);
+    color: var(--ink);
+  }
+
+  /* ── Print: the A4 sheet (docs/design/CVPage1/2) ── */
+  @media print {
+    @page {
+      size: A4;
+      margin: 12mm 15mm 10mm;
+    }
+
+    :global(html),
+    :global(body) {
+      background: #fff !important;
+      color: #141413 !important;
+    }
+
+    :global(.site-header),
+    :global(.site-footer),
+    :global(.skip),
+    :global(.page-edge),
+    .cv :global(.mar) {
+      display: none !important;
+    }
+
+    :global(.wrap) {
+      max-width: none;
+      padding: 0;
+    }
+
+    .cv :global(.row) {
+      display: block;
+      border: 0 !important;
+    }
+
+    .cv :global(.row > .body) {
+      padding: 0;
+    }
+
+    .cv {
+      border-top: 4px solid #c8322a;
+      padding-top: 7mm;
+      font: 10pt/1.38 var(--font-body);
+    }
+
+    .cv a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .cv-head {
+      padding: 0 0 8pt;
+    }
+
+    .cv-name {
+      font-size: 28pt;
+      line-height: 1;
+    }
+
+    .cv-title {
+      margin-top: 3pt;
+      font-size: 11.5pt;
+    }
+
+    .cv-contact {
+      margin-top: 6pt;
+      font: 9.4pt/1.4 var(--font-body);
+      color: #3e3e39;
+    }
+
+    .cv-h2 {
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip-path: none;
+      margin: 12pt 0 6pt;
+      padding-bottom: 3pt;
+      border-bottom: 1px solid #141413;
+      font-family: var(--font-display);
+      font-stretch: 80%;
+      font-weight: 700;
+      font-size: 11pt;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      break-after: avoid;
+    }
+
+    .cv-summary,
+    .cv-skills,
+    .cv-cert,
+    .cv-org-block {
+      max-width: none;
+      padding: 0;
+      border: 0;
+      font-size: 10pt;
+      line-height: 1.38;
+    }
+
+    .cv-org-block + .cv-org-block {
+      margin-top: 8pt;
+    }
+
+    .cv-org {
+      font: 600 10pt/1.38 var(--font-body);
+    }
+
+    .cv-row > span,
+    .cv-date,
+    .cv-row > .cv-role-title,
+    .cv-cert > span:first-child {
+      font: inherit;
+      color: inherit;
+    }
+
+    .cv-row > .cv-role-title {
+      font-style: italic;
+    }
+
+    .cv-role {
+      margin-top: 2pt;
+    }
+
+    .cv-sub {
+      margin: 7pt 0 1pt;
+      font-size: 10pt;
+      break-after: avoid;
+    }
+
+    .cv-ul {
+      margin: 1pt 0 0;
+      padding-left: 14pt;
+      gap: 1.5pt;
+      max-width: none;
+      font-size: 10pt;
+      line-height: 1.38;
+    }
+
+    .cv-ul li {
+      break-inside: avoid;
+    }
+
+    .cv-skills {
+      gap: 2pt;
+    }
+  }
+</style>

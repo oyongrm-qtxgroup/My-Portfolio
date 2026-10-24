@@ -13,8 +13,9 @@ const axeSource = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 
 const PORT = 4329;
 const BASE = `http://localhost:${PORT}`;
-const ROUTES = ['/', '/work/jayne-bandy-ai/', '/work/sap-automation/', '/work/care-plan-drafting', '/system/', '/no-such-page'];
-const WIDTHS = [390, 768, 1440];
+const ROUTES = ['/', '/work/jayne-bandy-ai/', '/work/sap-automation/', '/work/care-plan-drafting', '/cv/', '/system/', '/no-such-page'];
+// 320 px is WCAG reflow (a 1280 px window at 400% zoom); 390 also covers 200% zoom.
+const WIDTHS = [320, 390, 768, 1440];
 const THEMES = ['paper', 'night'];
 const outDir = process.argv[2];
 if (outDir) mkdirSync(outDir, { recursive: true });
@@ -79,6 +80,55 @@ try {
       }
       await context.close();
     }
+  }
+
+  // Phone menu: a disclosure button; Escape closes it and returns focus; axe-clean when open.
+  for (const theme of THEMES) {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    await ctx.addInitScript((t) => localStorage.setItem('theme', t), theme);
+    const p = await ctx.newPage();
+    const tag = `phone menu ${theme}`;
+    await p.goto(BASE + '/work/jayne-bandy-ai/', { waitUntil: 'networkidle' });
+    await p.mouse.wheel(0, 1500); // open it from part-way down the page
+    const button = p.locator('.menu-button');
+    if (!(await button.isVisible())) failures.push(`${tag}: menu button not shown`);
+    else {
+      await button.focus();
+      await p.keyboard.press('Enter');
+      const expanded = await button.getAttribute('aria-expanded');
+      if (expanded !== 'true') failures.push(`${tag}: aria-expanded is ${expanded} after opening`);
+      if (!(await p.locator('#phone-menu').isVisible())) failures.push(`${tag}: sheet not visible`);
+      if (!(await button.isVisible())) failures.push(`${tag}: Close button scrolled out of view`);
+      const inert = await p.evaluate(() => document.querySelector('main')?.inert);
+      if (!inert) failures.push(`${tag}: page behind the menu is not inert`);
+      const small = await p.$$eval('#phone-menu a, #phone-menu button, .menu-button', (els) =>
+        els.filter((el) => el.getBoundingClientRect().height < 44 && el.matches('button, .sheet-link')).length,
+      );
+      if (small) failures.push(`${tag}: ${small} target(s) under 44 px`);
+      await p.addScriptTag({ content: axeSource });
+      const res = await p.evaluate(() =>
+        window.axe.run(document, {
+          runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'] },
+        }),
+      );
+      for (const v of res.violations) failures.push(`${tag}: axe ${v.id} (${v.nodes.length}) ${v.help}`);
+      if (outDir) await p.screenshot({ path: join(outDir, `menu-open-390-${theme}.png`) });
+      await p.keyboard.press('Escape');
+      if ((await button.getAttribute('aria-expanded')) !== 'false') failures.push(`${tag}: Escape did not close`);
+      const focused = await p.evaluate(() => document.activeElement?.classList.contains('menu-button'));
+      if (!focused) failures.push(`${tag}: focus did not return to the button`);
+      // A link in the sheet navigates and leaves the menu closed on the new page.
+      await button.click();
+      await p.locator('#phone-menu a[href="/cv/"]').click();
+      await p.waitForURL('**/cv/');
+      await p.waitForTimeout(300);
+      const after = await p.evaluate(() => ({
+        expanded: document.querySelector('.menu-button')?.getAttribute('aria-expanded'),
+        locked: document.documentElement.classList.contains('menu-lock'),
+      }));
+      if (after.expanded !== 'false' || after.locked) failures.push(`${tag}: menu state leaked across navigation`);
+    }
+    await ctx.close();
   }
 
   // Reduced motion: content must be fully visible with no animation running.

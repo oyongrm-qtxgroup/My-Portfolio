@@ -21,7 +21,7 @@
 
 ## Next step
 
-Phase 3: `/cv/` (HTML, from `profile` + `roles`), phone menu, canvas check. Then Phases 4–6 as in the plan.
+Phase 3 is built (`/cv/`, phone menu, 320 px reflow) and awaits the owner's look at the preview. Next: Phase 4 (motion and the contact form: Astro Action + Turnstile + Resend), Phase 5 (PDF from `/cv/`; the print stylesheet already fits 2 A4 pages), Phase 6 (launch).
 
 ## Practical notes
 

@@ -32,3 +32,31 @@ main:
       label: per action on an AI drafting tool
     - value: 8 yrs
       label: building business software
+  # CV only (rendered at /cv/ and in the PDF). Harvard rules: no phone, no photo.
+  cv:
+    name: Raymundo M. Oyong
+    title: AI and Automation Engineer
+    location: Bulacan, Philippines
+    site: raymundo-oyong.vercel.app
+    skills:
+      - label: AI
+        items: Large language model (LLM) prompt design and evaluation, retrieval-augmented generation, voice agents (ElevenLabs, Twilio), Azure Document Intelligence, Azure OpenAI
+      - label: Automation
+        items: Power Automate (desktop and cloud flows), SAP ECC 6 (Basis, FI-CO, MM), SharePoint
+      - label: Platforms
+        items: Supabase (PostgreSQL, row-level security, Edge Functions), Azure Functions, MS SQL Server, Vercel, Stripe
+      - label: Languages
+        items: TypeScript, React, C# and .NET, SQL, Python
+      - label: Integrations
+        items: CareStack, Core Practice, Dentally, MYOB, Westpac, Microsoft Entra ID, Microsoft Learn, LinkedIn and Meta Ads, Amazon SES
+    education:
+      - school: STI College Meycauayan
+        place: Bulacan, Philippines
+        degree: Bachelor of Science in Computer Science
+        year: '2018'
+        notes:
+          - 'Thesis: Android augmented-reality game built in Unity with C#; named Best Thesis Presenter.'
+          - First Runner-Up, App and Running timed Android development competition.
+    certifications:
+      - name: 'Microsoft Certified: Azure Developer Associate'
+        date: February 2026

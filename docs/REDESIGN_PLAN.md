@@ -125,7 +125,11 @@ First version (6 case studies, 49-entry dated log, "2026 in figures" with hours 
 - [x] All CV bullets now live in `roles.yaml` (`highlights`, or `projects` for QTX); effort counts removed ("68 of 73 work packages", ticket rounds).
 - [ ] Owner reads the preview and flags wording.
 
-### Phase 3 — Pages and responsiveness (M)
+### Phase 3 — Pages and responsiveness (M) — built 24 Oct 2026, awaiting preview review
+- [x] `/cv/` (HTML) from `profile` (summary, `cv` block: skills, education, certifications) and `roles`; consecutive roles at one organisation share a heading. On screen it uses the logbook frame; `@media print` gives the A4 sheet (2 pages, no "I", no phone).
+- [x] Phone menu: disclosure button (`aria-expanded`, `aria-controls`), sheet with numbered links, email and theme switch; Escape closes and returns focus; the page behind is `inert`; the header pins while open; inline links remain the no-JS fallback.
+- [x] `verify` now covers `/cv/`, 320 px (WCAG reflow; 390 px covers 200 % zoom) and a scripted menu pass (open, inert, 44 px targets, axe with the menu open, Escape, focus return, no state leaking across navigation).
+- Original scope, kept for reference:
 - Home and `/work/[slug]/` exist from Phase 2; Phase 3 adds `/cv/` (HTML), the phone menu, and checks every page against the canvas.
 - Phone: menu is a disclosure button (`aria-expanded`, Escape closes, focus returns to the button); 44 px minimum targets; reflow at 320 px and 200 % zoom with no sideways scroll.
 - **Done when:** screens match the canvas at 390 / 768 / 1440 in both modes; full keyboard pass.

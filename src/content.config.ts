@@ -85,6 +85,23 @@ const profile = defineCollection({
     email: z.email(),
     links: z.object({ linkedin: z.url(), github: z.url() }),
     figures: z.array(z.object({ value: z.string(), label: z.string() })).length(4),
+    cv: z.object({
+      name: z.string(),
+      title: z.string(),
+      location: z.string(),
+      site: z.string(),
+      skills: z.array(z.object({ label: z.string(), items: z.string() })).min(1),
+      education: z.array(
+        z.object({
+          school: z.string(),
+          place: z.string(),
+          degree: z.string(),
+          year: z.string(),
+          notes: z.array(z.string()).default([]),
+        }),
+      ),
+      certifications: z.array(z.object({ name: z.string(), date: z.string() })),
+    }),
   }),
 });
 
