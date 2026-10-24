@@ -1,0 +1,32 @@
+{
+  "v": 3,
+  "createdOnFiles": { "v": 1, "at": "2026-10-24T10:40:00Z" },
+  "title": "Portfolio Logbook Redesign",
+  "launch": { "view": "canvas" },
+  "pages": [
+    { "id": "site", "name": "Website" },
+    { "id": "cv", "name": "CV (PDF)" }
+  ],
+  "boards": {
+    "Main.dc.html": { "x": 0, "y": 0, "w": 1440, "h": 3000, "title": "Home — desktop", "expand": "fill", "is_interactive": true, "page": "site" },
+    "Work.dc.html": { "x": 1520, "y": 0, "w": 1440, "h": 2700, "title": "Case study — Jayne AI", "expand": "fill", "page": "site" },
+    "Log.dc.html": { "x": 3040, "y": 0, "w": 1440, "h": 2000, "title": "Full log", "expand": "fill", "page": "site" },
+    "Mobile.dc.html": { "x": 4560, "y": 0, "w": 390, "h": 2700, "title": "Home — phone", "is_interactive": true, "page": "site" },
+    "MobileMenu.dc.html": { "x": 5030, "y": 0, "w": 390, "h": 844, "title": "Phone — menu open", "page": "site" },
+    "NightHome.dc.html": { "x": 0, "y": 3420, "w": 1440, "h": 3000, "title": "Home — night", "expand": "fill", "page": "site" },
+    "NightWork.dc.html": { "x": 1520, "y": 3420, "w": 1440, "h": 2700, "title": "Case study — night", "expand": "fill", "page": "site" },
+    "NightMobile.dc.html": { "x": 3040, "y": 3420, "w": 390, "h": 2700, "title": "Phone — night", "page": "site" },
+    "States.dc.html": { "x": 0, "y": 6840, "w": 1440, "h": 2600, "title": "Motion & states — click through", "is_interactive": true, "page": "site" },
+    "System.dc.html": { "x": 1520, "y": 6840, "w": 1440, "h": 2900, "title": "Design system + accessibility", "page": "site" },
+    "CVPage1.dc.html": { "x": 0, "y": 0, "w": 794, "h": 1123, "title": "CV — page 1 (A4)", "paper": "a4", "page": "cv" },
+    "CVPage2.dc.html": { "x": 874, "y": 0, "w": 794, "h": 1123, "title": "CV — page 2 (A4)", "paper": "a4", "page": "cv" }
+  },
+  "order": ["Main.dc.html", "Work.dc.html", "Log.dc.html", "Mobile.dc.html", "MobileMenu.dc.html", "NightHome.dc.html", "NightWork.dc.html", "NightMobile.dc.html", "States.dc.html", "System.dc.html", "CVPage1.dc.html", "CVPage2.dc.html"],
+  "notes": {
+    "rowTitle": { "x": 0, "y": -320, "text": "Paper (light) — round 2", "kind": "title1", "maxW": 5420, "page": "site" },
+    "nightTitle": { "x": 0, "y": 3100, "text": "Night (dark mode) — follows the system setting, switch in the footer", "kind": "title1", "maxW": 3430, "page": "site" },
+    "statesTitle": { "x": 0, "y": 6520, "text": "Motion, loading states and accessibility (WCAG 2.2 AA)", "kind": "title1", "maxW": 2960, "page": "site" },
+    "cvTitle": { "x": 0, "y": -300, "text": "Downloadable CV — Harvard OCS rules", "kind": "title1", "maxW": 1668, "page": "cv" }
+  },
+  "designSystems": []
+}
