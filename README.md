@@ -14,4 +14,4 @@ Astro, static output on Vercel; content as Markdown in the repo; one server acti
 
 ## Rollback
 
-The legacy site is `main` at `06fde79`; the last legacy production deployment on Vercel is `dpl_ZXiT92GCh2EKgtwRFh4n4BTGZ1nN`. Use Vercel's Instant Rollback to return to it.
+The legacy site is `main` at `148b5c7`; the last legacy production deployment on Vercel is `dpl_ZXiT92GCh2EKgtwRFh4n4BTGZ1nN`. Use Vercel's Instant Rollback to return to it.
