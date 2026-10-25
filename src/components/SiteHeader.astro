@@ -18,7 +18,7 @@ const current = (match: string | null) => match !== null && path.startsWith(matc
 ---
 
 <header class="site-header" data-menu-root>
-  <a href="/" class="brand target">R. Oyong — Log</a>
+  <a href="/" class="brand target">Raymundo Oyong</a>
   <nav aria-label="Primary" class="inline-nav">
     <ul>
       {
@@ -32,7 +32,6 @@ const current = (match: string | null) => match !== null && path.startsWith(matc
       }
     </ul>
   </nav>
-  <span class="vol">Vol. 2026</span>
   <button type="button" class="menu-button" aria-expanded="false" aria-controls="phone-menu" hidden>
     Menu
   </button>
@@ -156,10 +155,6 @@ const current = (match: string | null) => match !== null && path.startsWith(matc
     text-underline-offset: 5px;
   }
 
-  .vol {
-    color: var(--ink-2);
-  }
-
   .menu-button {
     min-width: 64px;
     min-height: 44px;
@@ -251,8 +246,19 @@ const current = (match: string | null) => match !== null && path.startsWith(matc
   }
 
   @media (max-width: 760px) {
-    .vol {
+    /* With JS the menu replaces the inline links. html.js is set before first paint
+       (Base.astro), so the header is laid out once instead of jumping when this
+       component's script runs. */
+    :global(html.js) .inline-nav {
       display: none;
+    }
+
+    :global(html.js) .site-header {
+      flex-wrap: nowrap;
+    }
+
+    :global(html.js) .menu-button[hidden] {
+      display: block;
     }
 
     .inline-nav ul {

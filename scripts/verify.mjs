@@ -173,9 +173,9 @@ try {
     await axe(p, `${tag} invalid`);
     if (outDir) await form.screenshot({ path: join(outDir, `contact-invalid-${theme}.png`) });
 
-    // Sent: "Received" stamp and a status line; the form clears.
-    await p.fill('#cf-email', 'alex@clinic.com.au');
-    await p.fill('#cf-message', 'A booking line for three clinics.');
+    // Sent: the fields give way to a "Received" stamp and a status line naming the address.
+    await p.fill('#cf-email', 'name@example.com');
+    await p.fill('#cf-message', 'A senior AI role on our platform team.');
     await form.locator('button[type=submit]').click();
     await p.locator('[data-received]:not([hidden])').waitFor({ timeout: 5000 }).catch(() => {});
     await p.waitForTimeout(600); // the stamp presses in from transparent
@@ -183,15 +183,27 @@ try {
       stamp: document.querySelector('[data-received]')?.textContent ?? '',
       status: document.querySelector('[data-form-status]')?.textContent ?? '',
       cleared: document.querySelector('#cf-message')?.value === '',
+      fieldsHidden: document.querySelector('[data-form-body]')?.hidden === true,
+      focused: document.activeElement?.hasAttribute('data-again'),
     }));
     if (!sent.stamp.startsWith('Received')) failures.push(`${tag}: no "Received" stamp after sending`);
-    if (!sent.status.includes('alex@clinic.com.au')) failures.push(`${tag}: no confirmation status`);
+    if (!sent.status.includes('name@example.com')) failures.push(`${tag}: no confirmation status`);
     if (!sent.cleared) failures.push(`${tag}: form not cleared after sending`);
+    if (!sent.fieldsHidden) failures.push(`${tag}: fields still shown after sending`);
+    if (!sent.focused) failures.push(`${tag}: focus not on "Write another message" after sending`);
     await axe(p, `${tag} sent`);
     if (outDir) await form.screenshot({ path: join(outDir, `contact-sent-${theme}.png`) });
 
+    // "Write another message" brings the empty fields back.
+    await p.click('[data-again]');
+    const back = await p.evaluate(() => ({
+      shown: document.querySelector('[data-form-body]')?.hidden === false,
+      focused: document.activeElement?.id,
+    }));
+    if (!back.shown || back.focused !== 'cf-name') failures.push(`${tag}: "Write another message" did not restore the form`);
+
     // Failed: an alert with the email fallback, and the message is kept.
-    await p.fill('#cf-email', 'alex@clinic.com.au');
+    await p.fill('#cf-email', 'name@example.com');
     await p.fill('#cf-message', 'Keep this message, please.');
     await form.locator('button[type=submit]').click();
     await p.locator('[data-failed]:not([hidden])').waitFor({ timeout: 5000 }).catch(() => {});

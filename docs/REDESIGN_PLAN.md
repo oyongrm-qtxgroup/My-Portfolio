@@ -12,8 +12,8 @@ Status: **launched 24 Oct 2026** (`main` at `add74fe` serves production). Post-l
 | Topic | Decision |
 | --- | --- |
 | Direction | **Engineering logbook.** Plain paper, black ink, ballpoint-blue accent, red notebook-margin line, condensed form-style headings. No cards, shadows, gradients, glow, glass, 3D, particles, typing effects, custom cursor, skill bars. |
-| Positioning | **AI and automation engineer** (changed 24 Oct 2026). Headline: "I build AI and software that does the work people shouldn't have to." Audience: hiring managers first, clients second. |
-| Names | Named: **Jayne Bandy AI** (always the full name), **RL Finance**, **SEED**, **Workable** (reconfirmed 24 Oct 2026; SEED and Workable get a one-clause explanation on first use). Every other project is described generically: "workforce & care platform for an NDIS provider", "retirement-village finance", "care-plan drafting for an aged-care provider". No client people's names anywhere. |
+| Positioning | **AI and automation engineer** (changed 24 Oct 2026); title shown as **"Senior AI & Automation Engineer"** (25 Oct 2026, FIX_PLAN D2). An availability line sits under the intro and in the CV header (D6–D8). Headline: "I build AI and software that does the work people shouldn't have to." Audience: hiring managers first, clients second. |
+| Names | Named: **Jayne Bandy AI** (always the full name), **RL Finance**, **SEED**, **Workable** (reconfirmed 24 Oct 2026; SEED and Workable get a one-clause explanation on first use), **Ziaris** (the NDIS workforce & care platform) and **SmartCP** (care-plan drafting), both cleared 25 Oct 2026; their clients stay generic. Every other project is described generically: "workforce & care platform for an NDIS provider", "retirement-village finance", "care-plan drafting for an aged-care provider". No client people's names anywhere. |
 | Workable | Credit **only the modules built** (campaigns, certifications + MS Learn sync, 30/60/90 onboarding, KPI/KRA, ad-audience sync, sales booking, AI-call scheduling fix, realtime/connection fix). |
 | Hours | Shown **rounded** ("650 h", "1,900+"). |
 | Modes | Paper (light), Night (dark), **Auto = default** (follows OS). Manual switch in footer and phone menu. |
@@ -70,7 +70,7 @@ Status values: `live | shipped | in-progress | handed-over` → stamp colours: a
 - **Fonts:** self-hosted variable fonts — Archivo (wdth + wght axes, used at `font-stretch: 72–80%`), Source Serif 4 (opsz), IBM Plex Mono 400/500. Preload Archivo + Source Serif; `font-display: swap` with metric-matched fallbacks (`size-adjust`) so swapping causes no layout shift.
 - **Layout:** desktop rows are `168px | 1fr` with the red margin line on the label column; at ≤760 px it collapses to one column and the margin line moves to the page's left edge (see `Mobile.dc.html`).
 - **Motion** (`motion.css`, values from `Main.dc.html` / `States.dc.html`):
-  - Load: margin line draws (0.7 s, 110 ms stagger), headline sets line by line (90 ms), intro fades, figures count up after 700 ms (1.1 s ease-out), stamps press in at ~0.9 s.
+  - Load: margin line draws (0.7 s, 110 ms stagger), intro meta fades, stamps press in at ~0.9 s. Since 25 Oct 2026 (FIX_PLAN D11) the headline is visible from the first paint and the figures render at their final value: no line-by-line set-in, no count-up.
   - Scroll: rows rise and stamps press via `animation-timeline: view()` inside `@supports`; unsupported browsers show content static. **Content is never hidden waiting for JS.**
   - Hover/focus: ballpoint underline + arrow on work rows, 6% accent wash.
   - Page change: Astro `<ClientRouter/>` with `transition:name` on the project title → becomes the case-study headline. Ink progress bar under the header only if navigation exceeds 150 ms.
@@ -205,3 +205,5 @@ First version (6 case studies, 49-entry dated log, "2026 in figures" with hours 
 ## 10. Post-launch review (24 Oct 2026)
 
 A recruiter, a hiring manager and a UI/UX designer reviewed the built site blind; an informed pass checked each finding against this plan and the source. The approved fix plan, its decisions and its step order are in [`FIX_PLAN.md`](FIX_PLAN.md).
+
+Applied so far: Step 1 (#2): CV links, robots.txt, privacy typo, disclosure fixes. Step 2: the Senior title, the availability line, the full-name wordmark (no "Log", no "Vol. 2026"), page titles ending "— Raymundo Oyong", a plain 404, a footer that leads with contact details, hero actions (Download CV, Selected work), the employer-first contact section and form (no example placeholders; the confirmation replaces the fields after a send), and the motion change above. The phone header is laid out from the first paint (`html.js`, set in `Base.astro`), so it no longer jumps.

@@ -25,7 +25,7 @@ const allSkills = await getSkills();
 const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id));
 ---
 
-<Base title={`${w.title} — R. Oyong`} description={w.line}>
+<Base title={`${w.title} — Raymundo Oyong`} description={w.line}>
   <MarginRow index={0}>
     <Fragment slot="label">
       No. {w.no}<br />Project

@@ -1,6 +1,6 @@
 main:
   name: Raymundo Oyong
-  title: AI and automation engineer
+  title: Senior AI & Automation Engineer
   # One string per line of the set headline.
   headline:
     - I build AI and software
@@ -18,6 +18,10 @@ main:
     its source, and robotic process automation that cut manual SAP processing by 70–80%. Owns a
     system from the first client conversation to live support.
   location: Based in the Philippines · working with QTX, Sydney
+  # Who can hire me and how (docs/FIX_PLAN.md D6–D8). Shown under the intro and in the CV header.
+  availability: >-
+    Open to senior AI and automation roles with Australian teams: remote on contract, or relocating
+    with visa sponsorship. UTC+8, overlapping most of the Sydney working day.
   email: oyongrm@gmail.com
   links:
     linkedin: https://www.linkedin.com/in/raymundo-oyong-4ab94321a/
@@ -35,7 +39,7 @@ main:
   # CV only (rendered at /cv/ and in the PDF). Harvard rules: no phone, no photo.
   cv:
     name: Raymundo M. Oyong
-    title: AI and Automation Engineer
+    title: Senior AI & Automation Engineer
     location: Bulacan, Philippines
     site: raymundo-oyong.vercel.app
     skills:

@@ -82,6 +82,7 @@ const profile = defineCollection({
     lede: z.string(),
     summary: z.string(),
     location: z.string(),
+    availability: z.string(),
     email: z.email(),
     links: z.object({ linkedin: z.url(), github: z.url() }),
     figures: z.array(z.object({ value: z.string(), label: z.string() })).length(4),

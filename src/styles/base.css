@@ -153,9 +153,17 @@ button {
 /* ── Page frame ─────────────────────────────────────────── */
 
 .wrap {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   max-width: var(--max);
   margin: 0 auto;
   padding: 0 var(--pad);
+}
+
+/* Short pages (404, contact result) keep the footer at the bottom of the screen. */
+.wrap > main {
+  flex: 1 0 auto;
 }
 
 .skip {
