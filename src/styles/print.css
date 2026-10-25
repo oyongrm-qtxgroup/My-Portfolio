@@ -25,6 +25,7 @@
   .sheet,
   .theme-switch,
   .contact-form,
+  .site-footer,
   .actions,
   .cs-nav {
     display: none !important;
@@ -67,8 +68,18 @@
   /* Text sizes for paper. */
   .prose,
   .lede {
-    font-size: 11pt;
-    line-height: 1.5;
+    font-size: 10.5pt;
+    line-height: 1.45;
+  }
+
+  /* Figures: the caption carries the meaning on paper; the legend is for screens. */
+  .fig .legend {
+    display: none !important;
+  }
+
+  .fig .caption {
+    margin-top: 6pt !important;
+    font-size: 8pt !important;
   }
 
   .prose :is(h3) {
@@ -95,21 +106,6 @@
 
   .fig-narrow {
     display: none !important;
-  }
-
-  /* Figures keep their wide, left-to-right layout on A4 (on screen they stack below 900 px). */
-  .flow {
-    flex-direction: row !important;
-    gap: 8px !important;
-    font-size: 8.5pt !important;
-  }
-
-  .flow .step {
-    padding: 8px !important;
-  }
-
-  .flow .arrow {
-    transform: none !important;
   }
 
   /* Lists keep their desktop columns (A4 is narrower than the 900 px stack point). */

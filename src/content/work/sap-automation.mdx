@@ -12,7 +12,8 @@ status: shipped
 skills: [automation, integrations, leadership]
 ---
 
-import Flow from '../../components/Flow.astro';
+import Figure from '../../components/Figure.astro';
+import FigRef from '../../components/FigRef.astro';
 import Section from '../../components/Section.astro';
 
 <Section label="The challenge" ruled>
@@ -21,33 +22,51 @@ Two jobs at Ortigas Land took people’s time without needing their judgement. S
 
 </Section>
 
-<Flow
+<Figure
   label="Fig. 1 SAP entry"
   caption="The desktop bot works through the same SAP client staff use, and stops for a person when a screen isn’t what it expects."
-  steps={[
-    { title: 'Entries', note: 'invoices, reversals, contract locks' },
-    { title: 'Desktop bot', note: 'Power Automate Desktop', key: true },
-    { title: 'SAP', note: 'entered in the desktop client' },
-    { title: 'Exceptions', note: 'unexpected screens only: logged and left for a person' },
-  ]}
+  spec={{
+    nodes: [
+      { id: 'entries', title: 'Entries', note: 'invoices, reversals, contract locks', at: [0, 0] },
+      { id: 'bot', title: 'Desktop bot', note: 'Power Automate Desktop', n: 1, at: [1, 0] },
+      { id: 'sap', title: 'SAP', note: 'entered in the desktop client', at: [2, 0] },
+      { id: 'person', title: 'Left for a person', note: 'logged, not guessed', kind: 'person', at: [1, 1] },
+    ],
+    edges: [
+      { from: 'entries', to: 'bot' },
+      { from: 'bot', to: 'sap' },
+      { from: 'bot', to: 'person', kind: 'fail', label: 'unexpected screen' },
+    ],
+  }}
 />
 
-<Flow
+<Figure
   label="Fig. 2 Remittances"
   caption="AI extraction reads the documents so nobody retypes them; HR approves the figures before anything is paid."
-  steps={[
-    { title: 'HR documents', note: 'the source records' },
-    { title: 'AI extraction', note: 'figures read from each document', key: true },
-    { title: 'HR review', note: 'figures checked and approved' },
-    { title: 'Remittance', note: 'keyed by Power Automate' },
-  ]}
+  spec={{
+    nodes: [
+      { id: 'docs', title: 'HR documents', note: 'the source records', at: [0, 0] },
+      { id: 'extract', title: 'AI extraction', note: 'figures read from each document', kind: 'model', at: [1, 0] },
+      { id: 'hr', title: 'HR approves', note: 'figures checked before anything is paid', kind: 'person', n: 2, at: [2, 0] },
+      { id: 'pay', title: 'Remittance', note: 'keyed by Power Automate', at: [3, 0] },
+    ],
+    edges: [
+      { from: 'docs', to: 'extract' },
+      { from: 'extract', to: 'hr' },
+      { from: 'hr', to: 'pay' },
+    ],
+  }}
 />
 
 <Section label="The approach" ruled>
 
+<FigRef n={1} />
+
 ### Use SAP the way staff do
 
 The SAP bot drives the same desktop client staff use and follows the same steps a person would, so SAP itself didn’t have to change to be automated. When a screen isn’t what the bot expects, it stops, logs the item and leaves it for a person instead of guessing.
+
+<FigRef n={2} />
 
 ### Read the documents, then a person approves
 

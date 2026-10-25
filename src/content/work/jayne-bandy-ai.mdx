@@ -30,7 +30,7 @@ A dental receptionist can’t answer the phone while checking a patient in, and 
     nodes: [
       { id: 'caller', title: 'Caller', note: 'rings the practice’s own number (Twilio)', at: [0, 0] },
       { id: 'voice', title: 'Voice layer', note: 'ElevenLabs: speech to text, turn-taking, the practice’s voice', n: 1, at: [1, 0] },
-      { id: 'agent', title: 'Agent', note: 'GPT-5.5 following the reviewed script', kind: 'model', n: 3, at: [2, 0] },
+      { id: 'agent', title: 'Agent', note: 'GPT-5.5 following the reviewed script', kind: 'model', at: [2, 0] },
       { id: 'tools', title: 'Tools', note: 'find patient · find free slots · book, move or cancel · request callback', n: 2, at: [3, 0] },
       { id: 'practice', title: 'Practice system', note: 'CareStack · Core Practice · Dentally', at: [4, 0] },
       { id: 'sorry', title: 'Agent', note: 'apologises and says the team will call back', kind: 'model', at: [2, 1] },
@@ -65,6 +65,26 @@ A dental receptionist can’t answer the phone while checking a patient in, and 
     { who: 'caller', text: 'Yes, that’s fine.' },
     { who: 'agent', text: 'Thanks, Jordan. The team will call you back today.' },
   ]}
+/>
+
+<Figure
+  label="Fig. 2 Every change"
+  caption="Before a change goes live, it runs through four or five scripted scenarios and is compared with past calls; an LLM judge scores each transcript against the expected outcome, and an admin reads the results before approving it. Every version can be restored."
+  spec={{
+    nodes: [
+      { id: 'ask', title: 'Change request', note: 'from a practice, in plain English', at: [0, 0] },
+      { id: 'runs', title: 'Test runs', note: 'four or five scripted scenarios, compared with past calls', at: [1, 0] },
+      { id: 'judge', title: 'LLM judge', note: 'scores each transcript against the expected outcome', kind: 'model', at: [2, 0] },
+      { id: 'admin', title: 'Admin approves', note: 'after reading the results', kind: 'person', n: 3, at: [3, 0] },
+      { id: 'saved', title: 'Version saved', note: 'every version can be restored', at: [4, 0] },
+    ],
+    edges: [
+      { from: 'ask', to: 'runs' },
+      { from: 'runs', to: 'judge' },
+      { from: 'judge', to: 'admin' },
+      { from: 'admin', to: 'saved' },
+    ],
+  }}
 />
 
 <Section label="The approach" ruled>

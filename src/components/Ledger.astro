@@ -1,0 +1,89 @@
+---
+// A worked example set as a ledger (DESIGN_PLAN DS9, Step 9): one invented item
+// followed through each stage, a ruled line per stage. No money: no currency symbol
+// or amount anywhere (verify checks), no real rates or people. Labelled as invented.
+interface Line {
+  stage: string;
+  text: string;
+  /** What the stage produces, set in mono at the right. */
+  out?: string;
+}
+
+interface Props {
+  label: string;
+  heading: string;
+  lines: Line[];
+}
+
+const { label, heading, lines } = Astro.props;
+const [, num = label, name = ''] = label.match(/^(\S+ \S+) (.*)$/) ?? [];
+---
+
+<section class="row ledger-row">
+  <div class="mar label">{num} <br />{name}</div>
+  <div class="body">
+    <h2 class="label ledger-heading">{heading}</h2>
+    <ol class="ledger" data-ledger>
+      {
+        lines.map((l, i) => (
+          <li>
+            <span class="mono muted step">{String(i + 1).padStart(2, '0')}</span>
+            <span class="mono stage">{l.stage}</span>
+            <span class="text">{l.text}</span>
+            {l.out && <span class="mono muted out">{l.out}</span>}
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .ledger-heading {
+    margin: 0 0 16px;
+  }
+
+  .ledger {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1.5px solid var(--ink);
+  }
+
+  .ledger li {
+    display: grid;
+    grid-template-columns: 32px 150px minmax(0, 1fr) 200px;
+    gap: 16px;
+    align-items: baseline;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .stage {
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .text {
+    font-size: 18px;
+    line-height: 1.45;
+  }
+
+  .out {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 900px) {
+    .ledger li {
+      grid-template-columns: 32px minmax(0, 1fr);
+      gap: 4px 12px;
+    }
+
+    .text,
+    .out {
+      grid-column: 2;
+    }
+  }
+</style>

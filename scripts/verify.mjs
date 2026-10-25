@@ -114,6 +114,13 @@ try {
             .find((t) => /\+?\d[\d ()-]{8,}\d/.test(t)),
         );
         if (phoneLike) failures.push(`${tag}: something that looks like a phone number is in an illustration`);
+        // The worked shift shows no money: no currency symbol, code or amount (DS9).
+        const money = await page.evaluate(() =>
+          [...document.querySelectorAll('[data-ledger]')].some((el) =>
+            /[$€£¥₱]|\b(AUD|USD|PHP)\b|\d+\.\d{2}\b/.test(el.textContent),
+          ),
+        );
+        if (money) failures.push(`${tag}: a currency symbol or amount is in the worked shift`);
 
         // Figures: margin red only on failure paths (DS7), never on a box or plain edge.
         const red = await page.evaluate(() => {

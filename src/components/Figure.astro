@@ -20,7 +20,7 @@ const layouts: [string, Layout][] = [
   ['narrow', layoutNarrow(spec)],
 ];
 
-const KIND: Record<NodeKind, string> = { code: 'code', model: 'the model', person: 'a person approves' };
+const KIND: Record<NodeKind, string> = { code: 'code', model: 'the model', person: 'a person decides' };
 const kinds = new Set(spec.nodes.map((n) => n.kind ?? 'code'));
 const hasFail = spec.edges.some((e) => e.kind === 'fail');
 
@@ -106,7 +106,7 @@ const noteTop = (box: Box) => 12 + box.title.length * TYPE.title * TYPE.lineGap;
     <p class="mono muted legend" aria-hidden="true">
       {kinds.has('code') && <span class="key code">code</span>}
       {kinds.has('model') && <span class="key model">the model</span>}
-      {kinds.has('person') && <span class="key person">a person approves</span>}
+      {kinds.has('person') && <span class="key person">a person decides</span>}
       {hasFail && <span class="key fail">when it fails</span>}
     </p>
   </figure>

@@ -12,7 +12,9 @@ status: live
 skills: [architecture, security, integrations, leadership]
 ---
 
-import Flow from '../../components/Flow.astro';
+import Figure from '../../components/Figure.astro';
+import FigRef from '../../components/FigRef.astro';
+import Ledger from '../../components/Ledger.astro';
 import Section from '../../components/Section.astro';
 
 <Section label="The challenge" ruled>
@@ -21,30 +23,60 @@ A disability-support provider ran rostering, timesheets and invoicing across spr
 
 </Section>
 
-<Flow
+<Figure
   label="Fig. 1 From shift to pay and invoice"
   caption="Each approved shift is priced from the configured award rules, then exported to MYOB without re-keying."
-  steps={[
-    { title: 'Roster', note: 'worker, participant, site' },
-    { title: 'Timesheet', note: 'approved hours' },
-    { title: 'Award rules', note: 'SCHADS rates and penalties, configured by admins', key: true },
-    { title: 'Pay and invoice', note: 'invoice by funding type' },
-    { title: 'MYOB', note: 'payroll and sales-journal export' },
+  spec={{
+    nodes: [
+      { id: 'roster', title: 'Roster', note: 'worker, participant, site', at: [0, 0] },
+      { id: 'timesheet', title: 'Timesheet', note: 'approved hours', at: [1, 0] },
+      { id: 'rules', title: 'Award rules', note: 'SCHADS rates and penalties, configured by admins', n: 1, at: [2, 0] },
+      { id: 'pay', title: 'Pay and invoice', note: 'invoice by funding type', at: [3, 0] },
+      { id: 'myob', title: 'MYOB', note: 'payroll and sales-journal export', at: [4, 0] },
+    ],
+    edges: [
+      { from: 'roster', to: 'timesheet' },
+      { from: 'timesheet', to: 'rules' },
+      { from: 'rules', to: 'pay' },
+      { from: 'pay', to: 'myob' },
+    ],
+  }}
+/>
+
+<Ledger
+  label="Worked example"
+  heading="Illustrative shift · no real rates or people"
+  lines={[
+    { stage: 'Shift', text: 'Sat, 7:00–15:00 · worker A · participant B', out: 'approved timesheet' },
+    { stage: 'Pay', text: 'The hours priced by the configured award rule for a Saturday shift', out: 'payroll line' },
+    { stage: 'Invoice', text: 'One line against participant B’s funding type', out: 'invoice line' },
+    { stage: 'MYOB', text: 'The pay in the payroll export, the invoice in the sales journal', out: 'two export rows' },
   ]}
 />
 
-<Flow
+<Figure
   label="Fig. 2 Payment reconciliation"
   caption="Nothing closes on its own: a line with no clear match stays open for Finance."
-  steps={[
-    { title: 'Bank file', note: 'uploaded by Finance' },
-    { title: 'Suggested match', note: 'each line to an invoice', key: true },
-    { title: 'Finance approves', note: 'one line at a time' },
-    { title: 'Invoice closed', note: 'with the approval recorded' },
-  ]}
+  spec={{
+    nodes: [
+      { id: 'bank', title: 'Bank file', note: 'uploaded by Finance', at: [0, 0] },
+      { id: 'match', title: 'Suggested match', note: 'each line to an invoice', at: [1, 0] },
+      { id: 'finance', title: 'Finance approves', note: 'one line at a time', kind: 'person', n: 2, at: [2, 0] },
+      { id: 'closed', title: 'Invoice closed', note: 'with the approval recorded', at: [3, 0] },
+      { id: 'open', title: 'Stays open', note: 'for Finance to resolve', kind: 'person', at: [1, 1] },
+    ],
+    edges: [
+      { from: 'bank', to: 'match' },
+      { from: 'match', to: 'finance' },
+      { from: 'finance', to: 'closed' },
+      { from: 'match', to: 'open', kind: 'fail', label: 'no clear match' },
+    ],
+  }}
 />
 
 <Section label="The approach" ruled>
+
+<FigRef n={1} />
 
 ### Award rules as configuration
 
@@ -53,6 +85,8 @@ SCHADS pay rates and penalty rules are configured by admins in the app rather th
 ### Access that follows the organisation
 
 Each person’s reach comes from their role (worker, coordinator, manager or Finance) and the teams, sites and programs they’re assigned to. Row-level security in the database checks those links, so the rule holds whichever screen or API asks.
+
+<FigRef n={2} />
 
 ### Reconciliation Finance approves
 
