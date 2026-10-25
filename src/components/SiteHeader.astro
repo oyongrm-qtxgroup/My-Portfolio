@@ -8,9 +8,11 @@ import { getProfile } from '../lib/content';
 const profile = await getProfile();
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 
+// One name per section, in page order (docs/FIX_PLAN.md D4).
 const links = [
-  { href: '/#skills', label: 'Skills', match: null },
   { href: '/#work', label: 'Work', match: '/work' },
+  { href: '/#experience', label: 'Experience', match: null },
+  { href: '/#capabilities', label: 'Capabilities', match: null },
   { href: '/cv/', label: 'CV', match: '/cv' },
   { href: '/#contact', label: 'Contact', match: null },
 ];
@@ -105,6 +107,21 @@ const current = (match: string | null) => match !== null && path.startsWith(matc
       },
       { signal },
     );
+    // Tuck the header while reading down the page; show it again on any scroll up,
+    // near the top, or when the menu or a header link takes focus.
+    let lastY = scrollY;
+    addEventListener(
+      'scroll',
+      () => {
+        const y = scrollY;
+        const open = button.getAttribute('aria-expanded') === 'true';
+        root.classList.toggle('tucked', !open && y > lastY && y > root.offsetHeight * 2);
+        lastY = y;
+      },
+      { passive: true, signal },
+    );
+    root.addEventListener('focusin', () => root.classList.remove('tucked'), { signal });
+
     // Rotating to a wide screen closes the menu so the page is never left inert.
     matchMedia('(min-width: 761px)').addEventListener(
       'change',
@@ -121,6 +138,10 @@ const current = (match: string | null) => match !== null && path.startsWith(matc
 <style>
   .site-header {
     position: relative;
+    z-index: 15;
+    top: 0;
+    background: var(--paper);
+    transition: transform 0.25s var(--ease-out);
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -131,6 +152,23 @@ const current = (match: string | null) => match !== null && path.startsWith(matc
     font: 400 13px var(--font-mono);
     letter-spacing: 0.04em;
     text-transform: uppercase;
+  }
+
+  /* With JS the header is sticky: scrolling down tucks it away and any scroll up
+     brings it back (docs/FIX_PLAN.md D-12). Without JS it scrolls with the page,
+     since the no-JS phone header (inline links) is too tall to pin. */
+  :global(html.js) .site-header {
+    position: sticky;
+  }
+
+  .site-header.tucked {
+    transform: translateY(-100%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .site-header {
+      transition: none;
+    }
   }
 
   a {

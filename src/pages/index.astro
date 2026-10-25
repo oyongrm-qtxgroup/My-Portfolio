@@ -2,7 +2,6 @@
 import Base from '../layouts/Base.astro';
 import MarginRow from '../components/MarginRow.astro';
 import WorkRow from '../components/WorkRow.astro';
-import SkillBlock from '../components/SkillBlock.astro';
 import ContactForm from '../components/ContactForm.astro';
 import { getPrinciples, getProfile, getRoles, getSkills, getWork } from '../lib/content';
 
@@ -14,9 +13,11 @@ const [profile, skills, principles, work, roles] = await Promise.all([
   getRoles(),
 ]);
 
-const lead = skills.filter((s) => s.data.tier === 'lead');
-const foundation = skills.filter((s) => s.data.tier === 'foundation');
-const skillName = new Map(skills.map((s) => [s.id, s.data.name]));
+// Work first (docs/FIX_PLAN.md D4): the projects are the evidence, so they come before
+// the capabilities they prove. Each capability links to the project behind its proof.
+const workById = new Map(work.map((w) => [w.id, w]));
+const projectFor = (proof: { work?: { id: string } }[]) =>
+  proof.map((p) => p.work && workById.get(p.work.id)).find(Boolean);
 
 // schema.org Person for search engines: who, what, where, and the profiles that confirm it.
 const currentRole = roles.find((r) => r.data.current);
@@ -37,8 +38,8 @@ const person = {
 ---
 
 <Base description={profile.summary} jsonLd={person}>
-  <MarginRow index={0}>
-    <Fragment slot="label">§ 00<br />Intro</Fragment>
+  <MarginRow index={0} hideLabel>
+    <Fragment slot="label">Intro</Fragment>
     <div class="hero">
       <h1 class="display headline">
         {profile.headline.map((line, i) => <span class="ln" style={`--i: ${i}`}>{line}</span>)}
@@ -66,7 +67,7 @@ const person = {
       {
         profile.figures.map((f) => (
           <div>
-            <dt class="label">{f.label}</dt>
+            <dt class="fig-label">{f.label}</dt>
             <dd class="display tabular">{f.value}</dd>
           </div>
         ))
@@ -74,74 +75,23 @@ const person = {
     </dl>
   </MarginRow>
 
-  <MarginRow index={2} ruled id="skills">
-    <Fragment slot="label">§ 01<br />What I do</Fragment>
-    <h2 class="visually-hidden">What I do</h2>
-    <div class="lead">
-      {lead.map((s, i) => <SkillBlock skill={s} no={i + 1} />)}
-    </div>
-  </MarginRow>
-
-  <MarginRow index={3} ruled id="foundations">
-    <Fragment slot="label">§ 02<br />How I build</Fragment>
-    <h2 class="visually-hidden">How I build</h2>
-    <div class="grid">
-      {
-        foundation.map((s) => (
-          <section class="cell reveal" id={s.id} aria-labelledby={`${s.id}-name`}>
-            <h3 class="title cell-name" id={`${s.id}-name`}>
-              {s.data.name}
-            </h3>
-            <p class="cell-pitch">{s.data.pitch}</p>
-            <ul class="cell-proof">
-              {s.data.proof.map((p) => (
-                <li>{p.text}</li>
-              ))}
-            </ul>
-          </section>
-        ))
-      }
-    </div>
-  </MarginRow>
-
-  <MarginRow index={4} ruled id="work">
-    <Fragment slot="label">§ 03<br />Selected work</Fragment>
+  <MarginRow index={2} ruled id="work" hideLabel>
+    <Fragment slot="label">Selected<br />work</Fragment>
     <h2 class="visually-hidden">Selected work</h2>
     <div class="list">
       {work.map((w, i) => <WorkRow work={w} index={i} />)}
     </div>
   </MarginRow>
 
-  <MarginRow index={5} ruled id="principles">
-    <Fragment slot="label">§ 04<br />How I work</Fragment>
-    <h2 class="visually-hidden">How I work</h2>
-    <ol class="list principles">
-      {
-        principles.map((p, i) => (
-          <li class="principle reveal">
-            <span class="mono muted tabular">{String(i + 1).padStart(2, '0')}</span>
-            <div>
-              <h3 class="title principle-title">{p.data.title}</h3>
-              <p>{p.data.body}</p>
-              <a href={`#${p.data.skill.id}`} class="mono muted skill-link target">
-                {skillName.get(p.data.skill.id)}
-              </a>
-            </div>
-          </li>
-        ))
-      }
-    </ol>
-  </MarginRow>
-
-  <MarginRow index={6} ruled id="experience">
-    <Fragment slot="label">§ 05<br />Experience</Fragment>
+  <MarginRow index={3} ruled id="experience" hideLabel>
+    <Fragment slot="label">Experience</Fragment>
     <h2 class="visually-hidden">Experience</h2>
     <div class="list">
       {
         roles.map((r) => (
           <div class="role reveal">
             <span class="mono muted tabular">{r.data.span}</span>
-            <span class="mono role-org">{r.data.short}</span>
+            <span class="role-org">{r.data.short}</span>
             <p>
               <strong class="role-title">{r.data.title}.</strong> {r.data.summary}
             </p>
@@ -152,18 +102,68 @@ const person = {
     <a href="/cv/" class="mono accent more target">Full CV →</a>
   </MarginRow>
 
-  <MarginRow index={7} ruled id="contact">
-    <Fragment slot="label">§ 06<br />Contact</Fragment>
+  <MarginRow index={4} ruled id="capabilities" hideLabel>
+    <Fragment slot="label">Capabilities</Fragment>
+    <h2 class="visually-hidden">Capabilities</h2>
+    <dl class="caps">
+      {
+        skills.map((s) => {
+          const project = projectFor(s.data.proof);
+          return (
+            <div class="cap reveal" id={s.id}>
+              <dt class="title cap-name">{s.data.name}</dt>
+              <dd class="cap-line">
+                {s.data.summary}
+                {project && (
+                  <>
+                    {' '}
+                    <a href={`/work/${project.id}/`} class="cap-link">
+                      {project.data.title} →
+                    </a>
+                  </>
+                )}
+              </dd>
+            </div>
+          );
+        })
+      }
+    </dl>
+  </MarginRow>
+
+  <MarginRow index={5} ruled id="principles" hideLabel>
+    <Fragment slot="label">Principles</Fragment>
+    <h2 class="visually-hidden">Principles</h2>
+    <ol class="list principles">
+      {
+        principles.map((p, i) => (
+          <li class="principle reveal">
+            <span class="mono muted tabular">{String(i + 1).padStart(2, '0')}</span>
+            <div>
+              <h3 class="title principle-title">{p.data.title}</h3>
+              <p>{p.data.body}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </MarginRow>
+
+  <MarginRow index={6} ruled id="contact" hideLabel>
+    <Fragment slot="label">Contact</Fragment>
     <div class="contact reveal">
-      <h2 class="display ask">Hiring for a role? Tell me about it.</h2>
-      <p class="ask-sub">Email is the fastest way to reach me. Project enquiries are welcome too.</p>
-      <a href={`mailto:${profile.email}`} class="accent email">{profile.email}</a>
-      <ul class="mono links">
-        <li><a href={profile.links.linkedin} class="target">LinkedIn</a></li>
-        <li><a href={profile.links.github} class="target">GitHub</a></li>
-        <li><a href="/cv/" class="target">CV</a></li>
-      </ul>
-      <ContactForm email={profile.email} />
+      <div class="contact-main">
+        <h2 class="display ask">Hiring for a role? Tell me about it.</h2>
+        <p class="ask-sub">Email is the fastest way to reach me. Project enquiries are welcome too.</p>
+        <ContactForm email={profile.email} />
+      </div>
+      <div class="contact-side">
+        <a href={`mailto:${profile.email}`} class="accent email">{profile.email}</a>
+        <ul class="mono links">
+          <li><a href={profile.links.linkedin} class="target">LinkedIn</a></li>
+          <li><a href={profile.links.github} class="target">GitHub</a></li>
+          <li><a href="/raymundo-oyong-cv.pdf" class="target" download>CV (PDF)</a></li>
+        </ul>
+      </div>
     </div>
   </MarginRow>
 </Base>
@@ -249,8 +249,15 @@ const person = {
 
   .figures {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     margin: -28px 0 0;
+  }
+
+  /* Stat labels in sentence case: they're facts people scan, not metadata. */
+  .fig-label {
+    font-size: 15px;
+    line-height: 1.4;
+    color: var(--ink-2);
   }
 
   .figures > div {
@@ -276,65 +283,41 @@ const person = {
     white-space: nowrap;
   }
 
-  .lead {
-    margin-top: -28px;
+  .list {
+    margin-top: -8px;
   }
 
-  .grid {
+  .caps {
+    margin: -8px 0 0;
+  }
+
+  .cap {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    margin-top: -28px;
-  }
-
-  .cell {
-    padding: 28px 28px 28px 0;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: 20px;
+    align-items: baseline;
+    padding: 16px 0;
     border-bottom: 1px solid var(--rule);
   }
 
-  .cell:nth-child(2n) {
-    padding: 28px 0 28px 28px;
-    border-left: 1px solid var(--rule);
-  }
-
-  .cell:last-child:nth-child(odd) {
-    grid-column: 1 / -1;
+  .cap:last-child {
     border-bottom: 0;
   }
 
-  .cell-name {
-    font-size: 26px;
+  .cap-name {
+    font-size: 24px;
   }
 
-  .cell-pitch {
-    margin-top: 10px;
+  .cap-line {
+    margin: 0;
+    max-width: 40em;
     font-size: 18px;
     line-height: 1.45;
   }
 
-  .cell-proof {
-    margin: 14px 0 0;
-    padding: 0;
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    font-size: 16px;
-    line-height: 1.45;
-    color: var(--ink-2);
-  }
-
-  .cell-proof li {
-    padding-left: 18px;
-    text-indent: -18px;
-  }
-
-  .cell-proof li::before {
-    content: '— ';
+  .cap-link {
+    white-space: nowrap;
     color: var(--accent);
-  }
-
-  .list {
-    margin-top: -8px;
   }
 
   .principles {
@@ -362,14 +345,6 @@ const person = {
     max-width: 40em;
   }
 
-  .skill-link {
-    display: inline-block;
-    margin-top: 10px;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
   .more {
     display: inline-block;
     margin-top: 16px;
@@ -387,9 +362,8 @@ const person = {
   }
 
   .role-org {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-size: 15px;
+    font-weight: 600;
   }
 
   .role p {
@@ -402,7 +376,22 @@ const person = {
   }
 
   .contact {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
     padding: 16px 0 24px;
+  }
+
+  /* Wide screens: email and profiles beside the form instead of an empty half. */
+  @media (min-width: 1100px) {
+    .contact {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.6fr);
+      gap: 48px;
+    }
+
+    .contact-side {
+      padding-top: 8px;
+    }
   }
 
   .ask {
@@ -418,7 +407,6 @@ const person = {
 
   .email {
     display: inline-block;
-    margin-top: 20px;
     font-size: clamp(22px, 3vw, 30px);
     text-underline-offset: 6px;
   }
@@ -434,33 +422,21 @@ const person = {
     letter-spacing: 0.05em;
   }
 
-  @media (max-width: 1040px) {
-    .figures {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .figures > div:nth-child(2n) {
-      border-right: 0;
-    }
-
-    .figures > div:nth-child(2n + 1) {
-      padding-left: 0;
-    }
-
-    .figures > div:nth-child(-n + 2) {
-      border-bottom: 1px solid var(--rule);
-    }
-  }
-
   @media (max-width: 900px) {
-    .grid {
-      grid-template-columns: minmax(0, 1fr);
+    .hero {
+      padding-top: 8px;
     }
 
-    .cell,
-    .cell:nth-child(2n) {
-      padding: 24px 0;
-      border-left: 0;
+    .figures {
+      margin-top: 0;
+    }
+
+    .figures > div {
+      padding: 18px 16px 18px 0;
+    }
+
+    .figures > div + div {
+      padding-left: 16px;
     }
 
     .role {
@@ -472,25 +448,31 @@ const person = {
       grid-column: 1 / -1;
       font-size: 17px;
     }
+
+    .cap {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 6px;
+    }
+
+    .cap-line {
+      font-size: 17px;
+    }
   }
 
-  @media (max-width: 760px) {
-    .hero {
-      padding-top: 8px;
+  @media (max-width: 640px) {
+    .figures {
+      grid-template-columns: minmax(0, 1fr);
     }
 
-    .figures,
-    .lead,
-    .grid {
-      margin-top: 0;
+    .figures > div,
+    .figures > div + div {
+      padding: 16px 0;
+      border-right: 0;
+      border-bottom: 1px solid var(--rule);
     }
 
-    .figures > div {
-      padding: 18px 16px 18px 0;
-    }
-
-    .figures > div:nth-child(2n) {
-      padding-left: 16px;
+    .figures > div:last-child {
+      border-bottom: 0;
     }
 
     .principle {

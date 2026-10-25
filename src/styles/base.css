@@ -186,6 +186,8 @@ button {
 .row {
   display: grid;
   grid-template-columns: var(--margin-col) minmax(0, 1fr);
+  /* In-page links land below the sticky header. */
+  scroll-margin-top: 64px;
 }
 
 .row + .row {
@@ -230,11 +232,12 @@ button {
 }
 
 .stamp[data-status='live'] {
-  color: var(--accent);
+  color: var(--ink);
+  border-width: 2px;
 }
 
 .stamp[data-status='shipped'] {
-  color: var(--ink);
+  color: var(--ink-2);
 }
 
 .stamp[data-status='in-progress'] {
@@ -248,10 +251,10 @@ button {
 /* ── Margin notes ───────────────────────────────────────── */
 
 .sidenote {
-  border-top: 1.5px solid var(--accent);
+  border-top: 1.5px solid var(--ink);
   padding-top: 10px;
   font: 13px/1.55 var(--font-mono);
-  color: var(--accent);
+  color: var(--ink-2);
 }
 
 /* ── Controls ───────────────────────────────────────────── */
@@ -284,17 +287,11 @@ button {
   min-height: 44px;
 }
 
-/* ── Phone ──────────────────────────────────────────────── */
+/* ── Tablet and phone: one column ───────────────────────── */
 
-@media (max-width: 760px) {
-  :root {
-    --pad: 20px;
-  }
-
-  body {
-    font-size: 17px;
-  }
-
+/* Up to 900 px the label rail would squeeze the reading column, so rows stack.
+   There is no red margin line in this layout (docs/FIX_PLAN.md D12). */
+@media (max-width: 900px) {
   .row {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -310,6 +307,18 @@ button {
   .row > .body {
     padding: 12px 0 32px;
   }
+}
+
+/* ── Phone ──────────────────────────────────────────────── */
+
+@media (max-width: 760px) {
+  :root {
+    --pad: 20px;
+  }
+
+  body {
+    font-size: 17px;
+  }
 
   .lede {
     font-size: 19px;
@@ -317,23 +326,5 @@ button {
 
   .prose {
     font-size: 18px;
-  }
-
-  /* The margin line moves to the page's left edge on phones. */
-  .page-edge {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 1.5px;
-    background: var(--margin);
-    pointer-events: none;
-    z-index: 1;
-  }
-}
-
-@media (min-width: 761px) {
-  .page-edge {
-    display: none;
   }
 }

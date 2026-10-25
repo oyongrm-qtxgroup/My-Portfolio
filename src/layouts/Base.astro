@@ -20,7 +20,7 @@ interface Props {
 
 const {
   title = 'Raymundo Oyong — Senior AI & Automation Engineer',
-  description = 'Raymundo Oyong builds AI and software that does the work people shouldn\'t have to: voice agents, document AI with sources, and process automation.',
+  description = 'Raymundo Oyong builds AI and software that does the work people shouldn’t have to: voice agents, document AI with sources, and process automation.',
   noindex = false,
   jsonLd,
 } = Astro.props;
@@ -91,7 +91,6 @@ const image = new URL(await ogImageFor(Astro.url.pathname), Astro.site);
   <body>
     <a class="skip" href="#main">Skip to content</a>
     <span class="ink-progress" aria-hidden="true" transition:persist="ink-progress"></span>
-    <span class="page-edge" aria-hidden="true"></span>
     <div class="wrap">
       <SiteHeader />
       <main id="main">

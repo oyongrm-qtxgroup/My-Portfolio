@@ -10,6 +10,7 @@ const skills = defineCollection({
     order: z.number().int(),
     tier: z.enum(['lead', 'foundation']),
     name: z.string(),
+    summary: z.string(),
     pitch: z.string(),
     proof: z
       .array(
@@ -85,7 +86,7 @@ const profile = defineCollection({
     availability: z.string(),
     email: z.email(),
     links: z.object({ linkedin: z.url(), github: z.url() }),
-    figures: z.array(z.object({ value: z.string(), label: z.string() })).length(4),
+    figures: z.array(z.object({ value: z.string(), label: z.string() })).min(3).max(4),
     cv: z.object({
       name: z.string(),
       title: z.string(),

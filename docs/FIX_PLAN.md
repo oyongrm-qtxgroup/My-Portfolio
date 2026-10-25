@@ -142,7 +142,7 @@ Because all work goes through the single branch `ccr-e6bc818b-pfij6d`, **one pul
   - Share cards viewed at 500 px wide.
 - **Blocked:** no. Optional facts A3 (start month or notice) and A4 (rate) can be added to the availability line later.
 
-### Step 3: CV PDF, ATS order, keywords and light type (S–M, low risk, mostly not blocked) — in review
+### Step 3: CV PDF, ATS order, keywords and light type (S–M, low risk, mostly not blocked) — merged 25 Oct 2026 (#4)
 
 - **Findings:** R-07, D-21, D-20, R-08, H-14, H-19 (education), R-10, H-16 (title glosses), H-03, R-15, H-11 (verb), F-02 / R-09 / H-17 (CV explanations).
 - **Layout:**
@@ -171,7 +171,7 @@ Because all work goes through the single branch `ccr-e6bc818b-pfij6d`, **one pul
   - All Harvard checks and the new ones pass; each new check is shown failing on a deliberately broken case.
 - **Blocked:** the SEED clause (A1), Python, Azure OpenAI and SAP wording (A5), and the speed-fix wording (A8). The step can ship without them, keeping the current wording for those lines, and pick them up in Step 5.
 
-### Step 4: Home page, work first, plus phone and layout fixes (M, medium risk, not blocked)
+### Step 4: Home page, work first, plus phone and layout fixes (M, medium risk, not blocked) — in review
 
 - **Findings:** H-12, D-05, D-15, D-18, D-31, D-14, D-30 (colour), H-23, D-16, D-17, D-19, D-11, D-12, R-12, D-23 (figures), D-25 (quotes and list markers).
 - **Content:**

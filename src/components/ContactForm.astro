@@ -52,9 +52,9 @@ const siteKey =
       <p id="cf-email-err" class="err" data-error-for="email"></p>
     </div>
     <div class="field">
-      <label for="cf-message">What's it about?</label>
+      <label for="cf-message">What’s it about?</label>
       <p id="cf-message-hint" class="hint">
-        A role you're hiring for, or a project. A sentence or two is plenty.
+        A role you’re hiring for, or a project. A sentence or two is plenty.
       </p>
       <textarea
         id="cf-message"
@@ -85,7 +85,7 @@ const siteKey =
   </div>
   <p class="status" role="status" data-form-status></p>
   <p class="failed" role="alert" data-failed hidden>
-    <span data-failed-reason>That didn't send.</span> Your message is still here, so try again, or
+    <span data-failed-reason>That didn’t send.</span> Your message is still here, so try again, or
     write to <a href={`mailto:${email}`} class="accent">{email}</a>.
   </p>
 </form>
@@ -243,7 +243,7 @@ const siteKey =
         const now = new Date();
         const pad = (n: number) => String(n).padStart(2, '0');
         received.textContent = `Received · ${pad(now.getDate())}.${pad(now.getMonth() + 1)} · ${pad(now.getHours())}:${pad(now.getMinutes())}`;
-        status.textContent = `Thanks. It's in my inbox, and I'll reply to ${sentTo}.`;
+        status.textContent = `Thanks. It’s in my inbox, and I’ll reply to ${sentTo}.`;
         form.reset();
         body.hidden = true;
         sent.hidden = false;
@@ -261,7 +261,7 @@ const siteKey =
         return;
       }
       failedReason.textContent =
-        error?.code === 'TOO_MANY_REQUESTS' ? error.message : "That didn't send.";
+        error?.code === 'TOO_MANY_REQUESTS' ? error.message : "That didn’t send.";
       failed.hidden = false;
     });
   }
@@ -405,7 +405,7 @@ const siteKey =
   }
 
   .received {
-    color: var(--accent);
+    color: var(--ink);
     animation: press 0.45s cubic-bezier(0.3, 0.7, 0.4, 1) both;
   }
 
