@@ -22,8 +22,8 @@ These change the locked decisions in `docs/REDESIGN_PLAN.md` §1–4 and `docs/c
 | D4 | Home order | **Work first:** Intro → Selected work → Experience → Capabilities (What I do and How I build merged) → Principles (three) → Contact. Each number stated once. | §5 Phase 2 home order; WRITING.md "Projects are evidence for a skill" | H-12, D-05, D-15 |
 | D5 | Case studies | **Jayne Bandy AI, SAP & HR automation, NDIS workforce & care platform** (new; client generic). Care-plan drafting becomes a one-line "currently building" mention; its URL redirects. | §5 Phase 2 "Three project pages" | H-05, H-13, D-07, R-12 |
 | D6 | Intent | **Employers and clients, employers first.** | none | R-04, D-01 |
-| D7 | Engagement | **Direct contract, or relocation to Australia with visa sponsorship.** | none | R-01, H-09 |
-| D8 | Hours | **UTC+8, overlapping most of the Sydney working day.** | none | R-01, H-09 |
+| D7 | Engagement | **Direct contract, or relocation to Australia with visa sponsorship.** Changed 25 Oct 2026: **remote roles anywhere; relocation to any country outside the Philippines with visa sponsorship** (Philippine companies: remote only). | none | R-01, H-09 |
+| D8 | Hours | **UTC+8, overlapping most of the Sydney working day.** Changed 25 Oct 2026: **"UTC+8" only**, no region named. | none | R-01, H-09 |
 | D9 | Phone | **Email only stays.** A line says email is the fastest way to reach you. | none | R-05, H-19 |
 | D10 | Labels | Wordmark **"Raymundo Oyong"**; drop "VOL. 2026"; **drop the § numbers**; section names match the nav; plain 404. | §1 Direction (words only; the look stays) | R-13, H-22, D-10, D-26 |
 | D11 | Motion | **No count-up; headline visible from first paint.** Margin-line draw and stamp press stay. The phone-header jump is fixed as a bug. | §4 Motion | D-13 |
@@ -235,7 +235,7 @@ Because all work goes through the single branch `ccr-e6bc818b-pfij6d`, **one pul
 - **Files:** `src/content/work/sap-automation.mdx`, `src/content/roles.yaml`, `src/content/skills.yaml`, regenerated PDF.
 - **Verified by:** standard checks and your read-through.
 
-### Step 6: Share images, favicon and remaining polish (S, low risk, not blocked) — in review
+### Step 6: Share images, favicon and remaining polish (S, low risk, not blocked) — merged 25 Oct 2026 (#9)
 
 - **Findings:** D-22, D-28 (rule width), R-14 (if you've claimed a LinkedIn vanity URL by then).
 - **Changes:**
