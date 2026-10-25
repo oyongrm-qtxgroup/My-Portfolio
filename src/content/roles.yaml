@@ -28,17 +28,17 @@
     - heading: SmartCP, AI care-plan drafting for an aged-care provider; technical lead
       bullets:
         - Specified a sprint for the development team and built AI drafting in which every statement cites its source page, with contradictions raised for a clinician to review.
-        - Reduced the time per drafting action from 6.5 seconds to about 1 second by replacing a new direct database connection on every action with Supabase's pooled HTTPS data API.
+        - Reduced the time per drafting action from 6.5 seconds to about 1 second by replacing a new direct database connection on every action with Supabase’s pooled HTTPS data API.
     - heading: RL Finance, finance system for a retirement-village operator
       bullets:
-        - Building a deferred management fee engine with Consumer Price Index (CPI) increases behind an approval step, matched to the client's own spreadsheet to the cent and kept as an automated test.
+        - Building a deferred management fee engine with Consumer Price Index (CPI) increases behind an approval step, matched to the client’s own spreadsheet to the cent and kept as an automated test.
         - Delivered direct-debit files, period locking, and group profit-and-loss, balance-sheet and trial-balance reports across entities.
-    - heading: Workable, QTX's in-house operations platform
+    - heading: Workable, QTX’s in-house operations platform
       bullets:
         - Added six modules, including certification tracking synced from Microsoft Learn, 30/60/90-day onboarding and key performance indicator (KPI) reviews.
         - Resolved recurring database-connection exhaustion by removing unfiltered real-time subscriptions.
         - Automated reporting and operational checks with Python scripts.
-    - heading: SEED, QTX's SaaS that brings specialised AI into the work a team already does
+    - heading: SEED, QTX’s SaaS that brings specialised AI into the work a team already does
       bullets:
         - Built AI agents for contract management and document chat using retrieval-augmented generation (RAG), with tenant isolation and a standalone e-signature flow.
 
@@ -50,12 +50,12 @@
   start: January 2024
   end: December 2025
   span: 2024–25
-  summary: Led a four-person development team, integrated the company's first online payment channel, and automated SAP entry and HR remittances with two Power Automate bots.
+  summary: Led a four-person development team, integrated the company’s first online payment channel, and automated SAP entry and HR remittances with two Power Automate bots.
   highlights:
     - Led and mentored a four-person development team; introduced structured code reviews and secure development practices.
     - Cut manual SAP processing time by 70–80% with a Power Automate Desktop bot that enters invoices, reversals and contract locks in the SAP desktop client.
     - Moved 100+ hours a month of manual HR work to a Power Automate bot that processes government remittances using AI document extraction.
-    - Integrated UnionBank UPay as the company's first online payment channel, with rate limiting and reCAPTCHA protection.
+    - Integrated UnionBank UPay as the company’s first online payment channel, with rate limiting and reCAPTCHA protection.
     - Replaced a failing database backup uploader with a Windows service that partitions large files for Amazon S3.
 
 - id: ortigas-senior-associate
@@ -66,10 +66,10 @@
   start: January 2022
   end: December 2023
   span: 2022–23
-  summary: Built Web APIs over SAP data and led the shopping module of the company's first e-commerce site.
+  summary: Built Web APIs over SAP data and led the shopping module of the company’s first e-commerce site.
   highlights:
     - Developed ASP.NET Core Web APIs exposing SAP data to third-party applications.
-    - Led the team that built the customer shopping module of the company's first e-commerce website.
+    - Led the team that built the customer shopping module of the company’s first e-commerce website.
     - Maintained and tuned multiple MS SQL Server databases for performance and availability.
 
 - id: ortigas-associate
@@ -80,9 +80,9 @@
   start: May 2019
   end: December 2021
   span: 2019–21
-  summary: Built the company's first digital IT ticketing system and automated daily reports through SharePoint.
+  summary: Built the company’s first digital IT ticketing system and automated daily reports through SharePoint.
   highlights:
-    - Developed the company's first digital IT ticketing system.
+    - Developed the company’s first digital IT ticketing system.
     - Integrated SharePoint with in-house applications to automate daily accomplishment reports; administered Tableau.
 
 - id: oclp
@@ -93,7 +93,7 @@
   start: July 2018
   end: May 2019
   span: 2018–19
-  summary: Built the company's first tenant-portal mobile app, in Xamarin.
+  summary: Built the company’s first tenant-portal mobile app, in Xamarin.
   highlights:
-    - Developed the company's first tenant-portal mobile application in Xamarin Forms.
+    - Developed the company’s first tenant-portal mobile application in Xamarin Forms.
     - Designed and maintained relational databases for in-house projects.

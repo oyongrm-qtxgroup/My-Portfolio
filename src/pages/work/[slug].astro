@@ -65,7 +65,9 @@ const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id
         skills.map((s) => (
           <li>
             <a href={`/#${s.id}`} class="target">
-              <span class="title skill-name">{s.data.name}</span>
+              <span class="title skill-name">
+                {s.data.name} <span class="accent" aria-hidden="true">→</span>
+              </span>
               <span class="skill-pitch muted">{s.data.pitch}</span>
             </a>
           </li>

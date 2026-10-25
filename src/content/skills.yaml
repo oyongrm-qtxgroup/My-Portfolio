@@ -1,14 +1,16 @@
 # What I can do for the reader, each with proof. Rules: docs/content/WRITING.md.
-# A proof point is one sentence with an outcome; `work` links it to a project page.
+# `summary` is the one line shown under Capabilities on the home page. A proof point is one
+# sentence with an outcome; `work` links it to a project page.
 
 - id: voice-ai
   order: 1
   tier: lead
   name: Voice & conversational AI
+  summary: Voice agents that handle real calls end to end and book into the system a business already uses.
   pitch: >-
     I build voice agents that handle real calls from start to finish: they talk to the caller, find
     the right record, and book into the system the business already uses, or take a callback when
-    they can't. I also build the tooling around them, so a change to what the agent says is tested
+    they can’t. I also build the tooling around them, so a change to what the agent says is tested
     before a caller hears it.
   proof:
     - text: Lead engineer on Jayne Bandy AI, a live AI receptionist that answers and books calls for dental practices.
@@ -17,14 +19,15 @@
       work: jayne-bandy-ai
     - text: Every script change runs against simulated and replayed real calls before an admin approves it, and any earlier version can be restored.
       work: jayne-bandy-ai
-    - text: An AI phone agent on QTX's internal platform books meetings into a partner's calendar during a live call, and can only use an email address the caller actually said.
+    - text: An AI phone agent on QTX’s internal platform books meetings into a partner’s calendar during a live call, and can only use an email address the caller actually said.
 
 - id: document-ai
   order: 2
   tier: lead
   name: Document AI you can trust
+  summary: Document AI that drafts from an organisation’s own records and links every statement to its source.
   pitch: >-
-    I build AI that reads and drafts from an organisation's own documents and shows its working.
+    I build AI that reads and drafts from an organisation’s own documents and shows its working.
     Every statement links to its source, and anything uncertain goes to a person instead of being
     smoothed over, so a reviewer can check a draft quickly and sign it with confidence.
   proof:
@@ -32,12 +35,13 @@
       work: care-plan-drafting
     - text: Cut each drafting action from 6.5 seconds to about 1 second by switching to a pooled database connection, not by changing the model.
       work: care-plan-drafting
-    - text: Built AI agents on SEED, QTX's SaaS that brings specialised AI into the work a team already does, for contract management and document chat, with each client's data kept apart and off-topic questions refused to keep running costs down.
+    - text: Built AI agents on SEED, QTX’s SaaS that brings specialised AI into the work a team already does, for contract management and document chat, with each client’s data kept apart and off-topic questions refused to keep running costs down.
 
 - id: automation
   order: 3
   tier: lead
   name: Process automation & RPA
+  summary: Bots and scheduled jobs that take repetitive work between systems off people’s desks.
   pitch: >-
     I find the repetitive work people do between systems, such as keying the same data into an ERP
     or preparing the same filing every month, and hand it to bots and scheduled jobs. People keep
@@ -47,22 +51,24 @@
       work: sap-automation
     - text: Automated government remittance processing with Power Automate and AI document extraction, removing more than 100 hours a month of manual HR work.
       work: sap-automation
-    - text: A daily job on an NDIS provider's platform updates worker statuses, flags expired credentials and warns managers before the next ones lapse.
+    - text: A daily job on an NDIS provider’s platform updates worker statuses, flags expired credentials and warns managers before the next ones lapse.
 
 - id: architecture
   order: 4
   tier: foundation
   name: Solutions architecture
+  summary: 'Whole-system design: where the data lives, what each part owns and where a person approves.'
   pitch: 'I design the whole system, not just the screen in front of me: where the data lives, what each part owns, and where a person has to approve.'
   proof:
-    - text: Built a disability-support provider's platform so every shift becomes the right pay under the SCHADS award, the right invoice against NDIS funding and the right entry in MYOB.
+    - text: Built a disability-support provider’s platform so every shift becomes the right pay under the SCHADS award, the right invoice against NDIS funding and the right entry in MYOB.
     - text: 'Building RL Finance for a retirement-village operator: deferred management fees, CPI-based increases with an approval step, direct-debit files and group reports across entities.'
 
 - id: development
   order: 5
   tier: foundation
   name: Software development
-  pitch: I write production code across two very different stacks, and I'm at home in both.
+  summary: Production code in TypeScript, React and PostgreSQL, and in C# and .NET.
+  pitch: I write production code across two very different stacks, and I’m at home in both.
   proof:
     - text: TypeScript, React, PostgreSQL (Supabase) and serverless functions on Azure and Supabase at QTX.
     - text: C#, ASP.NET Core, SQL Server and Xamarin at Ortigas Land and OCLP Holdings.
@@ -71,33 +77,37 @@
   order: 6
   tier: foundation
   name: Integrations & payments
+  summary: Dependable connections to practice systems, payments, MYOB and SAP.
   pitch: Most of the value in business software is in the connections, so I make them dependable.
   proof:
-    - text: Integrated UnionBank UPay as Ortigas Land's first online payment channel, with rate limiting and reCAPTCHA.
+    - text: Integrated UnionBank UPay as Ortigas Land’s first online payment channel, with rate limiting and reCAPTCHA.
     - text: Web APIs that open SAP data to third-party applications; Stripe subscriptions, MYOB exports, and OAuth 2.0 connections to dental practice systems.
 
 - id: security
   order: 7
   tier: foundation
   name: Data security & privacy
+  summary: Access rules and audit trails designed in, where software holds health records or moves money.
   pitch: Access rules and audit trails are part of the design, especially where software holds health records or moves money.
   proof:
-    - text: Each person on an NDIS provider's platform sees only the records in their reach (their own, their team's, their sites' or their programs'), enforced in the database.
+    - text: Each person on an NDIS provider’s platform sees only the records in their reach (their own, their team’s, their sites' or their programs'), enforced in the database.
     - text: Replaced API keys with OAuth 2.0 and an audit log for a practice-system integration; CPI-based fee increases in RL Finance go through an approval step and leave a full audit trail.
 
 - id: reliability
   order: 8
   tier: foundation
   name: Data & reliability
+  summary: Failures that raise an alert instead of going unnoticed, and a database that stays healthy.
   pitch: I make failures loud and keep the database healthy, because a quiet failure costs more than a visible one.
   proof:
-    - text: Added failure alerts and a health check every 15 minutes to Jayne Bandy AI, and ended recurring database-connection exhaustion on QTX's internal platform.
+    - text: Added failure alerts and a health check every 15 minutes to Jayne Bandy AI, and ended recurring database-connection exhaustion on QTX’s internal platform.
     - text: Replaced a failing backup uploader at Ortigas Land with a Windows service that splits large database backups for Amazon S3.
 
 - id: leadership
   order: 9
   tier: foundation
   name: Technical leadership
+  summary: Small teams led through code review and specifications people can build from.
   pitch: I lead small teams by setting the standard in code review and writing specifications people can build from.
   proof:
     - text: Led a four-person development team at Ortigas Land and introduced structured code reviews and secure development practices.
@@ -107,7 +117,8 @@
   order: 10
   tier: foundation
   name: Working with clients
+  summary: Work directly with the people who will use the system, from the first conversation to sign-off.
   pitch: I work directly with the people who will use the system, from the first conversation to sign-off.
   proof:
-    - text: Matched RL Finance's deferred management fee to the finance team's own spreadsheet to the cent, then kept their example as an automated test.
+    - text: Matched RL Finance’s deferred management fee to the finance team’s own spreadsheet to the cent, then kept their example as an automated test.
     - text: Wrote the customer acceptance-test scripts for RL Finance, covering billing, statements, fees, sales, reports and permissions.

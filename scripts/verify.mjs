@@ -69,6 +69,20 @@ try {
         );
         if (overflow > 0) failures.push(`${tag}: scrolls sideways by ${overflow}px`);
 
+        // Phones: a link that stands alone (not inside a sentence) is at least 44 px tall.
+        if (width <= 390) {
+          const small = await page.$$eval('a', (links) =>
+            links
+              .filter((a) => {
+                const box = a.getBoundingClientRect();
+                if (!box.width || a.closest('[hidden], .visually-hidden, .skip')) return false;
+                return a.parentElement?.textContent.trim() === a.textContent.trim() && box.height < 44;
+              })
+              .map((a) => a.textContent.trim().slice(0, 30)),
+          );
+          if (small.length) failures.push(`${tag}: link target(s) under 44 px: ${small.join(', ')}`);
+        }
+
         await page.addScriptTag({ content: axeSource });
         const result = await page.evaluate(() =>
           window.axe.run(document, {
@@ -135,6 +149,23 @@ try {
       }));
       if (after.expanded !== 'false' || after.locked) failures.push(`${tag}: menu state leaked across navigation`);
     }
+    await ctx.close();
+  }
+
+  // Header: tucks away while scrolling down, comes back on any scroll up.
+  for (const width of [390, 1440]) {
+    const ctx = await browser.newContext({ viewport: { width, height: 844 } });
+    const p = await ctx.newPage();
+    const tag = `header on scroll @${width}`;
+    await p.goto(BASE + '/', { waitUntil: 'networkidle' });
+    await p.mouse.wheel(0, 2400);
+    await p.waitForTimeout(500);
+    const down = await p.evaluate(() => document.querySelector('.site-header')?.getBoundingClientRect().bottom ?? 0);
+    if (down > 1) failures.push(`${tag}: header still covers the page while scrolling down`);
+    await p.mouse.wheel(0, -200);
+    await p.waitForTimeout(500);
+    const up = await p.evaluate(() => document.querySelector('.site-header')?.getBoundingClientRect().top ?? -1);
+    if (Math.abs(up) > 1) failures.push(`${tag}: header did not come back on scroll up (top ${up}px)`);
     await ctx.close();
   }
 

@@ -27,7 +27,7 @@ const stamp = `Received · ${pad(now.getUTCDate())}.${pad(now.getUTCMonth() + 1)
           <>
             <h1 class="display">Thanks.</h1>
             <span class="stamp received">{stamp}</span>
-            <p role="status">It's in my inbox, and I'll reply by email.</p>
+            <p role="status">It’s in my inbox, and I’ll reply by email.</p>
           </>
         ) : fieldErrors.length > 0 ? (
           <>
@@ -37,11 +37,11 @@ const stamp = `Received · ${pad(now.getUTCDate())}.${pad(now.getUTCMonth() + 1)
                 <li>{msg}</li>
               ))}
             </ul>
-            <p>Go back to fix it; your browser's Back button keeps what you typed.</p>
+            <p>Go back to fix it; your browser’s Back button keeps what you typed.</p>
           </>
         ) : (
           <>
-            <h1 class="display">That didn't send.</h1>
+            <h1 class="display">That didn’t send.</h1>
             <p role="alert">
               {result.error?.message} Write to{' '}
               <a href={`mailto:${profile.email}`} class="accent">
@@ -74,7 +74,7 @@ const stamp = `Received · ${pad(now.getUTCDate())}.${pad(now.getUTCMonth() + 1)
   }
 
   .received {
-    color: var(--accent);
+    color: var(--ink);
   }
 
   .errors {

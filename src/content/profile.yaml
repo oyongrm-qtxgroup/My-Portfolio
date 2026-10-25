@@ -5,11 +5,11 @@ main:
   headline:
     - I build AI and software
     - that does the work
-    - people shouldn't have to.
+    - people shouldn’t have to.
   lede: >-
-    I'm Raymundo, a software engineer with eight years of building business systems. I build voice
-    agents that book patients into a practice's own diary, document AI that shows where every
-    sentence came from, and bots that took 70–80% of the manual work out of SAP processing. I design
+    I’m Raymundo, a software engineer with eight years of building business systems. I build voice
+    agents that book patients into a practice’s own diary, document AI that shows where every
+    sentence came from, and bots that take repetitive entry work out of SAP. I design
     the system, build it, and lead it through to the version people rely on every day.
   # CV profile line (no first person).
   summary: >-
@@ -29,14 +29,12 @@ main:
     github: https://github.com/oyong1926
   # Outcomes only: never hours logged, tasks closed or tickets counted.
   figures:
+    - value: '3'
+      label: practice systems behind one AI receptionist
     - value: 70–80%
       label: less manual SAP processing
     - value: 100+ h
-      label: of HR work automated each month
-    - value: 6.5 → 1 s
-      label: per action on an AI drafting tool
-    - value: 8 yrs
-      label: building business software
+      label: of HR work a month moved to a bot
   # CV only (rendered at /cv/ and in the PDF). Harvard rules: no phone, no photo.
   cv:
     name: Raymundo M. Oyong

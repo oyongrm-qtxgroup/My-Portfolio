@@ -43,11 +43,6 @@
   animation-delay: calc(var(--i, 0) * 110ms);
 }
 
-.page-edge {
-  transform-origin: top;
-  animation: draw-down 1.1s var(--ease-out) both;
-}
-
 /* Headline lines: one block each, shown from the first paint (no set-in animation). */
 .ln {
   display: inline-block;
