@@ -15,7 +15,7 @@ skills: [document-ai, security, architecture, leadership]
 import Flow from '../../components/Flow.astro';
 import Section from '../../components/Section.astro';
 
-<Section label="§ 1 The challenge" ruled>
+<Section label="The challenge" ruled>
 
 Aged-care staff write each client’s care plan from a stack of assessments, letters and notes. An AI can draft one in minutes, but a draft is only useful if a clinician can check it quickly and trust what they sign.
 
@@ -34,7 +34,7 @@ Aged-care staff write each client’s care plan from a stack of assessments, let
 />
 
 <Section
-  label="§ 2 The approach"
+  label="The approach"
   ruled
   notes={["No client records were opened while reviewing the provider’s current system; structure was compared using de-identified documents only."]}
 >
@@ -53,7 +53,7 @@ As technical lead I wrote the specification for each task in the second sprint f
 
 </Section>
 
-<Section label="§ 3 The result" ruled>
+<Section label="The result" ruled>
 
 Each action now takes about 1 second instead of 6.5, after I replaced a new direct database connection on every action with Supabase’s pooled HTTPS data API; the model didn’t change. Reviewers see the source of every sentence, so checking a draft means following links rather than rereading the records. The tool is still being built with the provider.
 
