@@ -31,6 +31,10 @@ const browser = await chromium.launch();
 
 try {
   const page = await browser.newPage();
+  // Archivo is font-display: optional, so a cold first load may keep the fallback
+  // for that view. Load once to fill the cache, then render from the second load.
+  await page.goto(`${base}/cv/`, { waitUntil: 'networkidle' });
+  await page.evaluate(() => document.fonts.ready);
   await page.goto(`${base}/cv/`, { waitUntil: 'networkidle' });
   await page.evaluate(() => document.fonts.ready);
   await page.emulateMedia({ media: 'print' });
@@ -126,6 +130,10 @@ try {
   const fonts = (pdf.match(/\/Subtype\s*\/(Type0|Type1|Type3|TrueType|MMType1)\b/g) ?? []).length;
   const mapped = (pdf.match(/\/ToUnicode/g) ?? []).length;
   if (!fonts || mapped < fonts) failures.push(`only ${mapped} of ${fonts} fonts map to Unicode; text may not copy out`);
+  // The web fonts, not their fallbacks, must be what the PDF carries (Chromium
+  // names Type 3 fonts in their descriptor, so /FontName as well as /BaseFont).
+  for (const name of ['Archivo', 'SourceSerif4'])
+    if (!new RegExp(`/(BaseFont|FontName)\\s*/[A-Z]{6}\\+${name}`).test(pdf)) failures.push(`the PDF doesn't embed ${name}`);
 
   if (check) {
     const recorded = existsSync(HASH) ? readFileSync(HASH, 'utf8').trim() : '';

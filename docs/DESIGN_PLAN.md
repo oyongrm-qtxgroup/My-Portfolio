@@ -4,7 +4,7 @@ Status: **approved by the owner on 25 Oct 2026**, with the owner's inputs (portr
 
 - Design review (64 findings, screenshots, "What to keep", "Make it pop", "Decisions for you"): https://claude.ai/artifact/Xia4cYPptqMorBu9DbTaGG
 - Baseline: `main` at `73334e4`, live at https://raymundo-oyong.vercel.app (auto-deploys from `main`).
-- Work branch: `claude/gracious-keller-nsc4p9`. One step = one pull request with a Vercel preview, one open at a time. After each merge the branch restarts from the new `main`. Nothing merges to `main` without the owner's explicit OK.
+- Work branch: `claude/gracious-keller-nsc4p9` (implementation: `claude/amazing-johnson-1bop90`). One step = one pull request with a Vercel preview, one open at a time. After each merge the branch restarts from the new `main`. Nothing merges to `main` without the owner's explicit OK.
 - Settled and not reopened here: the headline, all wording, the case-study facts and the title "Senior AI & Automation Engineer". This plan changes presentation, not substance. Where a step needs new words (section labels, a caption, the illustrative call), the draft is in the PR for the owner to read before merge.
 
 Contents: 1 Decisions · 2 Calls I made · 3 Themes and de-duplicated issues · 4 What to keep, and how each step protects it · 5 Steps · 6 What I need from you · 7 How each step is checked · 8 Open items (mentioned, not fixed) · 9 Finding → step index
@@ -145,7 +145,7 @@ Changes from the suggested order, and why:
 
 Effort: S under half a day, M one to two days, L more. "Identity risk" is risk to the logbook look and voice.
 
-### Step 0: Correct the LinkedIn and GitHub links (S, identity risk none; do first)
+### Step 0: Correct the LinkedIn and GitHub links (S, identity risk none; do first) — merged 25 Oct 2026 (#11)
 
 - **Why first:** the LinkedIn custom URL was claimed on 25 Oct 2026, and LinkedIn generally stops honouring the old auto-generated URL once a custom one is set. The live site and the CV PDF header still print the old URL, and the GitHub link points at `oyong1926`, not the account that holds the code (DS13, DS14).
 - **Changes:** `links.linkedin` → `https://www.linkedin.com/in/raymundo-oyong/`, `links.github` → `https://github.com/oyongrm-qtxgroup`. That one source feeds the footer, the home Contact section, JSON-LD `sameAs`, /cv/ and the PDF. Regenerate the PDF; mark FIX_PLAN T7 "Vanity LinkedIn URL" done.
@@ -463,7 +463,7 @@ Leave out the names that are allowed on the site: QTX, Ortigas Land, OCLP Holdin
 
 - **The `DENYLIST` Actions secret isn't set**, so CI skips the name check. That matters more once GitHub data and quotes are pulled in. Steps 5 and 6 don't merge until it's set, and Step 5 makes CI fail when it's missing.
 - **Jayne Bandy AI test-call transcripts aren't de-identified.** The illustrative call (Step 8) doesn't draw on them in any way; raise de-identification with the team separately.
-- ~~A custom LinkedIn URL hasn't been claimed.~~ Claimed 25 Oct 2026 (`/in/raymundo-oyong`); the site and CV still use the old URL until Step 0 ships.
+- ~~A custom LinkedIn URL hasn't been claimed.~~ Claimed 25 Oct 2026 (`/in/raymundo-oyong`); the site and CV switched to it in Step 0 (#11).
 - Your LinkedIn headline reads "Senior AI Software Engineer | Microsoft Certified" while the site and CV say "Senior AI & Automation Engineer". Recruiters compare them; whether to align them is your call on LinkedIn, not a site change.
 - From the last plan, still open: FIX_PLAN §5 Q2, a small public sample repo (e.g. a toy booking agent with an evaluation harness). If the allow-list in Step 5 turns out thin, that's the one remaining direct proof of AI engineering.
 

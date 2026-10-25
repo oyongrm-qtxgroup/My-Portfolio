@@ -42,7 +42,12 @@ const person = {
     <Fragment slot="label">Intro</Fragment>
     <div class="hero">
       <h1 class="display headline">
-        {profile.headline.map((line, i) => <span class="ln" style={`--i: ${i}`}>{line}</span>)}
+        {/* The space keeps the words apart for screen readers and the phone layout below. */}
+        {profile.headline.map((line, i) => (
+          <Fragment>
+            <span class="ln" style={`--i: ${i}`}>{line}</span>{' '}
+          </Fragment>
+        ))}
       </h1>
       <p class="identity">
         <span class="identity-name">{profile.name}</span>

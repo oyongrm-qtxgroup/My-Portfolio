@@ -48,6 +48,13 @@
   display: inline-block;
 }
 
+/* Narrow phones: the lines run as one balanced block instead of a staircase. */
+@media (width <= 480px) {
+  .ln {
+    display: inline;
+  }
+}
+
 .fade {
   animation: rise 0.6s var(--ease-out) both;
   animation-delay: calc(var(--i, 0) * 110ms + 400ms);

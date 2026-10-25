@@ -11,6 +11,7 @@
     "lint:design": "node scripts/lint-design.mjs",
     "lint:denylist": "node scripts/lint-denylist.mjs",
     "verify": "node scripts/verify.mjs",
+    "perf": "node scripts/perf.mjs",
     "cv:pdf": "node scripts/cv-pdf.mjs",
     "og": "node scripts/og-images.mjs"
   },

@@ -2,6 +2,7 @@
 import { ClientRouter } from 'astro:transitions';
 import archivoLatin from '../assets/fonts/archivo-subset.woff2?url';
 import serifLatin from '../assets/fonts/source-serif-4-subset.woff2?url';
+import monoLatin from '../assets/fonts/plex-mono-400-subset.woff2?url';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import { tokensCss } from '../design/tokens';
@@ -54,6 +55,7 @@ const image = new URL(await ogImageFor(Astro.url.pathname), Astro.site);
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preload" href={archivoLatin} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={serifLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={monoLatin} as="font" type="font/woff2" crossorigin />
     <style is:inline set:html={tokensCss} />
     <script is:inline>
       // Applies the saved theme before first paint. 'auto' follows the OS.

@@ -1,9 +1,11 @@
 /* Logbook base styles. Colour tokens come from src/design/tokens.ts. */
 
 :root {
-  --font-display: 'Archivo Variable', 'Archivo Fallback', 'Arial Narrow', sans-serif;
-  --font-body: 'Source Serif 4 Variable', 'Source Serif Fallback', Georgia, serif;
-  --font-mono: 'IBM Plex Mono', 'Plex Mono Fallback', ui-monospace, monospace;
+  --font-display: 'Archivo Variable', 'Archivo Fallback Narrow', 'Archivo Fallback Avenir',
+    'Archivo Fallback Roboto', 'Archivo Fallback Arial', sans-serif-condensed, sans-serif;
+  --font-body: 'Source Serif 4 Variable', 'Source Serif Fallback Georgia', 'Source Serif Fallback Noto',
+    'Source Serif Fallback Times', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', 'Plex Mono Fallback', 'Plex Mono Fallback Noto', ui-monospace, monospace;
   --max: 1240px;
   --pad: 32px;
   --margin-col: 168px;

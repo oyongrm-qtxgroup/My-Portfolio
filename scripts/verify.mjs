@@ -1,8 +1,9 @@
 // Builds nothing: run `npm run build` first. Serves the built static pages
 // (scripts/serve-static.mjs), then checks every route at phone, tablet and desktop
 // widths in both themes: axe-core (WCAG 2.2 A/AA), no sideways scrolling, and a
-// screenshot of each. The contact action and Turnstile are mocked in the browser;
-// the real action is exercised on the Vercel preview.
+// screenshot of each; then layout shift with the fonts held back (the worst case).
+// The contact action and Turnstile are mocked in the browser; the real action is
+// exercised on the Vercel preview.
 // Usage: node scripts/verify.mjs [screenshot-dir]
 import { mkdirSync, readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -17,7 +18,7 @@ const PORT = 4329;
 const BASE = `http://localhost:${PORT}`;
 const ROUTES = ['/', '/work/jayne-bandy-ai/', '/work/sap-automation/', '/work/ziaris/', '/cv/', '/privacy/', '/system/', '/no-such-page'];
 // 320 px is WCAG reflow (a 1280 px window at 400% zoom); 390 also covers 200% zoom.
-const WIDTHS = [320, 390, 768, 1440];
+const WIDTHS = [320, 390, 768, 1024, 1440, 1920];
 const THEMES = ['paper', 'night'];
 const outDir = process.argv[2];
 if (outDir) mkdirSync(outDir, { recursive: true });
@@ -55,6 +56,8 @@ try {
       );
       await context.addInitScript((t) => localStorage.setItem('theme', t), theme);
       const page = await context.newPage();
+      // Archivo is font-display: optional; fill the cache so the shots show it.
+      await page.goto(BASE + '/', { waitUntil: 'networkidle' });
       for (const route of ROUTES) {
         const tag = `${route} @${width} ${theme}`;
         await page.goto(BASE + route, { waitUntil: 'networkidle' });
@@ -100,6 +103,31 @@ try {
         }
       }
       await context.close();
+    }
+  }
+
+  // Late fonts: every font response held back 2 s, cold cache. Archivo (optional)
+  // must never swap in, and the serif and mono swaps must not move the page.
+  for (const width of [390, 1440]) {
+    for (const route of ROUTES) {
+      const ctx = await browser.newContext({ viewport: { width, height: 900 } });
+      await ctx.addInitScript(() => {
+        window.__cls = 0;
+        new PerformanceObserver((list) => {
+          for (const e of list.getEntries()) if (!e.hadRecentInput) window.__cls += e.value;
+        }).observe({ type: 'layout-shift', buffered: true });
+      });
+      await ctx.route('**/*.woff2', async (r) => {
+        await new Promise((done) => setTimeout(done, 2000));
+        await r.continue();
+      });
+      const p = await ctx.newPage();
+      await p.goto(BASE + route, { waitUntil: 'load' });
+      await p.evaluate(() => document.fonts.ready);
+      await p.waitForTimeout(500);
+      const cls = await p.evaluate(() => window.__cls);
+      if (cls >= 0.02) failures.push(`${route} @${width} late fonts: CLS ${cls.toFixed(3)} (budget < 0.02)`);
+      await ctx.close();
     }
   }
 
