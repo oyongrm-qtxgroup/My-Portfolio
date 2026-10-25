@@ -27,7 +27,7 @@ export async function getRoles(): Promise<Role[]> {
 }
 
 export async function getEndorsements(): Promise<Endorsement[]> {
-  return getCollection('endorsements');
+  return (await getCollection('endorsements')).sort(byOrder);
 }
 
 export async function getProfile() {

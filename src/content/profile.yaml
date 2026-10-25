@@ -38,8 +38,11 @@ main:
       - name: My-Portfolio
         line: This site. Astro, static pages, and a CV PDF and share images built from the same content, each checked in CI.
       - name: portpeek
+        line: A Windows widget that shows which program holds each localhost port, names the project behind it, and frees the port in two clicks. Tauri, Rust and TypeScript.
       - name: Clear-Path
+        line: A personal finance app for budgets, debts, expenses and savings goals, each person’s data kept apart by row-level security. React, TypeScript and Supabase.
       - name: Craft-Track
+        line: An offline Windows app for a small craft business, covering orders, customers, product costs, stock alerts and spending. C#, WPF and SQLite.
   # Bump when the content changes; the footer's "Updated" date.
   updated: 2026-10-25
   # Outcomes only: never hours logged, tasks closed or tickets counted. `work` is the

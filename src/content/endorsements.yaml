@@ -4,6 +4,7 @@
 # An entry needs the writer's consent date, or the build fails.
 #
 # - id: short-handle
+#   order: 1                    # order on the page
 #   quote: The excerpt, word for word.
 #   role: Senior colleague
 #   employer: Ortigas Land
@@ -13,4 +14,34 @@
 #   source_url: https://www.linkedin.com/in/raymundo-oyong/details/recommendations/
 #   consented: 2026-10-26       # date the writer agreed to be quoted
 #   checked: 2026-10-26         # date the text was last compared with LinkedIn
-[]
+- id: senior-colleague
+  order: 1
+  quote: He is a hardworking, reliable, and eager-to-learn developer who consistently showed initiative in improving his skills and contributing to the team.
+  role: Senior colleague
+  employer: Ortigas Land
+  home: true
+  source_url: https://www.linkedin.com/in/raymundo-oyong/details/recommendations/
+  consented: 2026-10-25
+  checked: 2026-10-25
+
+- id: same-team
+  order: 2
+  quote: Focused and results-driven, he takes full ownership of his work and ensures tasks are completed with quality and attention to detail.
+  role: Colleague
+  employer: Ortigas Land
+  relationship: same team
+  home: true
+  source_url: https://www.linkedin.com/in/raymundo-oyong/details/recommendations/
+  consented: 2026-10-25
+  checked: 2026-10-25
+
+- id: same-team-rpa
+  order: 3
+  quote: With deep expertise in Software Development, RPA, and .NET, Raymundo consistently delivers high-impact, Azure-based solutions.
+  role: Colleague
+  employer: Ortigas Land
+  relationship: same team
+  work: sap-automation
+  source_url: https://www.linkedin.com/in/raymundo-oyong/details/recommendations/
+  consented: 2026-10-25
+  checked: 2026-10-25

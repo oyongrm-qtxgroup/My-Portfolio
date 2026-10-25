@@ -129,6 +129,7 @@ const profile = defineCollection({
 const endorsements = defineCollection({
   loader: file('src/content/endorsements.yaml'),
   schema: z.object({
+    order: z.number().int(),
     quote: z.string().min(1),
     role: z.string(),
     employer: z.string(),
