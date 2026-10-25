@@ -48,11 +48,9 @@
   animation: draw-down 1.1s var(--ease-out) both;
 }
 
-/* Headline sets line by line. */
+/* Headline lines: one block each, shown from the first paint (no set-in animation). */
 .ln {
   display: inline-block;
-  animation: rise 0.7s var(--ease-out) both;
-  animation-delay: calc(var(--i, 0) * 90ms + 150ms);
 }
 
 .fade {

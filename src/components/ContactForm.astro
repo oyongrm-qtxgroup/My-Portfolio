@@ -24,58 +24,65 @@ const siteKey =
   data-contact
   data-sitekey={siteKey}
 >
-  <div class="field">
-    <label for="cf-name">Your name</label>
-    <input
-      id="cf-name"
-      name="name"
-      type="text"
-      autocomplete="name"
-      maxlength="100"
-      placeholder="Alex Rivera"
-      aria-describedby="cf-name-err"
-    />
-    <p id="cf-name-err" class="err" data-error-for="name"></p>
+  <div class="form-body" data-form-body>
+    <div class="field">
+      <label for="cf-name">Your name (optional)</label>
+      <input
+        id="cf-name"
+        name="name"
+        type="text"
+        autocomplete="name"
+        maxlength="100"
+        aria-describedby="cf-name-err"
+      />
+      <p id="cf-name-err" class="err" data-error-for="name"></p>
+    </div>
+    <div class="field">
+      <label for="cf-email">Email</label>
+      <input
+        id="cf-email"
+        name="email"
+        type="email"
+        inputmode="email"
+        autocomplete="email"
+        required
+        maxlength="254"
+        aria-describedby="cf-email-err"
+      />
+      <p id="cf-email-err" class="err" data-error-for="email"></p>
+    </div>
+    <div class="field">
+      <label for="cf-message">What's it about?</label>
+      <p id="cf-message-hint" class="hint">
+        A role you're hiring for, or a project. A sentence or two is plenty.
+      </p>
+      <textarea
+        id="cf-message"
+        name="message"
+        rows="4"
+        required
+        maxlength="5000"
+        aria-describedby="cf-message-hint cf-message-err"></textarea>
+      <p id="cf-message-err" class="err" data-error-for="message"></p>
+    </div>
+    <div class="trap" aria-hidden="true">
+      <label for="cf-company">Company (leave empty)</label>
+      <input id="cf-company" name="company" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+    <div class="turnstile" data-turnstile></div>
+    <div class="actions">
+      <button type="submit" class="send"><span data-send-label>Send</span></button>
+    </div>
+    <p class="mono muted note">
+      Spam check by Cloudflare Turnstile, which runs invisibly. <a href="/privacy/">Privacy</a>
+    </p>
   </div>
-  <div class="field">
-    <label for="cf-email">Email</label>
-    <input
-      id="cf-email"
-      name="email"
-      type="email"
-      inputmode="email"
-      autocomplete="email"
-      required
-      maxlength="254"
-      placeholder="alex@clinic.com.au"
-      aria-describedby="cf-email-err"
-    />
-    <p id="cf-email-err" class="err" data-error-for="email"></p>
+  <!-- After a send the fields give way to the confirmation, so nothing on screen
+       looks like a half-filled form or a second address. -->
+  <div class="sent" data-sent hidden>
+    <span class="stamp received" data-received></span>
+    <button type="button" class="again" data-again>Write another message</button>
   </div>
-  <div class="field">
-    <label for="cf-message">What needs building?</label>
-    <textarea
-      id="cf-message"
-      name="message"
-      rows="4"
-      required
-      maxlength="5000"
-      placeholder="A booking line for three clinics."
-      aria-describedby="cf-message-err"></textarea>
-    <p id="cf-message-err" class="err" data-error-for="message"></p>
-  </div>
-  <div class="trap" aria-hidden="true">
-    <label for="cf-company">Company (leave empty)</label>
-    <input id="cf-company" name="company" type="text" tabindex="-1" autocomplete="off" />
-  </div>
-  <div class="turnstile" data-turnstile></div>
-  <div class="actions">
-    <button type="submit" class="send"><span data-send-label>Send</span></button>
-    <span class="stamp received" data-received hidden></span>
-  </div>
-  <p class="mono muted note">
-    Spam check by Cloudflare Turnstile, which runs invisibly. <a href="/privacy/">Privacy</a>
-  </p>
   <p class="status" role="status" data-form-status></p>
   <p class="failed" role="alert" data-failed hidden>
     <span data-failed-reason>That didn't send.</span> Your message is still here, so try again, or
@@ -121,6 +128,9 @@ const siteKey =
     const failed = q<HTMLElement>('[data-failed]');
     const failedReason = q<HTMLElement>('[data-failed-reason]');
     const received = q<HTMLElement>('[data-received]');
+    const body = q<HTMLElement>('[data-form-body]');
+    const sent = q<HTMLElement>('[data-sent]');
+    const again = q<HTMLButtonElement>('[data-again]');
     const holder = q<HTMLElement>('[data-turnstile]');
     const siteKey = form.dataset.sitekey ?? '';
     let widget: string | undefined;
@@ -177,7 +187,7 @@ const siteKey =
       const message = String(data.get('message') ?? '').trim();
       if (!EMAIL.test(email)) errors.email = 'Enter an email like name@company.com so I can reply.';
       if (message.length < 10)
-        errors.message = 'Tell me a little about what needs building (a sentence is plenty).';
+        errors.message = 'Tell me a little about the role or the project (a sentence is plenty).';
       return errors;
     };
 
@@ -198,6 +208,13 @@ const siteKey =
       }
     };
 
+    again.addEventListener('click', () => {
+      sent.hidden = true;
+      status.textContent = '';
+      body.hidden = false;
+      q<HTMLInputElement>('#cf-name').focus();
+    });
+
     form.addEventListener('input', (e) => {
       const target = e.target as HTMLInputElement;
       if (target.getAttribute('aria-invalid') === 'true') {
@@ -210,7 +227,6 @@ const siteKey =
       e.preventDefault();
       if (button.disabled) return;
       failed.hidden = true;
-      received.hidden = true;
       status.textContent = '';
       if (!showErrors(validate(new FormData(form)))) return;
 
@@ -227,9 +243,11 @@ const siteKey =
         const now = new Date();
         const pad = (n: number) => String(n).padStart(2, '0');
         received.textContent = `Received · ${pad(now.getDate())}.${pad(now.getMonth() + 1)} · ${pad(now.getHours())}:${pad(now.getMinutes())}`;
-        received.hidden = false;
         status.textContent = `Thanks. It's in my inbox, and I'll reply to ${sentTo}.`;
         form.reset();
+        body.hidden = true;
+        sent.hidden = false;
+        again.focus();
         return;
       }
       status.textContent = '';
@@ -297,7 +315,14 @@ const siteKey =
   input:focus-visible,
   textarea:focus-visible {
     outline: none;
-    border-bottom: 2px solid var(--accent);
+    padding-bottom: 8.5px;
+    border-bottom: 3px solid var(--accent);
+  }
+
+  .hint {
+    font-size: 16px;
+    line-height: 1.45;
+    color: var(--ink-2);
   }
 
   [aria-invalid='true'] {
@@ -384,8 +409,39 @@ const siteKey =
     animation: press 0.45s cubic-bezier(0.3, 0.7, 0.4, 1) both;
   }
 
-  .received[hidden] {
+  .form-body {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .form-body[hidden],
+  .sent[hidden] {
     display: none;
+  }
+
+  .sent {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .again {
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--ink);
+    background: none;
+    color: var(--ink);
+    font: 12px var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+  }
+
+  .again:hover {
+    border-color: var(--accent);
+    color: var(--accent);
   }
 
   .note {

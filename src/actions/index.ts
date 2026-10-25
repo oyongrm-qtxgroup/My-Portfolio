@@ -68,9 +68,9 @@ export const server = {
         .max(254, { error: 'Enter an email like name@company.com so I can reply.' })
         .pipe(z.email({ error: 'Enter an email like name@company.com so I can reply.' })),
       message: z
-        .string({ error: 'Tell me a little about what needs building.' })
+        .string({ error: 'Tell me a little about the role or the project.' })
         .trim()
-        .min(10, { error: 'Tell me a little about what needs building (a sentence is plenty).' })
+        .min(10, { error: 'Tell me a little about the role or the project (a sentence is plenty).' })
         .max(5000, { error: 'Keep the message under 5,000 characters; we can go into detail by email.' }),
       // Honeypot: hidden from people, irresistible to form-filling bots.
       company: z.string().optional(),

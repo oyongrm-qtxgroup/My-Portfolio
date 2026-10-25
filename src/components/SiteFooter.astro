@@ -1,21 +1,27 @@
 ---
 import ThemeSwitch from './ThemeSwitch.astro';
+import { getProfile } from '../lib/content';
 
-const built = new Date().toLocaleDateString('en-AU', {
-  day: '2-digit',
-  month: '2-digit',
-  year: '2-digit',
-});
+const profile = await getProfile();
+// "25 Oct 2026": day, month and year can't be confused.
+const built = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
 ---
 
 <footer class="site-footer">
-  <p>
-    Set in Archivo, Source Serif 4 and IBM Plex Mono. Built with Astro, hosted on Vercel.{' '}
-    <span class="nowrap">Build {built.replaceAll('/', '.')}.</span>{' '}
-    <a href="/raymundo-oyong-cv.pdf" class="nowrap" download>CV (PDF)</a>{' · '}
-    <a href="/privacy/" class="nowrap">Privacy</a>
-  </p>
+  <div class="contact-line">
+    <p class="who">{profile.name}</p>
+    <ul class="links">
+      <li><a href={`mailto:${profile.email}`} class="target">{profile.email}</a></li>
+      <li><a href={profile.links.linkedin} class="target">LinkedIn</a></li>
+      <li><a href="/raymundo-oyong-cv.pdf" class="target" download>CV (PDF)</a></li>
+      <li><a href="/privacy/" class="target">Privacy</a></li>
+    </ul>
+  </div>
   <ThemeSwitch />
+  <p class="colophon">
+    Set in Archivo, Source Serif 4 and IBM Plex Mono. Built with Astro, hosted on Vercel.{' '}
+    <span class="nowrap">Updated {built}.</span>
+  </p>
 </footer>
 
 <style>
@@ -24,14 +30,53 @@ const built = new Date().toLocaleDateString('en-AU', {
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 16px;
+    gap: 16px 24px;
     padding: 20px 0 40px;
     border-top: 1px solid var(--rule);
     font: 12px/1.5 var(--font-mono);
     color: var(--ink-2);
   }
 
+  .contact-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 20px;
+  }
+
+  .who {
+    font: 600 15px var(--font-body);
+    color: var(--ink);
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+  }
+
+  .links a {
+    color: var(--ink);
+    text-underline-offset: 3px;
+  }
+
+  .colophon {
+    flex-basis: 100%;
+  }
+
   .nowrap {
     white-space: nowrap;
+  }
+
+  @media (max-width: 760px) {
+    .links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+    }
   }
 </style>

@@ -43,11 +43,19 @@ const person = {
       <h1 class="display headline">
         {profile.headline.map((line, i) => <span class="ln" style={`--i: ${i}`}>{line}</span>)}
       </h1>
+      <p class="identity">
+        <span class="identity-name">{profile.name}</span>
+        <span class="identity-title">{profile.title}</span>
+      </p>
+      <p class="actions">
+        <a href="/raymundo-oyong-cv.pdf" class="action primary" download>Download CV</a>
+        <a href="#work" class="action">Selected work</a>
+      </p>
       <!-- Not faded: the largest text block on a phone must paint at once (LCP). -->
       <p class="lede">{profile.lede}</p>
-      <p class="mono muted where fade" style="--i: 3">
-        {profile.title} · {profile.location} ·{' '}
-        <a href={`mailto:${profile.email}`} class="accent">{profile.email}</a>
+      <p class="availability">{profile.availability}</p>
+      <p class="mono muted where">
+        {profile.location} · <a href={`mailto:${profile.email}`} class="accent">{profile.email}</a>
       </p>
     </div>
   </MarginRow>
@@ -59,12 +67,7 @@ const person = {
         profile.figures.map((f) => (
           <div>
             <dt class="label">{f.label}</dt>
-            <dd class="display tabular">
-              <span class="visually-hidden">{f.value}</span>
-              <span aria-hidden="true" data-count>
-                {f.value}
-              </span>
-            </dd>
+            <dd class="display tabular">{f.value}</dd>
           </div>
         ))
       }
@@ -150,9 +153,10 @@ const person = {
   </MarginRow>
 
   <MarginRow index={7} ruled id="contact">
-    <Fragment slot="label">§ 06<br />Write</Fragment>
+    <Fragment slot="label">§ 06<br />Contact</Fragment>
     <div class="contact reveal">
-      <h2 class="display ask">Hiring, or need something built?</h2>
+      <h2 class="display ask">Hiring for a role? Tell me about it.</h2>
+      <p class="ask-sub">Email is the fastest way to reach me. Project enquiries are welcome too.</p>
       <a href={`mailto:${profile.email}`} class="accent email">{profile.email}</a>
       <ul class="mono links">
         <li><a href={profile.links.linkedin} class="target">LinkedIn</a></li>
@@ -163,36 +167,6 @@ const person = {
     </div>
   </MarginRow>
 </Base>
-
-<script>
-  // Figures count up once the intro has set (700 ms), over 1.1 s. Only whole
-  // numbers count; the final text is already in the page, so nothing waits on JS.
-  function countUp() {
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    document.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => {
-      const final = el.textContent?.trim() ?? '';
-      const parts = final.split(/(\d+(?:\.\d+)?)/);
-      const targets = parts.map((p) => (/^\d+$/.test(p) && Number(p) >= 2 ? Number(p) : null));
-      if (!targets.some((n) => n !== null)) return;
-      el.style.display = 'inline-block';
-      el.style.minWidth = `${el.getBoundingClientRect().width}px`; // no reflow as digits grow
-      const render = (k: number) => {
-        el.textContent = parts.map((p, i) => (targets[i] === null ? p : String(Math.round(targets[i]! * k)))).join('');
-      };
-      render(0);
-      const start = performance.now() + 700;
-      const tick = (now: number) => {
-        const t = Math.min(1, Math.max(0, (now - start) / 1100));
-        render(1 - Math.pow(1 - t, 3));
-        if (t < 1) requestAnimationFrame(tick);
-        else el.textContent = final;
-      };
-      requestAnimationFrame(tick);
-    });
-  }
-
-  document.addEventListener('astro:page-load', countUp);
-</script>
 
 <style>
   .hero {
@@ -205,12 +179,72 @@ const person = {
     max-width: 20ch;
   }
 
+  .identity {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 16px;
+    margin-top: 28px;
+    font-family: var(--font-display);
+    font-stretch: 80%;
+    line-height: 1.1;
+  }
+
+  .identity-name {
+    font-size: clamp(26px, 3vw, 34px);
+    font-weight: 700;
+  }
+
+  .identity-title {
+    font-size: clamp(20px, 2.2vw, 26px);
+    font-weight: 500;
+    color: var(--ink-2);
+  }
+
   .lede {
-    margin-top: 40px;
+    margin-top: 28px;
+  }
+
+  .availability {
+    margin-top: 16px;
+    max-width: 40em;
+    font-size: 18px;
+    line-height: 1.5;
   }
 
   .where {
-    margin-top: 28px;
+    margin-top: 20px;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .action {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 18px;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    font: 500 13px var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+  }
+
+  .action.primary {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .action:hover {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--paper);
   }
 
   .figures {
@@ -377,9 +411,14 @@ const person = {
     max-width: 18ch;
   }
 
+  .ask-sub {
+    margin-top: 16px;
+    max-width: 36em;
+  }
+
   .email {
     display: inline-block;
-    margin-top: 28px;
+    margin-top: 20px;
     font-size: clamp(22px, 3vw, 30px);
     text-underline-offset: 6px;
   }

@@ -17,7 +17,7 @@
 ## Facts confirmed by the owner
 
 - Ortigas Land: Power Automate (desktop and cloud), two bots: one processes government remittances, one enters data in the SAP desktop client. Led a four-person development team (the count includes him); written as "a four-person development team" everywhere (24 Oct 2026).
-- Names: **Jayne Bandy AI** (always in full), **RL Finance**, **SEED** and **Workable** may be named; SEED and Workable are explained in one clause on first use. Every other QTX client and project is described generically. No client or people names anywhere. (Confirmed 24 Oct 2026; replaces the earlier "other QTX work stays generic" line.) Workable records are for fact-checking only.
+- Names: **Jayne Bandy AI** (always in full), **RL Finance**, **SEED**, **Workable**, **Ziaris** (the NDIS workforce & care platform; use only this name for it) and **SmartCP** (care-plan drafting) may be named; SEED and Workable are explained in one clause on first use. Ziaris and SmartCP were cleared on 25 Oct 2026; their clients stay generic. Every other QTX client and project is described generically. No client or people names anywhere. (Confirmed 24 Oct 2026; replaces the earlier "other QTX work stays generic" line.) Workable records are for fact-checking only.
 - Email only: no phone number on the site or the PDF.
 - No Jayne Bandy AI usage figures, demo number, recordings or screenshots are published. Model and vendor names, the evaluation method and data handling may be described.
 

@@ -34,6 +34,7 @@ These change the locked decisions in `docs/REDESIGN_PLAN.md` §1–4 and `docs/c
 | D16 | Caller identity | Jayne Bandy AI matches the **caller's number and name**. Wording follows that; details come from the facts sheet. | none | H-08 |
 | D17 | Ortigas team | **"Led a four-person development team"** on the site, CV and case study. | none | R-11, H-20 |
 | D18 | Team facts | Supplied through the facts sheet (§4). | none | H-04 |
+| D19 | More names (25 Oct 2026) | **Ziaris** (the NDIS workforce & care platform, built for one client; cleared) and **SmartCP** (the care-plan drafting tool, the client's; cleared) may be named. Use only the name Ziaris for that platform. The clients themselves stay generic. | §1 Names | F-02, H-13 |
 
 ### Calls I made for you (object when reviewing if you disagree)
 
@@ -98,7 +99,7 @@ Order: interview impact first, then effort. Steps 1–4 need no facts beyond wha
 
 Because all work goes through the single branch `ccr-e6bc818b-pfij6d`, **one pull request is open at a time**. After each merge the branch restarts from the new `main`.
 
-### Step 1: Fix what's broken, inconsistent or disclosing (S, low risk, not blocked)
+### Step 1: Fix what's broken, inconsistent or disclosing (S, low risk, not blocked) — merged 25 Oct 2026 (#2)
 
 - **Findings:** D-02, F-01, D-27, H-06 (deletion only), R-11, R-07 / D-21 (hyphenation only), F-03, plus the D1 doc correction.
 - **Changes:**
@@ -118,7 +119,7 @@ Because all work goes through the single branch `ccr-e6bc818b-pfij6d`, **one pul
   - Standard checks (§6).
   - **After merge:** LinkedIn Post Inspector on the production URL shows the image (previews are login-protected, so this check can only run on production).
 
-### Step 2: Identity, hireability, labels and contact (M, low–medium risk, not blocked)
+### Step 2: Identity, hireability, labels and contact (M, low–medium risk, not blocked) — in review
 
 - **Findings:** R-01, R-04, D-01, H-09, R-02, H-16, D-03 (title, wordmark), R-06, R-05 (email line), R-13, H-22 (labels), D-10, D-26, D-29, D-09, D-24, D-04, D-13, D-22 (wordmark wrap only).
 - **Changes:**
@@ -250,7 +251,17 @@ Because all work goes through the single branch `ccr-e6bc818b-pfij6d`, **one pul
 
 ## 4. Facts sheet (answer in chat; nothing goes into the repo until you've checked it)
 
-**A: short facts (Steps 2 and 3)**
+**A: short facts (Steps 2 and 3): answered 25 Oct 2026**
+
+- A1 SEED: "QTX's SaaS that brings specialised AI into the work a team already does" (from its tagline).
+- A2 Workable: "QTX's in-house operations platform".
+- A3 start date, A4 rate, A6 reply time: none stated.
+- A5 Python and Azure OpenAI both stay. Azure OpenAI is used on Ziaris; Python for ops and reporting scripts at QTX and Ortigas Land, written as "Automated reporting and operational checks with Python scripts."
+- A7 UnionBank UPay: an integration: "Integrated UnionBank UPay as the company's first online payment channel, with rate limiting and reCAPTCHA".
+- A8 speed fix: each action opened a fresh direct database connection; switching to Supabase's pooled HTTPS data API removed the setup cost.
+- A9 title notes: yes, "Software Developer Officer (team lead)" and "Senior Software Developer Associate (senior developer)".
+
+Original questions:
 
 1. SEED in one clause. seed.qtx.group is blocked from this environment, so paste its tagline here, or add `seed.qtx.group` to the environment's allowed domains.
 2. Workable: is "QTX's in-house operations platform" accurate?

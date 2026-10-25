@@ -42,6 +42,7 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
           <a href={profile.links.github}>{linkText(profile.links.github)}</a> ·{' '}
           <a href={siteUrl}>{cv.site}</a>
         </p>
+        <p class="cv-availability">{profile.availability}</p>
         <p class="cv-pdf">
           <a href="/raymundo-oyong-cv.pdf" class="mono accent target" download>
             Download the PDF (A4, 2 pages) →
@@ -194,6 +195,13 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
   .cv-contact a {
     color: inherit;
     text-underline-offset: 4px;
+  }
+
+  .cv-availability {
+    margin-top: 10px;
+    max-width: 44em;
+    font-size: 16px;
+    line-height: 1.5;
   }
 
   .cv-pdf {
@@ -403,6 +411,12 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
       margin-top: 6pt;
       font: 9.4pt/1.4 var(--font-body);
       color: #3e3e39;
+    }
+
+    .cv-availability {
+      max-width: none;
+      margin-top: 3pt;
+      font: 9.4pt/1.4 var(--font-body);
     }
 
     .cv-h2 {

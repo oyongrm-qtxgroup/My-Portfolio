@@ -3,17 +3,21 @@ import Base from '../layouts/Base.astro';
 import MarginRow from '../components/MarginRow.astro';
 ---
 
-<Base title="No entry — R. Oyong" noindex>
+<Base title="Page not found — Raymundo Oyong" noindex>
   <MarginRow>
     <Fragment slot="label">404<br />Not found</Fragment>
     <div class="missing">
-      <h1 class="display">No entry.</h1>
+      <h1 class="display">Page not found.</h1>
       <div class="text">
         <p>
-          There's nothing logged at <code class="mono" id="missing-path">this address</code>. It may
-          have been retired with the old site.
+          There's no page at <code class="mono" id="missing-path">this address</code>. These are
+          the places most links lead to:
         </p>
-        <a href="/" class="mono accent back target">Back to the log →</a>
+        <ul class="mono exits">
+          <li><a href="/#work" class="accent target">Selected work →</a></li>
+          <li><a href="/cv/" class="accent target">CV →</a></li>
+          <li><a href="/#contact" class="accent target">Contact →</a></li>
+        </ul>
       </div>
     </div>
   </MarginRow>
@@ -48,7 +52,20 @@ import MarginRow from '../components/MarginRow.astro';
     font-size: 19px;
   }
 
-  .back {
+  .exits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 28px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
     text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .exits a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
   }
 </style>

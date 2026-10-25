@@ -19,7 +19,7 @@ interface Props {
 }
 
 const {
-  title = 'Raymundo Oyong — AI and automation engineer',
+  title = 'Raymundo Oyong — Senior AI & Automation Engineer',
   description = 'Raymundo Oyong builds AI and software that does the work people shouldn\'t have to: voice agents, document AI with sources, and process automation.',
   noindex = false,
   jsonLd,
@@ -57,6 +57,8 @@ const image = new URL(await ogImageFor(Astro.url.pathname), Astro.site);
     <style is:inline set:html={tokensCss} />
     <script is:inline>
       // Applies the saved theme before first paint. 'auto' follows the OS.
+      // Also marks the page as scripted, so the phone header renders in its final shape.
+      document.documentElement.classList.add('js');
       (() => {
         if (window.__themeBoot) return;
         window.__themeBoot = true;
