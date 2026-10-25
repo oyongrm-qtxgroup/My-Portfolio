@@ -189,9 +189,11 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
     color: var(--ink-2);
   }
 
+  /* A link never breaks at its own hyphen ("raymundo-" / "oyong.vercel.app"). */
   .cv-contact a {
     color: inherit;
     text-underline-offset: 4px;
+    white-space: nowrap;
   }
 
   .cv-availability {
