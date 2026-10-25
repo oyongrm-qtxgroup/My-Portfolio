@@ -16,7 +16,7 @@
       bullets:
         - 'Lead engineering of the live receptionist: voice quality, practice-system integrations and billing.'
         - Integrated three practice-management systems (CareStack, Core Practice, Dentally) behind one receptionist script, matching callers to patient records by phone number and name.
-        - Designed a review workflow that tests every script change against simulated and replayed real calls before approval, with version history and restore.
+        - Designed a review workflow that tests every script change against scripted scenarios and past calls, scored by an LLM judge, before admin approval, with version history and restore.
         - Added failure alerts and a 15-minute health check, so an AI-provider outage now raises an alert instead of going unnoticed.
         - Launched automatic trials, a premium tier with custom voices, Stripe subscription sync and per-country demo numbers.
     - heading: Ziaris, workforce and care platform for a National Disability Insurance Scheme (NDIS) provider

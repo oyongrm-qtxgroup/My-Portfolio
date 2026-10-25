@@ -171,7 +171,7 @@ Because all work goes through the single branch `ccr-e6bc818b-pfij6d`, **one pul
   - All Harvard checks and the new ones pass; each new check is shown failing on a deliberately broken case.
 - **Blocked:** the SEED clause (A1), Python, Azure OpenAI and SAP wording (A5), and the speed-fix wording (A8). The step can ship without them, keeping the current wording for those lines, and pick them up in Step 5.
 
-### Step 4: Home page, work first, plus phone and layout fixes (M, medium risk, not blocked) — in review
+### Step 4: Home page, work first, plus phone and layout fixes (M, medium risk, not blocked) — merged 25 Oct 2026 (#5)
 
 - **Findings:** H-12, D-05, D-15, D-18, D-31, D-14, D-30 (colour), H-23, D-16, D-17, D-19, D-11, D-12, R-12, D-23 (figures), D-25 (quotes and list markers).
 - **Content:**
@@ -198,7 +198,7 @@ Because all work goes through the single branch `ccr-e6bc818b-pfij6d`, **one pul
   - Lighthouse mobile ≥ 98, CLS < 0.02, home JS ≤ 15 KB gzip.
 - **Verified by:** standard checks, measured page heights before and after, a script counting repeated figures in the built home HTML, and keyboard and screen-reader passes over the new header.
 
-### Step 5a: Jayne Bandy AI case study, depth without numbers (M, medium risk, blocked on facts B)
+### Step 5a: Jayne Bandy AI case study, depth without numbers (M, medium risk, blocked on facts B) — in review
 
 - **Findings:** H-02, H-07, H-08, H-10 (partial), H-21, D-06 (diagram), D-08, D-03 (byline), H-04 (role line), D-25 (Role field date).
 - **Changes:**
@@ -273,7 +273,17 @@ Original questions:
 8. Care-plan speed fix: root cause and fix in one sentence, and which action took 6.5 s.
 9. Plain-English glosses for the Ortigas grades (was "Officer" the team-lead grade, and "Senior … Associate" a senior developer?).
 
-**B: Jayne Bandy AI (Step 5a)**
+**B: Jayne Bandy AI (Step 5a): answered 25 Oct 2026**
+
+- B1 Lead of one or two developers; took over a working prototype in April 2026 and built the integrations, review workflow, alerts and billing since.
+- B2 ElevenLabs Conversational AI (speech to text, turn-taking, voice) with its hosted LLM, GPT-5.5; Twilio for calls; Supabase for data. The hosting region is not published.
+- B3 Tools: find patient, find free slots, book / move / cancel, request callback. The scripts are described as a licensed library of dental-practice scripts (not attributed to a person). On any booking failure the agent apologises and says the team will call back.
+- B4 Four or five scripted scenarios plus comparison with past calls, scored by an LLM judge, then admin review. Written as "compared with past calls"; no de-identification claim (raise de-identifying test transcripts with the team).
+- B5 Transcripts and logs in Supabase; recordings with ElevenLabs and Twilio under their retention. Callers are told it is an AI assistant and the call may be recorded. No claim about engineers' access to live records.
+- B6 The number finds the record; the agent confirms the caller's name before reading out, moving or cancelling anything.
+- B7 No trade-offs section.
+
+Original questions:
 
 1. When you became lead in April 2026: what existed, what you designed and built since, team size and roles.
 2. Models and vendors: LLM, speech-to-text, voice, telephony; hosting region.

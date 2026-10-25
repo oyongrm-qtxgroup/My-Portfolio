@@ -15,9 +15,9 @@
   proof:
     - text: Lead engineer on Jayne Bandy AI, a live AI receptionist that answers and books calls for dental practices.
       work: jayne-bandy-ai
-    - text: One receptionist script books into three practice systems (CareStack, Core Practice and Dentally) and recognises callers by the number they ring from.
+    - text: One receptionist script books into three practice systems (CareStack, Core Practice and Dentally) finds callers by the number they ring from, and confirms their name before changing anything.
       work: jayne-bandy-ai
-    - text: Every script change runs against simulated and replayed real calls before an admin approves it, and any earlier version can be restored.
+    - text: Every script change runs against scripted scenarios and past calls, scored by an LLM judge, before an admin approves it, and any earlier version can be restored.
       work: jayne-bandy-ai
     - text: An AI phone agent on QTX’s internal platform books meetings into a partner’s calendar during a live call, and can only use an email address the caller actually said.
 
