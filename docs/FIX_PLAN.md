@@ -119,7 +119,7 @@ Because all work goes through the single branch `ccr-e6bc818b-pfij6d`, **one pul
   - Standard checks (§6).
   - **After merge:** LinkedIn Post Inspector on the production URL shows the image (previews are login-protected, so this check can only run on production).
 
-### Step 2: Identity, hireability, labels and contact (M, low–medium risk, not blocked) — in review
+### Step 2: Identity, hireability, labels and contact (M, low–medium risk, not blocked) — merged 25 Oct 2026 (#3)
 
 - **Findings:** R-01, R-04, D-01, H-09, R-02, H-16, D-03 (title, wordmark), R-06, R-05 (email line), R-13, H-22 (labels), D-10, D-26, D-29, D-09, D-24, D-04, D-13, D-22 (wordmark wrap only).
 - **Changes:**
@@ -142,7 +142,7 @@ Because all work goes through the single branch `ccr-e6bc818b-pfij6d`, **one pul
   - Share cards viewed at 500 px wide.
 - **Blocked:** no. Optional facts A3 (start month or notice) and A4 (rate) can be added to the availability line later.
 
-### Step 3: CV PDF, ATS order, keywords and light type (S–M, low risk, mostly not blocked)
+### Step 3: CV PDF, ATS order, keywords and light type (S–M, low risk, mostly not blocked) — in review
 
 - **Findings:** R-07, D-21, D-20, R-08, H-14, H-19 (education), R-10, H-16 (title glosses), H-03, R-15, H-11 (verb), F-02 / R-09 / H-17 (CV explanations).
 - **Layout:**

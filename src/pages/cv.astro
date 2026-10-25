@@ -63,41 +63,38 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
       {
         orgs.map((o) => (
           <section class="cv-org-block">
-            <div class="cv-row">
-              <h3 class="cv-org">{o.org}</h3>
-              <span>{o.place}</span>
-            </div>
+            <h3 class="cv-line">
+              <span class="cv-org">{o.org}</span>
+              <span class="cv-meta"> · {o.place}</span>
+            </h3>
             {o.roles.map((r) => (
               <div class="cv-role">
-                <div class="cv-row">
+                <p class="cv-line">
                   <span class="cv-role-title">{r.data.title}</span>
-                  <span class="cv-date">
-                    {r.data.start} – {r.data.end ?? 'Present'}
+                  <span class="cv-meta">
+                    {' '}
+                    · {r.data.start} – {r.data.end ?? 'Present'}
                   </span>
-                </div>
-                {r.data.projects.map((p) => {
-                  const [name, detail] = p.heading.split(' — ');
-                  return (
-                    <>
-                      <h4 class="cv-sub">
-                        {name}
-                        {detail && <span> — {detail}</span>}
-                      </h4>
-                      <ul class="cv-ul">
-                        {p.bullets.map((b) => (
-                          <li data-cv-bullet>
-                            {keepCompounds(b).map((t, i) => (i % 2 ? <span class="nowrap">{t}</span> : t))}
-                          </li>
-                        ))}
-                      </ul>
-                    </>
-                  );
-                })}
+                </p>
+                {r.data.projects.map((p) => (
+                  <ul class="cv-ul cv-project">
+                    {p.bullets.map((b, i) => (
+                      <li data-cv-bullet>
+                        {i === 0 && <strong class="cv-lead">{p.heading}. </strong>}
+                        <span data-cv-text>
+                          {keepCompounds(b).map((t, k) => (k % 2 ? <span class="nowrap">{t}</span> : t))}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                ))}
                 {r.data.highlights.length > 0 && (
                   <ul class="cv-ul">
                     {r.data.highlights.map((b) => (
                       <li data-cv-bullet>
-                        {keepCompounds(b).map((t, i) => (i % 2 ? <span class="nowrap">{t}</span> : t))}
+                        <span data-cv-text>
+                          {keepCompounds(b).map((t, k) => (k % 2 ? <span class="nowrap">{t}</span> : t))}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -132,14 +129,14 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
       {
         cv.education.map((e) => (
           <section class="cv-org-block">
-            <div class="cv-row">
-              <h3 class="cv-org">{e.school}</h3>
-              <span>{e.place}</span>
-            </div>
-            <div class="cv-row">
+            <h3 class="cv-line">
+              <span class="cv-org">{e.school}</span>
+              <span class="cv-meta"> · {e.place}</span>
+            </h3>
+            <p class="cv-line cv-role">
               <span class="cv-role-title">{e.degree}</span>
-              <span class="cv-date">{e.year}</span>
-            </div>
+              <span class="cv-meta"> · {e.year}</span>
+            </p>
             {e.notes.length > 0 && (
               <ul class="cv-ul">
                 {e.notes.map((n) => (
@@ -157,10 +154,10 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
       <h2 class="cv-h2">Certifications</h2>
       {
         cv.certifications.map((c) => (
-          <div class="cv-row cv-cert">
-            <span>{c.name}</span>
-            <span class="cv-date">{c.date}</span>
-          </div>
+          <p class="cv-line cv-cert">
+            <span class="cv-cert-name">{c.name}</span>
+            <span class="cv-meta"> · {c.date}</span>
+          </p>
         ))
       }
       <p class="cv-more">
@@ -242,12 +239,11 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
     border-bottom: 0;
   }
 
-  .cv-row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 4px 16px;
+  /* One-line headers. The organisation line is an h3: reset its heading font so
+     only .cv-org is set large and the place reads as secondary. */
+  .cv-line {
+    margin: 0;
+    font: inherit;
   }
 
   .cv-org {
@@ -258,36 +254,25 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
     line-height: 1.1;
   }
 
-  .cv-row > span,
-  .cv-date {
-    font: 13px/1.5 var(--font-mono);
+  .cv-meta {
+    font: 14px/1.5 var(--font-body);
     color: var(--ink-2);
-  }
-
-  .cv-date {
-    white-space: nowrap;
   }
 
   .cv-role {
     margin-top: 14px;
   }
 
-  .cv-row > .cv-role-title {
-    font: italic 18px/1.4 var(--font-body);
-    color: var(--ink);
+  .cv-role-title {
+    font: 600 18px/1.4 var(--font-body);
   }
 
-  .cv-sub {
-    margin: 16px 0 4px;
-    font-size: 17px;
+  .cv-project + .cv-project {
+    margin-top: 12px;
+  }
+
+  .cv-lead {
     font-weight: 600;
-    line-height: 1.4;
-  }
-
-  .cv-sub span {
-    font-weight: 400;
-    font-style: italic;
-    color: var(--ink-2);
   }
 
   .nowrap {
@@ -329,9 +314,8 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
     padding: 24px 0;
   }
 
-  .cv-cert > span:first-child {
+  .cv-cert-name {
     font: 17px/1.5 var(--font-body);
-    color: var(--ink);
   }
 
   /* ── Print: the A4 sheet (docs/design/CVPage1/2) ── */
@@ -452,30 +436,43 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
       margin-top: 8pt;
     }
 
-    .cv-org {
-      font: 600 10pt/1.38 var(--font-body);
+    .cv-line {
+      break-after: avoid;
     }
 
-    .cv-row > span,
-    .cv-date,
-    .cv-row > .cv-role-title,
-    .cv-cert > span:first-child {
+    .cv-org {
+      font: 400 10pt/1.38 var(--font-body);
+      letter-spacing: 0.02em;
+    }
+
+    .cv-meta,
+    .cv-cert-name {
       font: inherit;
+      color: #3e3e39;
+    }
+
+    .cv-cert-name {
       color: inherit;
     }
 
-    .cv-row > .cv-role-title {
-      font-style: italic;
+    .cv-role-title {
+      font: 600 10pt/1.38 var(--font-body);
     }
 
     .cv-role {
       margin-top: 2pt;
     }
 
-    .cv-sub {
-      margin: 7pt 0 1pt;
-      font-size: 10pt;
-      break-after: avoid;
+    .cv-role + .cv-role {
+      margin-top: 4pt;
+    }
+
+    .cv-project {
+      break-inside: avoid;
+    }
+
+    .cv-project + .cv-project {
+      margin-top: 3pt;
     }
 
     .cv-ul {
