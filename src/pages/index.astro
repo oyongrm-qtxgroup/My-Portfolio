@@ -6,14 +6,16 @@ import ContactForm from '../components/ContactForm.astro';
 import Years from '../components/Years.astro';
 import Portrait from '../components/Portrait.astro';
 import { STABLE as portraitUrl } from '../lib/portrait';
+import { getRepos, pushedOn } from '../lib/github';
 import { getPrinciples, getProfile, getRoles, getSkills, getWork } from '../lib/content';
 
-const [profile, skills, principles, work, roles] = await Promise.all([
+const [profile, skills, principles, work, roles, repos] = await Promise.all([
   getProfile(),
   getSkills(),
   getPrinciples(),
   getWork(),
   getRoles(),
+  getRepos(),
 ]);
 
 // Work first (docs/FIX_PLAN.md D4): the projects are the evidence, so they come before
@@ -155,7 +157,41 @@ const person = {
     <a href="/cv/" class="mono accent more target">Full CV →</a>
   </MarginRow>
 
-  <MarginRow index={4} ruled id="capabilities" hideLabel>
+  {
+    /* Proof (DESIGN_PLAN DS5): code first; quotes join it in Step 6. No nav item. */
+    repos.length > 0 && (
+      <MarginRow index={4} ruled id="proof" hideLabel>
+        <Fragment slot="label">Proof</Fragment>
+        <h2 class="visually-hidden">Proof</h2>
+        <section class="proof-part" aria-labelledby="proof-code">
+          <h3 class="label proof-kicker" id="proof-code">
+            Code on GitHub ·{' '}
+            <a href={profile.links.github} class="proof-account">
+              {profile.links.github.replace(/^https:\/\//, '')}
+            </a>
+          </h3>
+          <ul class="repos">
+            {repos.map((r) => (
+              <li class="repo reveal">
+                <h4 class="title repo-name">
+                  <a href={r.url} class="target">
+                    {r.name}
+                    <span aria-hidden="true"> ↗</span>
+                  </a>
+                </h4>
+                {r.line && <p class="repo-line">{r.line}</p>}
+                <p class="mono muted repo-meta">
+                  {[r.language, pushedOn(r.pushed), r.archived && 'Archived'].filter(Boolean).join(' · ')}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </MarginRow>
+    )
+  }
+
+  <MarginRow index={5} ruled id="capabilities" hideLabel>
     <Fragment slot="label">Capabilities</Fragment>
     <h2 class="visually-hidden">Capabilities</h2>
     <dl class="caps">
@@ -183,7 +219,7 @@ const person = {
     </dl>
   </MarginRow>
 
-  <MarginRow index={5} ruled id="principles" hideLabel>
+  <MarginRow index={6} ruled id="principles" hideLabel>
     <Fragment slot="label">Principles</Fragment>
     <h2 class="visually-hidden">Principles</h2>
     <ol class="list principles">
@@ -201,7 +237,7 @@ const person = {
     </ol>
   </MarginRow>
 
-  <MarginRow index={6} ruled id="contact" hideLabel headed>
+  <MarginRow index={7} ruled id="contact" hideLabel headed>
     <Fragment slot="label">Contact</Fragment>
     <div class="contact reveal">
       <div class="contact-main">
@@ -483,6 +519,57 @@ const person = {
     list-style: none;
   }
 
+  .proof-kicker {
+    margin: 0;
+    padding: 4px 0 8px;
+  }
+
+  .proof-account {
+    color: var(--ink);
+    text-underline-offset: 3px;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .repos {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .repo {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    grid-template-areas: 'name line' 'name meta';
+    gap: 4px 20px;
+    align-items: baseline;
+    padding: 16px 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .repo-name {
+    grid-area: name;
+    margin: 0;
+    font-size: 24px;
+  }
+
+  .repo-name a {
+    text-decoration-thickness: 1px;
+    text-underline-offset: 5px;
+  }
+
+  .repo-line {
+    grid-area: line;
+    max-width: 40em;
+    font-size: 18px;
+    line-height: 1.45;
+  }
+
+  .repo-meta {
+    grid-area: meta;
+    font-size: 12px;
+  }
+
   .principle {
     display: grid;
     grid-template-columns: 56px minmax(0, 1fr);
@@ -610,6 +697,11 @@ const person = {
     .cap {
       grid-template-columns: minmax(0, 1fr);
       gap: 6px;
+    }
+
+    .repo {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: 'name' 'line' 'meta';
     }
 
     .cap-line {

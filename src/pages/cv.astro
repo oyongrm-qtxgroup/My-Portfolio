@@ -6,9 +6,10 @@
 import Base from '../layouts/Base.astro';
 import MarginRow from '../components/MarginRow.astro';
 import Portrait from '../components/Portrait.astro';
+import { getRepos, pushedOn } from '../lib/github';
 import { getProfile, getRoles, type Role } from '../lib/content';
 
-const [profile, roles] = await Promise.all([getProfile(), getRoles()]);
+const [profile, roles, repos] = await Promise.all([getProfile(), getRoles(), getRepos()]);
 const cv = profile.cv;
 
 // Consecutive roles at the same organisation share one heading (as on the design).
@@ -107,6 +108,19 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
           </section>
         ))
       }
+      {
+        repos.length > 0 && (
+          <p class="mono muted cv-code">
+            Code on GitHub:{' '}
+            {repos.map((r, i) => (
+              <>
+                {i > 0 && ' · '}
+                <a href={r.url}>{r.name}</a> ({[r.language, pushedOn(r.pushed).toLowerCase()].filter(Boolean).join(', ')})
+              </>
+            ))}
+          </p>
+        )
+      }
     </MarginRow>
 
     <MarginRow index={3} ruled>
@@ -171,6 +185,17 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
 </Base>
 
 <style>
+  /* Screen only: the PDF lists experience, not repositories. */
+  .cv-code {
+    padding: 4px 0 20px;
+    line-height: 1.6;
+  }
+
+  .cv-code a {
+    color: var(--ink);
+    text-underline-offset: 3px;
+  }
+
   .cv-head {
     position: relative;
     padding: 32px 0 20px;
@@ -393,7 +418,8 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
       padding: 0 0 8pt;
     }
 
-    .cv-head :global(.cv-portrait) {
+    .cv-head :global(.cv-portrait),
+    .cv-code {
       display: none !important;
     }
 
