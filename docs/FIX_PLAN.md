@@ -83,7 +83,7 @@ The 72 findings reduce to 34 distinct issues in 11 themes. The original T9 (name
 | **T7 CV PDF** | ATS reading order and hyphenation | R-07, D-21, H-19 | pdftotext: "retrievalaugmented"; OCLP dates after its bullets |
 | | Keywords and defensible skills | R-08, H-14 | "RPA", "RAG" never as acronyms; Python, Azure OpenAI and SAP Basis unbacked |
 | | Scanability | D-20 | Italic titles lighter than company; stranded bullet on page 2 |
-| | Vanity LinkedIn URL | R-14 | Owner action outside the repo |
+| | ~~Vanity LinkedIn URL~~ | R-14 | Done: `/in/raymundo-oyong` claimed 25 Oct 2026; site and CV switched in DESIGN_PLAN Step 0 |
 | **T8 Contact** | Client pitch; placeholders look like answers | D-09, D-24, H-09 (part) | Sent state shows "alex@clinic.com.au" next to "I'll reply to alex@example.com.au" |
 | **T11 Phone and layout** | No action above the fold; header lost on scroll; stack hidden; tablet cramped; small all-caps facts; edge line | D-04, D-12, H-23, D-16, D-17, D-19, D-11 | `WorkRow.astro` hides `.stack` at ≤760 px |
 | | Load-time jump and false mid-count figures | D-13 | "31–36%", "4 yrs" at ~1100 ms |
@@ -336,7 +336,7 @@ Original questions:
 ## 5. Open questions (answer when approving)
 
 1. ~~**Commit this plan?**~~ Answered 24 Oct 2026: commit it with Step 1 as `docs/FIX_PLAN.md`, and tick steps off as they merge.
-2. **Public sample repo (H-10):** with screenshots and a demo ruled out, a small public repo (e.g. a toy booking agent with an evaluation harness) is the one remaining way to show AI engineering directly. Add it as a later step, or leave it? Also check that github.com/oyong1926 shows something relevant; this environment can't check.
+2. **Public sample repo (H-10):** with screenshots and a demo ruled out, a small public repo (e.g. a toy booking agent with an evaluation harness) is the one remaining way to show AI engineering directly. Add it as a later step, or leave it? Also check that github.com/oyong1926 shows something relevant; this environment can't check. (25 Oct 2026: the code lives at github.com/oyongrm-qtxgroup, which replaces oyong1926 everywhere; DESIGN_PLAN DS13.)
 3. **One PR at a time** on `ccr-e6bc818b-pfij6d`, as above, or may I use one branch per step so two can be in review at once?
 4. **"Calls I made for you"** (§1): any you want changed?
 
