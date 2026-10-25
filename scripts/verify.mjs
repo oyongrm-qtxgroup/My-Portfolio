@@ -422,6 +422,45 @@ try {
     await ctx.close();
   }
 
+  // Wide screens (DESIGN_PLAN Step 15): one margin rule from 1100 px, on the row line's
+  // x, on whole device pixels at 1x, 1.5x and 2x, down to the window bottom on a short
+  // page; none below 1100 px.
+  for (const [width, dpr] of [[1024, 1], [1100, 1], [1440, 1], [1440, 1.5], [1920, 2]]) {
+    const ctx = await browser.newContext({ viewport: { width, height: 900 }, deviceScaleFactor: dpr });
+    const p = await ctx.newPage();
+    for (const route of ['/', '/privacy/']) {
+      await p.goto(BASE + route, { waitUntil: 'networkidle' });
+      const r = await p.evaluate(() => {
+        const wrap = document.querySelector('.wrap');
+        const cs = getComputedStyle(wrap, '::before');
+        if (cs.content === 'none' || cs.display === 'none') return { on: false };
+        const box = wrap.getBoundingClientRect();
+        const mar = document.querySelector('.row > .mar').getBoundingClientRect();
+        return {
+          on: true,
+          left: box.left + parseFloat(cs.left),
+          width: parseFloat(cs.width),
+          rowLine: mar.right - 2,
+          bottom: box.top + parseFloat(cs.top) + box.height,
+        };
+      });
+      const tag = `margin rule ${route} @${width}×${dpr}`;
+      if (width < 1100) {
+        if (r.on) failures.push(`${tag}: shown below 1100 px`);
+        continue;
+      }
+      if (!r.on) {
+        failures.push(`${tag}: missing`);
+        continue;
+      }
+      if (Math.abs(r.left - r.rowLine) > 0.01) failures.push(`${tag}: at x ${r.left}, row line at ${r.rowLine}`);
+      for (const v of [r.left * dpr, r.width * dpr])
+        if (Math.abs(v - Math.round(v)) > 0.01) failures.push(`${tag}: not on whole device pixels (${v})`);
+      if (r.bottom < 900 - 0.5) failures.push(`${tag}: stops at ${Math.round(r.bottom)} px, short of the window`);
+    }
+    await ctx.close();
+  }
+
   // "On this page": each link lands with its heading below the sticky header.
   for (const width of [390, 1440]) {
     const ctx = await browser.newContext({ viewport: { width, height: 844 } });

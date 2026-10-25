@@ -223,6 +223,27 @@ button {
   padding: 24px 0 40px var(--gutter);
 }
 
+/* Wide screens: one margin rule the full height of the page, behind the header
+   (which covers it), the rows and the footer, so it never breaks between bands or
+   stops short of the window on a short page (DESIGN_PLAN DS8). The per-row line
+   stays on top as the load motion. Same x and width as the row line: whole pixels. */
+@media (min-width: 1100px) {
+  .wrap {
+    position: relative;
+  }
+
+  .wrap::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--pad) + var(--margin-col) - 2px);
+    width: 2px;
+    background: var(--margin);
+  }
+}
+
 /* ── Stamps ─────────────────────────────────────────────── */
 
 .stamp {
