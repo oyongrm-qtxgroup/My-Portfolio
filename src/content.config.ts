@@ -115,4 +115,21 @@ const profile = defineCollection({
   }),
 });
 
-export const collections = { skills, principles, work, roles, profile };
+// Recommendations, quoted word for word (DESIGN_PLAN DS3, DS15). Attributed by role and
+// employer only; no entry without the writer's consent date.
+const endorsements = defineCollection({
+  loader: file('src/content/endorsements.yaml'),
+  schema: z.object({
+    quote: z.string().min(1),
+    role: z.string(),
+    employer: z.string(),
+    relationship: z.string().optional(),
+    work: reference('work').optional(),
+    home: z.boolean().default(false),
+    source_url: z.url(),
+    consented: z.coerce.date(),
+    checked: z.coerce.date(),
+  }),
+});
+
+export const collections = { skills, principles, work, roles, profile, endorsements };

@@ -29,6 +29,9 @@ const wordRules = [
 ];
 
 const emoji = /\p{Extended_Pictographic}/u;
+// No italic is shipped (DESIGN_PLAN call 6): no <em> or *emphasis* in content.
+const italic = [/<em\b/i, /(?<![*\w])\*(?![\s*])[^*\n]+?(?<![\s*])\*(?![*\w])/];
+const isContent = (file) => /src\/content\/.+\.(mdx?|ya?ml)$/.test(file);
 const headingLine = /^\s*(#{1,6}\s|<h[1-6][\s>])/i;
 
 function* walk(dir) {
@@ -48,6 +51,8 @@ for (const base of SCAN) {
       for (const [re, what] of cssRules) if (re.test(line)) problems.push(`${where}  ${what}`);
       for (const re of wordRules) if (re.test(line)) problems.push(`${where}  banned word "${line.match(re)[0]}"`);
       if (headingLine.test(line) && emoji.test(line)) problems.push(`${where}  emoji in a heading`);
+      if (isContent(file) && !line.trimStart().startsWith('#') && italic.some((re) => re.test(line)))
+        problems.push(`${where}  italic in content (none is shipped)`);
     });
   }
 }

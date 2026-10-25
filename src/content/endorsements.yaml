@@ -1,0 +1,16 @@
+# Recommendations quoted on the site (docs/DESIGN_PLAN.md DS3, DS15; shape in
+# docs/content/WRITING.md "Quote"). Word for word; a cut is marked "…".
+# Attributed by role and employer only: writers' names never go in this repo.
+# An entry needs the writer's consent date, or the build fails.
+#
+# - id: short-handle
+#   quote: The excerpt, word for word.
+#   role: Senior colleague
+#   employer: Ortigas Land
+#   relationship: optional, e.g. worked with Raymundo on the SAP bots
+#   work: sap-automation        # optional: also shown on that project's page
+#   home: true                  # shown in the home Proof band
+#   source_url: https://www.linkedin.com/in/raymundo-oyong/details/recommendations/
+#   consented: 2026-10-26       # date the writer agreed to be quoted
+#   checked: 2026-10-26         # date the text was last compared with LinkedIn
+[]

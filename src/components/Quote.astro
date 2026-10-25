@@ -1,0 +1,72 @@
+---
+// A recommendation, word for word (DESIGN_PLAN DS3, Step 6): Source Serif at 22 px,
+// upright (no italic is shipped), a hanging opening quote mark, a 1.5 px ink top rule
+// and the attribution in mono: role and employer, never a name.
+import type { Endorsement } from '../lib/content';
+
+interface Props {
+  endorsement: Endorsement;
+}
+
+const e = Astro.props.endorsement.data;
+const attribution = [`${e.role}, ${e.employer}`, e.relationship].filter(Boolean).join(' · ');
+---
+
+<figure class="quote">
+  <blockquote>
+    <p><span class="mark" aria-hidden="true">“</span>{e.quote}<span aria-hidden="true">”</span></p>
+  </blockquote>
+  <figcaption class="mono muted">
+    {attribution} · <a href={e.source_url} class="read">Read on LinkedIn ↗</a>
+  </figcaption>
+</figure>
+
+<style>
+  .quote {
+    margin: 0;
+    padding-top: 14px;
+    border-top: 1.5px solid var(--ink);
+  }
+
+  blockquote {
+    margin: 0;
+  }
+
+  blockquote p {
+    position: relative;
+    max-width: 34em;
+    font-size: 22px;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  /* The opening mark hangs outside the text, so the words align with the column. */
+  .mark {
+    position: absolute;
+    right: 100%;
+    padding-right: 0.08em;
+  }
+
+  figcaption {
+    margin-top: 10px;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .read {
+    color: var(--ink);
+    text-underline-offset: 3px;
+  }
+
+  /* Phones have no gutter to hang it in: the mark sits inline. */
+  @media (max-width: 760px) {
+    blockquote p {
+      font-size: 19px;
+    }
+
+    .mark {
+      position: static;
+      padding-right: 0;
+    }
+  }
+</style>

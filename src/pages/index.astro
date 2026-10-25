@@ -7,16 +7,21 @@ import Years from '../components/Years.astro';
 import Portrait from '../components/Portrait.astro';
 import { STABLE as portraitUrl } from '../lib/portrait';
 import { getRepos, pushedOn } from '../lib/github';
-import { getPrinciples, getProfile, getRoles, getSkills, getWork } from '../lib/content';
+import Quote from '../components/Quote.astro';
+import { getEndorsements, getPrinciples, getProfile, getRoles, getSkills, getWork } from '../lib/content';
 
-const [profile, skills, principles, work, roles, repos] = await Promise.all([
+const [profile, skills, principles, work, roles, repos, endorsements] = await Promise.all([
   getProfile(),
   getSkills(),
   getPrinciples(),
   getWork(),
   getRoles(),
   getRepos(),
+  getEndorsements(),
 ]);
+// Two or three on the home page (DS5); every recommendation is on LinkedIn.
+const quotes = endorsements.filter((e) => e.data.home).slice(0, 3);
+const recommendations = new URL('details/recommendations/', profile.links.linkedin).href;
 
 // Work first (docs/FIX_PLAN.md D4): the projects are the evidence, so they come before
 // the capabilities they prove. Each capability links to the project behind its proof.
@@ -158,35 +163,54 @@ const person = {
   </MarginRow>
 
   {
-    /* Proof (DESIGN_PLAN DS5): code first; quotes join it in Step 6. No nav item. */
-    repos.length > 0 && (
+    /* Proof (DESIGN_PLAN DS5): code, then what colleagues wrote. No nav item. */
+    (repos.length > 0 || quotes.length > 0) && (
       <MarginRow index={4} ruled id="proof" hideLabel>
         <Fragment slot="label">Proof</Fragment>
         <h2 class="visually-hidden">Proof</h2>
-        <section class="proof-part" aria-labelledby="proof-code">
-          <h3 class="label proof-kicker" id="proof-code">
-            Code on GitHub ·{' '}
-            <a href={profile.links.github} class="proof-account">
-              {profile.links.github.replace(/^https:\/\//, '')}
-            </a>
-          </h3>
-          <ul class="repos">
-            {repos.map((r) => (
-              <li class="repo reveal">
-                <h4 class="title repo-name">
-                  <a href={r.url} class="target">
-                    {r.name}
-                    <span aria-hidden="true"> ↗</span>
-                  </a>
-                </h4>
-                {r.line && <p class="repo-line">{r.line}</p>}
-                <p class="mono muted repo-meta">
-                  {[r.language, pushedOn(r.pushed), r.archived && 'Archived'].filter(Boolean).join(' · ')}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </section>
+        {repos.length > 0 && (
+          <section class="proof-part" aria-labelledby="proof-code">
+            <h3 class="label proof-kicker" id="proof-code">
+              Code on GitHub ·{' '}
+              <a href={profile.links.github} class="proof-account">
+                {profile.links.github.replace(/^https:\/\//, '')}
+              </a>
+            </h3>
+            <ul class="repos">
+              {repos.map((r) => (
+                <li class="repo reveal">
+                  <h4 class="title repo-name">
+                    <a href={r.url} class="target">
+                      {r.name}
+                      <span aria-hidden="true"> ↗</span>
+                    </a>
+                  </h4>
+                  {r.line && <p class="repo-line">{r.line}</p>}
+                  <p class="mono muted repo-meta">
+                    {[r.language, pushedOn(r.pushed), r.archived && 'Archived'].filter(Boolean).join(' · ')}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+        {quotes.length > 0 && (
+          <section class="proof-part" aria-labelledby="proof-words">
+            <h3 class="label proof-kicker" id="proof-words">
+              Recommendations
+            </h3>
+            <div class="quotes">
+              {quotes.map((e) => (
+                <Quote endorsement={e} />
+              ))}
+            </div>
+            <p class="mono all-recs">
+              <a href={recommendations} class="target">
+                See all recommendations on LinkedIn ↗
+              </a>
+            </p>
+          </section>
+        )}
       </MarginRow>
     )
   }
@@ -535,6 +559,27 @@ const person = {
     margin: 0;
     padding: 0;
     list-style: none;
+  }
+
+  .proof-part + .proof-part {
+    margin-top: 32px;
+  }
+
+  .quotes {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding-top: 8px;
+  }
+
+  .all-recs {
+    margin-top: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .all-recs a {
+    color: var(--ink);
   }
 
   .repo {
