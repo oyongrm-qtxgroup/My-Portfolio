@@ -21,7 +21,7 @@ const [, num = label, name = ''] = label.match(/^(\S+ \S+) (.*)$/) ?? [];
 ---
 
 <section class="row">
-  <div class="mar label">{num}<br />{name}</div>
+  <div class="mar label">{num} <br />{name}</div>
   <figure class="body">
     <ol class="flow" aria-label={caption}>
       {
@@ -40,7 +40,7 @@ const [, num = label, name = ''] = label.match(/^(\S+ \S+) (.*)$/) ?? [];
         ))
       }
     </ol>
-    <figcaption class="mono muted caption">{num} {name} — {caption}</figcaption>
+    <figcaption class="mono muted caption">{caption}</figcaption>
   </figure>
 </section>
 
@@ -74,10 +74,6 @@ const [, num = label, name = ''] = label.match(/^(\S+ \S+) (.*)$/) ?? [];
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-  }
-
-  .key .step-title {
-    font-weight: 700;
   }
 
   .step-note {

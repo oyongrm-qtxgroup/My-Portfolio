@@ -14,7 +14,7 @@ const [, num = label, name = ''] = label.match(/^(\S+ \S+) (.*)$/) ?? [];
 ---
 
 <section class:list={['row', 'cs', { ruled }]}>
-  <div class="mar label">{num}<br />{name}</div>
+  <div class:list={['mar', 'label', { headed: !!title }]}>{num} <br />{name}</div>
   <div class="body cs-body">
     <div class="prose">
       {title ? <h2 class="title cs-title">{title}</h2> : <h2 class="visually-hidden">{name || num}</h2>}
@@ -53,7 +53,8 @@ const [, num = label, name = ''] = label.match(/^(\S+ \S+) (.*)$/) ?? [];
     margin: 32px 0 8px;
   }
 
-  .prose :global(h3:first-child) {
+  /* The first sub-heading sits level with the label, also after a hidden h2. */
+  .prose :global(:is(h3:first-child, .visually-hidden + h3)) {
     margin-top: 0;
   }
 

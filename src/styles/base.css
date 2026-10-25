@@ -310,6 +310,27 @@ button {
   .row > .body {
     padding: 12px 0 32px;
   }
+
+  /* Rail labels become one-line kickers: the rail's line breaks go, and a label
+     that only repeats the visible heading below it is dropped. */
+  .row > .mar br {
+    display: none;
+  }
+
+  .row > .mar.headed {
+    display: none;
+  }
+
+  .row > .mar.headed + .body {
+    padding-top: 24px;
+  }
+}
+
+/* Shown only in the one-column layout (e.g. a count after a rail label). */
+@media (min-width: 901px) {
+  .phone-only {
+    display: none;
+  }
 }
 
 /* ── Phone ──────────────────────────────────────────────── */

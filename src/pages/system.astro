@@ -12,7 +12,7 @@ const swatches: { token: Token; name: string; use: string }[] = [
   { token: 'ink2', name: 'Ink 2', use: 'Dates, labels, control borders' },
   { token: 'rule', name: 'Rule', use: 'Decorative row dividers only' },
   { token: 'accent', name: 'Ballpoint', use: 'Links only' },
-  { token: 'margin', name: 'Margin red', use: 'Margin line, errors, "In progress"' },
+  { token: 'margin', name: 'Margin red', use: 'Margin line, errors, “In progress”' },
 ];
 
 const rows = swatches
@@ -45,7 +45,7 @@ const cssVar: Record<Token, string> = {
   </MarginRow>
 
   <MarginRow index={1} ruled>
-    <Fragment slot="label">01<br />Type</Fragment>
+    <Fragment slot="label">01 <br />Type</Fragment>
     <div class="type-grid">
       <div>
         <p class="display sample">Aa 26</p>
@@ -66,7 +66,7 @@ const cssVar: Record<Token, string> = {
   </MarginRow>
 
   <MarginRow index={2} ruled>
-    <Fragment slot="label">02<br />Colour</Fragment>
+    <Fragment slot="label">02 <br />Colour</Fragment>
     <ul class="swatches">
       {
         swatches.map((s) => (
@@ -84,7 +84,7 @@ const cssVar: Record<Token, string> = {
   </MarginRow>
 
   <MarginRow index={3} ruled>
-    <Fragment slot="label">03<br />Parts</Fragment>
+    <Fragment slot="label">03 <br />Parts</Fragment>
     <div class="parts">
       <div>
         <p class="label">Status stamps</p>
@@ -116,17 +116,17 @@ const cssVar: Record<Token, string> = {
   </MarginRow>
 
   <MarginRow index={4} ruled>
-    <Fragment slot="label">04<br />Motion</Fragment>
+    <Fragment slot="label">04 <br />Motion</Fragment>
     <ul class="prose list">
       <li>The red margin line draws down each row on load.</li>
       <li>Headlines set line by line, 90 ms apart; stamps press in last.</li>
       <li>Rows rise as they scroll into view, where the browser supports it.</li>
-      <li>Everything is switched off under "reduce motion".</li>
+      <li>Everything is switched off under “reduce motion”.</li>
     </ul>
   </MarginRow>
 
   <MarginRow index={5} ruled>
-    <Fragment slot="label">05<br />Never</Fragment>
+    <Fragment slot="label">05 <br />Never</Fragment>
     <p class="prose">
       Gradients, glows, glass blur, drop shadows, rounded cards, neon accents, 3D globes, particles,
       typing effects, custom cursors, emoji in headings, skill-percentage bars.
@@ -134,7 +134,7 @@ const cssVar: Record<Token, string> = {
   </MarginRow>
 
   <MarginRow index={6} ruled>
-    <Fragment slot="label">06<br />Access<br />WCAG 2.2 AA</Fragment>
+    <Fragment slot="label">06 <br />Access <br />WCAG 2.2 AA</Fragment>
     <div class="table-wrap" tabindex="0" role="region" aria-label="Contrast table">
       <table>
         <caption class="label">Contrast against paper, measured from the tokens</caption>

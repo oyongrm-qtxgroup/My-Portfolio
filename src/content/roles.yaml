@@ -8,7 +8,6 @@
   place: Sydney, Australia (remote)
   title: Senior AI Software Engineer
   start: January 2026
-  span: 2026–
   current: true
   summary: Lead engineer on Jayne Bandy AI and Ziaris; currently building SmartCP, AI care-plan drafting for an aged-care provider, and RL Finance for a retirement-village operator.
   projects:
@@ -49,7 +48,6 @@
   title: Software Developer Officer (team lead)
   start: January 2024
   end: December 2025
-  span: 2024–25
   summary: Led a four-person development team, integrated the company’s first online payment channel, and automated SAP entry and HR remittances with two Power Automate bots.
   highlights:
     - Led and mentored a four-person development team; introduced structured code reviews and secure development practices.
@@ -65,7 +63,6 @@
   title: Senior Software Developer Associate (senior developer)
   start: January 2022
   end: December 2023
-  span: 2022–23
   summary: Built Web APIs over SAP data and led the shopping module of the company’s first e-commerce site.
   highlights:
     - Developed ASP.NET Core Web APIs exposing SAP data to third-party applications.
@@ -79,7 +76,6 @@
   title: Software Developer Associate
   start: May 2019
   end: December 2021
-  span: 2019–21
   summary: Built the company’s first digital IT ticketing system and automated daily reports through SharePoint.
   highlights:
     - Developed the company’s first digital IT ticketing system.
@@ -92,7 +88,6 @@
   title: Programmer
   start: July 2018
   end: May 2019
-  span: 2018–19
   summary: Built the company’s first tenant-portal mobile app, in Xamarin.
   highlights:
     - Developed the company’s first tenant-portal mobile application in Xamarin Forms.

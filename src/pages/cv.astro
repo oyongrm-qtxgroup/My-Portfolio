@@ -32,7 +32,7 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
 >
   <article class="cv">
     <MarginRow index={0}>
-      <Fragment slot="label">Curriculum<br />vitae</Fragment>
+      <Fragment slot="label">Curriculum <br />vitae</Fragment>
       <header class="cv-head">
         <h1 class="display cv-name">{cv.name}</h1>
         <p class="title cv-title">{cv.title}</p>
@@ -58,7 +58,7 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
     </MarginRow>
 
     <MarginRow index={2} ruled>
-      <Fragment slot="label">Professional<br />experience</Fragment>
+      <Fragment slot="label">Professional <br />experience</Fragment>
       <h2 class="cv-h2">Professional Experience</h2>
       {
         orgs.map((o) => (
@@ -107,7 +107,7 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
     </MarginRow>
 
     <MarginRow index={3} ruled>
-      <Fragment slot="label">Technical<br />skills</Fragment>
+      <Fragment slot="label">Technical <br />skills</Fragment>
       <h2 class="cv-h2">Technical Skills</h2>
       <dl class="cv-skills">
         {

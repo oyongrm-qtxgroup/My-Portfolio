@@ -72,6 +72,51 @@ try {
         );
         if (overflow > 0) failures.push(`${tag}: scrolls sideways by ${overflow}px`);
 
+        // Lists of short items (stack, meta): no item breaks inside ("GPT-" / "5.5"),
+        // and no rendered line starts with a separator ("· Supabase").
+        const lists = await page.evaluate(() => {
+          const out = [];
+          for (const li of document.querySelectorAll('[data-stack-list] > li')) {
+            const lines = li.getBoundingClientRect().height / parseFloat(getComputedStyle(li).lineHeight);
+            if (lines < 1.5) continue;
+            // Wrapping inside is right only for an item longer than the whole line.
+            li.style.whiteSpace = 'nowrap';
+            const fits = li.scrollWidth <= li.parentElement.clientWidth - parseFloat(getComputedStyle(li).marginLeft);
+            li.style.whiteSpace = '';
+            if (fits) out.push(`"${li.textContent}" breaks inside`);
+          }
+          for (const el of document.querySelectorAll('.stack, .meta dd, [data-stack-list]')) {
+            const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+            let lastTop = null;
+            while (walker.nextNode()) {
+              const node = walker.currentNode;
+              for (let i = 0; i < node.length; i++) {
+                if (!node.data[i].trim()) continue;
+                const range = document.createRange();
+                range.setStart(node, i);
+                range.setEnd(node, i + 1);
+                const top = Math.round(range.getBoundingClientRect().top);
+                if (lastTop === null || top > lastTop + 2) {
+                  if (node.data[i] === '·') out.push(`a line starts with "·" in "${el.textContent.trim().slice(0, 40)}"`);
+                  lastTop = top;
+                }
+              }
+            }
+          }
+          return out;
+        });
+        for (const l of lists) failures.push(`${tag}: ${l}`);
+
+        // Typographic quotes in what people read (code samples aside).
+        if (width === 1440) {
+          const straight = await page.evaluate(() => {
+            const main = document.querySelector('main')?.cloneNode(true);
+            main?.querySelectorAll('code, pre, script, style, [data-allow-straight]').forEach((n) => n.remove());
+            return (main?.textContent ?? '').match(/.{0,30}"/)?.[0];
+          });
+          if (straight) failures.push(`${tag}: straight double quote in "${straight.trim()}"`);
+        }
+
         // Phones: a link that stands alone (not inside a sentence) is at least 44 px tall.
         if (width <= 390) {
           const small = await page.$$eval('a', (links) =>
@@ -142,8 +187,22 @@ try {
     const button = p.locator('.menu-button');
     if (!(await button.isVisible())) failures.push(`${tag}: menu button not shown`);
     else {
+      // Opening the menu pins the header; the wordmark and button must not move.
+      const boxes = () =>
+        p.evaluate(() =>
+          ['.site-header .brand', '.menu-button'].map((s) => {
+            const r = document.querySelector(s).getBoundingClientRect();
+            return [Math.round(r.x), Math.round(r.width)];
+          }),
+        );
+      await p.mouse.wheel(0, -100); // bring the tucked header back
+      await p.waitForTimeout(400);
+      const closed = await boxes();
       await button.focus();
       await p.keyboard.press('Enter');
+      const opened = await boxes();
+      if (JSON.stringify(closed) !== JSON.stringify(opened))
+        failures.push(`${tag}: header moves when the menu opens (${JSON.stringify(closed)} → ${JSON.stringify(opened)})`);
       const expanded = await button.getAttribute('aria-expanded');
       if (expanded !== 'true') failures.push(`${tag}: aria-expanded is ${expanded} after opening`);
       if (!(await p.locator('#phone-menu').isVisible())) failures.push(`${tag}: sheet not visible`);

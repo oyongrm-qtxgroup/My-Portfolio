@@ -64,7 +64,6 @@ const roles = defineCollection({
     title: z.string(),
     start: z.string(),
     end: z.string().optional(),
-    span: z.string(),
     summary: z.string(),
     highlights: z.array(z.string()).default([]),
     projects: z

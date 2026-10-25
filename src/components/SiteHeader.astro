@@ -193,8 +193,9 @@ const current = (match: string | null) => match !== null && path.startsWith(matc
     text-underline-offset: 5px;
   }
 
+  /* Wide enough for "Close" too, so the header doesn't move when the menu opens. */
   .menu-button {
-    min-width: 64px;
+    min-width: 76px;
     min-height: 44px;
     padding: 0 12px;
     border: 1px solid var(--ink);
@@ -312,13 +313,22 @@ const current = (match: string | null) => match !== null && path.startsWith(matc
       flex-wrap: nowrap;
     }
 
+    /* Pinned while open, inset by the page gutter so nothing moves sideways. */
     .menu-open {
       position: fixed;
       z-index: 21;
       top: 0;
-      left: 0;
-      right: 0;
-      padding-inline: var(--pad);
+      left: var(--pad);
+      right: var(--pad);
+      background: var(--paper);
+    }
+
+    /* The gutter either side of the pinned header stays paper. */
+    .menu-open::before {
+      content: '';
+      position: absolute;
+      z-index: -1;
+      inset: 0 calc(-1 * var(--pad));
       background: var(--paper);
     }
   }

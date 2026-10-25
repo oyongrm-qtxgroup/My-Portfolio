@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import MarginRow from '../components/MarginRow.astro';
 import WorkRow from '../components/WorkRow.astro';
 import ContactForm from '../components/ContactForm.astro';
+import Years from '../components/Years.astro';
 import { getPrinciples, getProfile, getRoles, getSkills, getWork } from '../lib/content';
 
 const [profile, skills, principles, work, roles] = await Promise.all([
@@ -38,7 +39,7 @@ const person = {
 ---
 
 <Base description={profile.summary} jsonLd={person}>
-  <MarginRow index={0} hideLabel>
+  <MarginRow index={0} hideLabel headed>
     <Fragment slot="label">Intro</Fragment>
     <div class="hero">
       <h1 class="display headline">
@@ -67,7 +68,7 @@ const person = {
   </MarginRow>
 
   <MarginRow index={1}>
-    <Fragment slot="label">In<br />figures</Fragment>
+    <Fragment slot="label">In <br />figures</Fragment>
     <dl class="figures fade" style="--i: 4">
       {
         profile.figures.map((f) => (
@@ -81,7 +82,7 @@ const person = {
   </MarginRow>
 
   <MarginRow index={2} ruled id="work" hideLabel>
-    <Fragment slot="label">Selected<br />work</Fragment>
+    <Fragment slot="label">Selected <br />work<span class="phone-only"> · {work.length}</span></Fragment>
     <h2 class="visually-hidden">Selected work</h2>
     <div class="list">
       {work.map((w, i) => <WorkRow work={w} index={i} />)}
@@ -95,7 +96,7 @@ const person = {
       {
         roles.map((r) => (
           <div class="role reveal">
-            <span class="mono muted tabular">{r.data.span}</span>
+            <Years start={r.data.start} end={r.data.end} class="mono muted" />
             <span class="role-org">{r.data.short}</span>
             <p>
               <strong class="role-title">{r.data.title}.</strong> {r.data.summary}
@@ -153,7 +154,7 @@ const person = {
     </ol>
   </MarginRow>
 
-  <MarginRow index={6} ruled id="contact" hideLabel>
+  <MarginRow index={6} ruled id="contact" hideLabel headed>
     <Fragment slot="label">Contact</Fragment>
     <div class="contact reveal">
       <div class="contact-main">
@@ -359,7 +360,7 @@ const person = {
 
   .role {
     display: grid;
-    grid-template-columns: 72px 150px minmax(0, 1fr);
+    grid-template-columns: 96px 150px minmax(0, 1fr);
     gap: 20px;
     align-items: baseline;
     padding: 16px 0;
@@ -461,6 +462,19 @@ const person = {
 
     .cap-line {
       font-size: 17px;
+    }
+  }
+
+  /* Narrow phones: the two hero buttons share the row equally. */
+  @media (max-width: 480px) {
+    .actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .action {
+      justify-content: center;
+      padding: 0 8px;
     }
   }
 

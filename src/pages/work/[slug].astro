@@ -3,6 +3,7 @@ import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import MarginRow from '../../components/MarginRow.astro';
 import Stamp from '../../components/Stamp.astro';
+import StackList from '../../components/StackList.astro';
 import { getProfile, getSkills, getWork, type Work } from '../../lib/content';
 
 export async function getStaticPaths() {
@@ -28,7 +29,7 @@ const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id
 <Base title={`${w.title} — Raymundo Oyong`} description={w.line}>
   <MarginRow index={0}>
     <Fragment slot="label">
-      No. {w.no}<br />Project
+      No. {w.no} <br />Project
       <span class="label-stamp"><Stamp status={w.status} press={false} /></span>
     </Fragment>
     <header class="cs-head">
@@ -48,9 +49,9 @@ const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id
           <dt class="label">Built for</dt>
           <dd>{w.client}</dd>
         </div>
-        <div>
+        <div class="built-with">
           <dt class="label">Built with</dt>
-          <dd>{w.stack.join(', ')}</dd>
+          <dd><StackList items={w.stack} /></dd>
         </div>
       </dl>
     </header>
@@ -59,7 +60,7 @@ const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id
   <Content />
 
   <MarginRow ruled hideLabel>
-    <Fragment slot="label">Skills<br />shown</Fragment>
+    <Fragment slot="label">Skills <br />shown</Fragment>
     <h2 class="visually-hidden">Skills shown</h2>
     <ul class="tags">
       {
@@ -211,6 +212,13 @@ const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id
     .meta > div:nth-child(-n + 2) {
       padding-bottom: 16px;
       border-bottom: 1px solid var(--rule);
+    }
+
+    /* "Built with" is the longest list: it takes the whole row. */
+    .meta > .built-with {
+      grid-column: 1 / -1;
+      padding-left: 0;
+      border-right: 0;
     }
   }
 

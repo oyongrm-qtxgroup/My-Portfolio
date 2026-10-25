@@ -1,5 +1,6 @@
 ---
 import Stamp from './Stamp.astro';
+import StackList from './StackList.astro';
 import type { Work } from '../lib/content';
 
 interface Props {
@@ -22,7 +23,7 @@ const w = work.data;
     </span>
     <span class="line muted">{w.short}</span>
   </span>
-  <span class="mono muted stack">{w.stack.slice(0, 4).join(' · ')}</span>
+  <StackList items={w.stack.slice(0, 4)} class="mono muted stack" />
   <span class="meta">
     <span class="mono muted">{w.period}</span>
     <Stamp status={w.status} index={index} />
@@ -35,7 +36,9 @@ const w = work.data;
     grid-template-columns: 56px minmax(0, 1fr) 220px 140px;
     gap: 20px;
     align-items: baseline;
-    padding: 22px 12px 22px 0;
+    /* Even insets for the hover wash and focus ring; the text stays on the column line. */
+    margin-inline: -12px;
+    padding: 22px 12px;
     border-bottom: 1px solid var(--rule);
     text-decoration: none;
     transition: background-color 0.2s;
@@ -89,7 +92,7 @@ const w = work.data;
     max-width: 36em;
   }
 
-  .stack {
+  .work-row :global(.stack) {
     font-size: 12px;
     line-height: 1.6;
   }
@@ -106,7 +109,7 @@ const w = work.data;
     .work-row {
       grid-template-columns: minmax(0, 1fr);
       gap: 8px;
-      padding: 18px 0;
+      padding: 18px 12px;
     }
 
     .name {
