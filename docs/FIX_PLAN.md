@@ -213,7 +213,7 @@ Because all work goes through the single branch `ccr-e6bc818b-pfij6d`, **one pul
 - **Risk:** publishing system detail. Mitigation: every sentence traced to your facts-sheet answer, nothing beyond what D15 clears, denylist run, and you read the page before merge.
 - **Verified by:** standard checks, the denylist, the figure readable at 390 px and announced sensibly by a screen reader, and your read-through.
 
-### Step 5b: NDIS platform case study replaces care-plan drafting (M, medium risk, blocked on facts C) — in review
+### Step 5b: NDIS platform case study replaces care-plan drafting (M, medium risk, blocked on facts C) — merged 25 Oct 2026 (#7)
 
 - **Findings:** H-13, D-07, H-05, R-12, D-30 (the red IN PROGRESS stamp goes), H-04.
 - **Changes:**
@@ -224,7 +224,7 @@ Because all work goes through the single branch `ccr-e6bc818b-pfij6d`, **one pul
 - **Files:** `src/content/work/ndis-platform.mdx` (new), `src/content/work/care-plan-drafting.mdx` (removed), `astro.config.mjs`, `scripts/verify.mjs`, `public/og/`, `src/content/roles.yaml`, `src/content/skills.yaml`, `src/pages/index.astro`.
 - **Verified by:** the redirect checked on the preview, sitemap and share card for the new page, the denylist (the client must stay unnamed), standard checks, and your read-through.
 
-### Step 5c: SAP & HR automation depth (S–M, low risk, blocked on facts D)
+### Step 5c: SAP & HR automation depth (S–M, low risk, blocked on facts D) — in review
 
 - **Findings:** H-11, H-15.
 - **Changes:**
@@ -311,7 +311,15 @@ Original questions:
 5. Failure modes you designed for.
 6. Any non-numeric outcome you can state (e.g. "replaced spreadsheet rostering"), and QTX's OK to describe it generically.
 
-**D: SAP & HR (Step 5c)**
+**D: SAP & HR (Step 5c): answered 25 Oct 2026**
+
+- D1 The SAP bot handled hundreds of entries a month (no exact numbers).
+- D2 Before/after timing: staff timed the manual process before; bot run logs and the remaining manual time after.
+- D3 HR reviewed the AI-extracted remittance figures and approved before payment; the bot did the keying.
+- D4 On an unexpected SAP screen the bot stopped, logged the item and left it for a person.
+- A contract lock is a hold on a property-sale contract while something is pending.
+
+Original questions:
 
 1. Approximate monthly volumes per bot.
 2. How the 70–80% and 100+ h were measured (time study, logs, estimate).
