@@ -19,7 +19,7 @@ Status: **launched 24 Oct 2026** (`main` at `add74fe` serves production). Post-l
 | Modes | Paper (light), Night (dark), **Auto = default** (follows OS). Manual switch in footer and phone menu. |
 | Accessibility | **WCAG 2.2 AA** minimum; measured contrast in `System.dc.html`. |
 | Stack | **Astro** (latest stable), static output + Vercel adapter for the contact action. Zero client framework; small vanilla scripts only. |
-| Content | **Markdown/MDX content collections in the repo.** The Supabase CMS, admin panel and auth are retired. |
+| Content | **Markdown/MDX content collections in the repo.** The Supabase CMS, admin panel and auth are retired. Since 25 Oct 2026 (DESIGN_PLAN DS1, Step 5) GitHub is a second, build-time source: only the repos allow-listed in `profile.yaml` (each only while public), with our own one-line description; GitHub supplies the language and the last-push date. |
 | CV | Generated from the same content, A4, follows the Harvard Extension School OCS guide (see §7). |
 
 ## 2. Answers to the open items (24 Oct 2026)
@@ -60,6 +60,8 @@ src/
   styles/base.css, motion.css, print.css
 scripts/cv-pdf.mjs         renders /cv to public/raymundo-oyong-cv.pdf (Playwright)
 ```
+
+GitHub data (DESIGN_PLAN Step 5): `src/lib/github-data.ts` (fetch and allow-list, shared with the refresh script) → `src/lib/github.ts` (one request per build, falls back to `src/data/github-snapshot.json`) → the Proof band on `/`, a screen-only line on `/cv/`, and `/github.json` (exactly what the page shows). `.github/workflows/refresh.yml` runs `scripts/github-refresh.mjs` daily: fetch, `DENYLIST` check, compare with production's `/github.json`, and the Vercel Deploy Hook only on a difference.
 
 Status values: `live | shipped | in-progress | handed-over` → stamp colours: accent / ink / margin red / ink 2.
 
