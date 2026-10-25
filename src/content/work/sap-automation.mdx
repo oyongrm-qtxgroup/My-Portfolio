@@ -13,6 +13,7 @@ skills: [automation, integrations, leadership]
 ---
 
 import Figure from '../../components/Figure.astro';
+import { figures } from '../../lib/figures';
 import FigRef from '../../components/FigRef.astro';
 import Noted from '../../components/Noted.astro';
 import Section from '../../components/Section.astro';
@@ -26,19 +27,7 @@ Two jobs at Ortigas Land took people’s time without needing their judgement. S
 <Figure
   label="Fig. 1 SAP entry"
   caption="The desktop bot works through the same SAP client staff use, and stops for a person when a screen isn’t what it expects."
-  spec={{
-    nodes: [
-      { id: 'entries', title: 'Entries', note: 'invoices, reversals, contract locks', at: [0, 0] },
-      { id: 'bot', title: 'Desktop bot', note: 'Power Automate Desktop', n: 1, at: [1, 0] },
-      { id: 'sap', title: 'SAP', note: 'entered in the desktop client', at: [2, 0] },
-      { id: 'person', title: 'Left for a person', note: 'logged, not guessed', kind: 'person', at: [1, 1] },
-    ],
-    edges: [
-      { from: 'entries', to: 'bot' },
-      { from: 'bot', to: 'sap' },
-      { from: 'bot', to: 'person', kind: 'fail', label: 'unexpected screen' },
-    ],
-  }}
+  spec={figures['sap-automation']}
 />
 
 <Figure

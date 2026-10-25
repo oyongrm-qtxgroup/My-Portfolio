@@ -13,6 +13,7 @@ skills: [voice-ai, integrations, reliability, leadership]
 ---
 
 import Figure from '../../components/Figure.astro';
+import { figures } from '../../lib/figures';
 import FigRef from '../../components/FigRef.astro';
 import Transcript from '../../components/Transcript.astro';
 import Noted from '../../components/Noted.astro';
@@ -27,25 +28,7 @@ A dental receptionist can’t answer the phone while checking a patient in, and 
 <Figure
   label="Fig. 1 One call"
   caption="The model decides what to say and which tool to call; the tools are ordinary code that reads and writes the practice system. If the practice system is down or the slot is taken mid-call, the caller hears it plainly and the practice calls back."
-  spec={{
-    nodes: [
-      { id: 'caller', title: 'Caller', note: 'rings the practice’s own number (Twilio)', at: [0, 0] },
-      { id: 'voice', title: 'Voice layer', note: 'ElevenLabs: speech to text, turn-taking, the practice’s voice', n: 1, at: [1, 0] },
-      { id: 'agent', title: 'Agent', note: 'GPT-5.5 following the reviewed script', kind: 'model', at: [2, 0] },
-      { id: 'tools', title: 'Tools', note: 'find patient · find free slots · book, move or cancel · request callback', n: 2, at: [3, 0] },
-      { id: 'practice', title: 'Practice system', note: 'CareStack · Core Practice · Dentally', at: [4, 0] },
-      { id: 'sorry', title: 'Agent', note: 'apologises and says the team will call back', kind: 'model', at: [2, 1] },
-      { id: 'callback', title: 'Callback request', note: 'logged for the practice team', at: [1, 1] },
-    ],
-    edges: [
-      { from: 'caller', to: 'voice' },
-      { from: 'voice', to: 'agent' },
-      { from: 'agent', to: 'tools', kind: 'two' },
-      { from: 'tools', to: 'practice', kind: 'two' },
-      { from: 'tools', to: 'sorry', kind: 'fail', label: 'system down or slot just taken' },
-      { from: 'sorry', to: 'callback', kind: 'fail' },
-    ],
-  }}
+  spec={figures['jayne-bandy-ai']}
 />
 
 <Transcript

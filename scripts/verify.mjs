@@ -122,6 +122,17 @@ try {
         );
         if (money) failures.push(`${tag}: a currency symbol or amount is in the worked shift`);
 
+        // A project's glyph is drawn from the same spec as a figure on its page.
+        if (route.startsWith('/work/')) {
+          const glyph = await page.evaluate(() => {
+            const g = document.querySelector('.cs-glyph svg[data-glyph]');
+            const figs = [...document.querySelectorAll('svg[data-figure]')].map((f) => [f.dataset.figure, f.dataset.boxes]);
+            return g && { key: g.dataset.glyph, boxes: g.dataset.boxes, match: figs.some(([k, n]) => k === g.dataset.glyph && n === g.dataset.boxes) };
+          });
+          if (!glyph) failures.push(`${tag}: no project glyph`);
+          else if (!glyph.match) failures.push(`${tag}: the glyph doesn't match a figure on the page`);
+        }
+
         // Figures: margin red only on failure paths (DS7), never on a box or plain edge.
         const red = await page.evaluate(() => {
           const margin = getComputedStyle(document.documentElement).getPropertyValue('--margin').trim().toLowerCase();

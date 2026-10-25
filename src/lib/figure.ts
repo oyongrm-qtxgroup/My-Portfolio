@@ -245,3 +245,37 @@ export function layoutNarrow(spec: FigSpec, width = 300, gap = 40): Layout {
   }
   return { width, height: y - gap + 12, boxes, lines, labels };
 }
+
+/** The same spec drawn small and without words (a project glyph, Step 11): one cell
+ *  per node on the wide grid, edges as in the figure, centred in a 120 × 80 frame. */
+export function layoutGlyph(spec: FigSpec, frame: [number, number] = [120, 80]): Layout {
+  const [W, H] = frame;
+  const cols = Math.max(...spec.nodes.map((n) => n.at[0])) + 1;
+  const rows = Math.max(...spec.nodes.map((n) => n.at[1])) + 1;
+  const gapX = 7;
+  const gapY = 16;
+  const w = Math.min(24, (W - 8 - gapX * (cols - 1)) / cols);
+  const h = Math.min(22, (H - 8 - gapY * (rows - 1)) / rows);
+  const ox = (W - (cols * w + (cols - 1) * gapX)) / 2;
+  const oy = (H - (rows * h + (rows - 1) * gapY)) / 2;
+  const at = (n: FigNode) => ({ x: ox + n.at[0] * (w + gapX), y: oy + n.at[1] * (h + gapY) });
+  const boxes: Box[] = spec.nodes.map((n) => ({ id: n.id, kind: n.kind ?? 'code', ...at(n), w, h, title: [], note: [] }));
+  const byId = new Map(boxes.map((b) => [b.id, b]));
+  const lines: Line[] = spec.edges.map((e) => {
+    const a = byId.get(e.from)!;
+    const b = byId.get(e.to)!;
+    const kind = e.kind ?? 'one';
+    if (a.y === b.y) {
+      const right = a.x < b.x;
+      const y = a.y + h / 2;
+      return { d: `M${right ? a.x + w : a.x} ${y} H${right ? b.x : b.x + w}`, kind, heads: [] };
+    }
+    const x = a.x + w / 2;
+    const down = b.y > a.y;
+    const y1 = down ? a.y + h : a.y;
+    if (x > b.x && x < b.x + w) return { d: `M${x} ${y1} V${down ? b.y : b.y + h}`, kind, heads: [] };
+    const toRight = b.x > x;
+    return { d: `M${x} ${y1} V${b.y + h / 2} H${toRight ? b.x : b.x + w}`, kind, heads: [] };
+  });
+  return { width: W, height: H, boxes, lines, labels: [] };
+}

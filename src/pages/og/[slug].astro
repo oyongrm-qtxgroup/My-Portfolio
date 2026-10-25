@@ -4,6 +4,7 @@
 import { palettes } from '../../design/tokens';
 import { getPublicPages, type PublicPage } from '../../lib/pages';
 import { ALT, src } from '../../lib/portrait';
+import Glyph from '../../components/Glyph.astro';
 import '../../styles/fonts.css';
 
 export async function getStaticPaths() {
@@ -61,6 +62,9 @@ const vars = `:root{--paper:${t.paper};--ink:${t.ink};--ink2:${t.ink2};--rule:${
         font-size: 64px;
         line-height: 1;
         color: var(--ink);
+      }
+      .mar.glyph-mar {
+        padding: 64px 24px 0 48px;
       }
       .mar.portrait {
         padding: 56px 24px 0 44px;
@@ -136,6 +140,10 @@ const vars = `:root{--paper:${t.paper};--ink:${t.ink};--ink2:${t.ink2};--rule:${
         page.slug === 'home' ? (
           <div class="mar portrait">
             <img src={src('paper', 'face', 264, 'webp')} alt={ALT} width="132" height="132" />
+          </div>
+        ) : page.slug.startsWith('work-') ? (
+          <div class="mar glyph-mar" aria-hidden="true">
+            <Glyph work={page.slug.slice('work-'.length)} width={120} />
           </div>
         ) : (
           <div class="mar" aria-hidden="true">

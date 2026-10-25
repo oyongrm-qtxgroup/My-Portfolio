@@ -5,6 +5,7 @@ import MarginRow from '../../components/MarginRow.astro';
 import Stamp from '../../components/Stamp.astro';
 import StackList from '../../components/StackList.astro';
 import Quote from '../../components/Quote.astro';
+import Glyph from '../../components/Glyph.astro';
 import { getEndorsements, getProfile, getSkills, getWork, type Work } from '../../lib/content';
 
 export async function getStaticPaths() {
@@ -38,8 +39,16 @@ const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id
       <span class="label-stamp"><Stamp status={w.status} press={false} /></span>
     </Fragment>
     <header class="cs-head">
-      <h1 class="display cs-name" transition:name={`work-${work.id}`}>{w.title}</h1>
-      <p class="cs-line">{w.line}</p>
+      <div class="cs-hero">
+        <div>
+          <h1 class="display cs-name" transition:name={`work-${work.id}`}>{w.title}</h1>
+          <p class="cs-line">{w.line}</p>
+        </div>
+        <div class="cs-glyph" aria-hidden="true">
+          <Glyph work={work.id} width={280} />
+          <span class="glyph-stamp"><Stamp status={w.status} /></span>
+        </div>
+      </div>
       <p class="byline">By {profile.name}, {profile.title}</p>
       <dl class="meta">
         <div>
@@ -122,9 +131,14 @@ const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id
     </div>
   </MarginRow>
 
-  <nav aria-label="More work" class="cs-nav mono">
-    <a href="/#work" class="target">← All work</a>
-    <a href={`/work/${next.id}/`} class="target accent">No. {next.data.no} {next.data.title} →</a>
+  <nav aria-label="More work" class="cs-nav">
+    <a href={`/work/${next.id}/`} class="next">
+      <span class="mono muted next-label">Next · No. {next.data.no}</span>
+      <span class="display next-title">{next.data.title} <span aria-hidden="true">→</span></span>
+      <span class="next-line">{next.data.short}</span>
+      <Glyph work={next.id} width={120} class="next-glyph" />
+    </a>
+    <a href="/#work" class="mono target all-work">← All work</a>
   </nav>
 </Base>
 
@@ -243,15 +257,98 @@ const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id
     font-size: 19px;
   }
 
+  /* The project's glyph beside its name on wide screens, the status stamped on it. */
+  .cs-glyph {
+    display: none;
+  }
+
+  @media (min-width: 1100px) {
+    .cs-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: var(--space-8);
+      align-items: start;
+    }
+
+    .cs-glyph {
+      position: relative;
+      display: block;
+      margin-top: var(--space-5);
+    }
+
+    .glyph-stamp {
+      position: absolute;
+      right: -8px;
+      bottom: -14px;
+    }
+
+    .label-stamp {
+      display: none;
+    }
+  }
+
+  /* Next project: a panel that keeps the reader in the evidence (C-09). */
   .cs-nav {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 20px 0 40px;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-5) 0 var(--space-8);
     border-top: 2px solid var(--ink);
+  }
+
+  .next {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 120px;
+    grid-template-areas: 'label glyph' 'title glyph' 'line glyph';
+    gap: var(--space-2) var(--space-6);
+    align-items: start;
+    padding: var(--space-3) 0;
+    text-decoration: none;
+  }
+
+  .next-label {
+    grid-area: label;
+    font-size: var(--type-mono-s);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .next-title {
+    grid-area: title;
+    font-size: clamp(40px, 6vw, 72px);
+  }
+
+  .next-line {
+    grid-area: line;
+    max-width: 36em;
+    color: var(--ink-2);
+  }
+
+  .next :global(.next-glyph) {
+    grid-area: glyph;
+    align-self: center;
+  }
+
+  @media (hover: hover) {
+    .next:hover .next-title {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 6px;
+    }
+  }
+
+  .all-work {
+    align-self: flex-start;
+    font-size: var(--type-mono);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 640px) {
+    .next {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: 'glyph' 'label' 'title' 'line';
+    }
   }
 
   @media (max-width: 900px) {

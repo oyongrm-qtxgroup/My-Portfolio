@@ -1,6 +1,7 @@
 ---
 import Stamp from './Stamp.astro';
 import StackList from './StackList.astro';
+import Glyph from './Glyph.astro';
 import type { Work } from '../lib/content';
 
 interface Props {
@@ -14,7 +15,10 @@ const w = work.data;
 
 <!-- The title is the link (a short name in a link list); its hit area covers the row. -->
 <article class="work-row reveal">
-  <span class="mono muted">No. {w.no}</span>
+  <span class="lead">
+    <span class="mono muted">No. {w.no}</span>
+    <Glyph work={work.id} width={96} class="row-glyph" />
+  </span>
   <span class="main">
     <h3 class="title name">
       <a href={`/work/${work.id}/`} class="row-link"
@@ -37,7 +41,7 @@ const w = work.data;
   .work-row {
     position: relative;
     display: grid;
-    grid-template-columns: 56px minmax(0, 1fr) 220px 140px;
+    grid-template-columns: 104px minmax(0, 1fr) 220px 140px;
     gap: 20px;
     align-items: baseline;
     /* Even insets for the hover wash and focus ring; the text stays on the column line. */
@@ -49,6 +53,12 @@ const w = work.data;
 
   .row-link {
     text-decoration: none;
+  }
+
+  .lead {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
   }
 
   .row-link::after {

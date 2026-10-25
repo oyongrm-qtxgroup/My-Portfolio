@@ -4,6 +4,7 @@
 // columns-and-rows placement, phones one column. Screen readers get the caption
 // and an ordered list of the real steps and the failure path.
 import { TYPE, layoutNarrow, layoutWide, type Box, type FigSpec, type Layout, type NodeKind } from '../lib/figure';
+import { specKey } from '../lib/figures';
 
 interface Props {
   label: string;
@@ -49,7 +50,8 @@ const noteTop = (box: Box) => 12 + box.title.length * TYPE.title * TYPE.lineGap;
           height={l.height + 4}
           role="img"
           aria-labelledby={`${id}-cap`}
-          data-figure
+          data-figure={specKey(spec)}
+          data-boxes={l.boxes.length}
         >
           {l.lines.map((line) => (
             <g class:list={['fig-edge', line.kind]}>

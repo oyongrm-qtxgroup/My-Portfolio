@@ -13,6 +13,7 @@ skills: [architecture, security, integrations, leadership]
 ---
 
 import Figure from '../../components/Figure.astro';
+import { figures } from '../../lib/figures';
 import FigRef from '../../components/FigRef.astro';
 import Ledger from '../../components/Ledger.astro';
 import Noted from '../../components/Noted.astro';
@@ -27,21 +28,7 @@ A disability-support provider ran rostering, timesheets and invoicing across spr
 <Figure
   label="Fig. 1 From shift to pay and invoice"
   caption="Each approved shift is priced from the configured award rules, then exported to MYOB without re-keying."
-  spec={{
-    nodes: [
-      { id: 'roster', title: 'Roster', note: 'worker, participant, site', at: [0, 0] },
-      { id: 'timesheet', title: 'Timesheet', note: 'approved hours', at: [1, 0] },
-      { id: 'rules', title: 'Award rules', note: 'SCHADS rates and penalties, configured by admins', n: 1, at: [2, 0] },
-      { id: 'pay', title: 'Pay and invoice', note: 'invoice by funding type', at: [3, 0] },
-      { id: 'myob', title: 'MYOB', note: 'payroll and sales-journal export', at: [4, 0] },
-    ],
-    edges: [
-      { from: 'roster', to: 'timesheet' },
-      { from: 'timesheet', to: 'rules' },
-      { from: 'rules', to: 'pay' },
-      { from: 'pay', to: 'myob' },
-    ],
-  }}
+  spec={figures['ziaris']}
 />
 
 <Ledger
@@ -58,21 +45,7 @@ A disability-support provider ran rostering, timesheets and invoicing across spr
 <Figure
   label="Fig. 2 Payment reconciliation"
   caption="Nothing closes on its own: a line with no clear match stays open for Finance."
-  spec={{
-    nodes: [
-      { id: 'bank', title: 'Bank file', note: 'uploaded by Finance', at: [0, 0] },
-      { id: 'match', title: 'Suggested match', note: 'each line to an invoice', at: [1, 0] },
-      { id: 'finance', title: 'Finance approves', note: 'one line at a time', kind: 'person', n: 2, at: [2, 0] },
-      { id: 'closed', title: 'Invoice closed', note: 'with the approval recorded', at: [3, 0] },
-      { id: 'open', title: 'Stays open', note: 'for Finance to resolve', kind: 'person', at: [1, 1] },
-    ],
-    edges: [
-      { from: 'bank', to: 'match' },
-      { from: 'match', to: 'finance' },
-      { from: 'finance', to: 'closed' },
-      { from: 'match', to: 'open', kind: 'fail', label: 'no clear match' },
-    ],
-  }}
+  spec={figures['ziaris-reconciliation']}
 />
 
 <Section label="The approach" ruled>
