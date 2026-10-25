@@ -1,4 +1,13 @@
 ---
+// One choice of three, so a radio group: arrow keys move the choice, a screen reader
+// hears "Night, radio button, 2 of 3". `name` keeps the footer's and the menu's
+// switches apart. Where storage is blocked the choice lives in window.__themeChoice,
+// which the bootstrap in Base.astro reads.
+interface Props {
+  name: string;
+}
+
+const { name } = Astro.props;
 const choices = [
   { value: 'paper', label: 'Paper' },
   { value: 'night', label: 'Night' },
@@ -6,32 +15,36 @@ const choices = [
 ];
 ---
 
-<div class="theme-switch" role="group" aria-label="Colour theme">
+<fieldset class="theme-switch">
+  <legend class="visually-hidden">Colour theme</legend>
   {
     choices.map((c) => (
-      <button type="button" class="seg" data-theme-set={c.value} aria-pressed="false">
+      <label class="seg">
+        <input type="radio" name={`theme-${name}`} value={c.value} data-theme-set />
         {c.label}
-      </button>
+      </label>
     ))
   }
-</div>
+</fieldset>
 
 <script>
+  type ThemeWindow = Window & { __themeChoice?: string };
+
   function sync() {
     const choice = document.documentElement.dataset.themeChoice ?? 'auto';
-    document.querySelectorAll<HTMLButtonElement>('[data-theme-set]').forEach((btn) => {
-      btn.setAttribute('aria-pressed', String(btn.dataset.themeSet === choice));
+    document.querySelectorAll<HTMLInputElement>('[data-theme-set]').forEach((input) => {
+      input.checked = input.value === choice;
     });
   }
 
   function bind() {
-    document.querySelectorAll<HTMLButtonElement>('[data-theme-set]').forEach((btn) => {
-      btn.addEventListener('click', () => {
+    document.querySelectorAll<HTMLInputElement>('[data-theme-set]').forEach((input) => {
+      input.addEventListener('change', () => {
         try {
-          localStorage.setItem('theme', btn.dataset.themeSet ?? 'auto');
+          localStorage.setItem('theme', input.value);
         } catch {
-          // Storage blocked: the choice lasts for this page only.
-          document.documentElement.dataset.themeChoice = btn.dataset.themeSet;
+          // Storage blocked: keep the choice for this visit.
+          (window as ThemeWindow).__themeChoice = input.value;
         }
         document.dispatchEvent(new Event('theme:change'));
         sync();
@@ -46,5 +59,35 @@ const choices = [
 <style>
   .theme-switch {
     display: flex;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  /* The radio itself is hidden; the label is the segment, the input keeps the focus. */
+  input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+  }
+
+  .seg {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .seg:has(input:checked) {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+
+  .seg:has(input:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 </style>

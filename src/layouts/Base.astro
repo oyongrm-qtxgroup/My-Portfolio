@@ -5,11 +5,12 @@ import serifLatin from '../assets/fonts/source-serif-4-subset.woff2?url';
 import monoLatin from '../assets/fonts/plex-mono-400-subset.woff2?url';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import { tokensCss } from '../design/tokens';
+import { palettes, tokensCss } from '../design/tokens';
 import { ogImageFor } from '../lib/pages';
 import '../styles/fonts.css';
 import '../styles/base.css';
 import '../styles/motion.css';
+import '../styles/print.css';
 
 interface Props {
   title?: string;
@@ -31,7 +32,7 @@ const image = new URL(await ogImageFor(Astro.url.pathname), Astro.site);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en-AU">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -47,8 +48,8 @@ const image = new URL(await ogImageFor(Astro.url.pathname), Astro.site);
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="theme-color" content="#F6F6F3" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#131412" media="(prefers-color-scheme: dark)" />
+    <!-- Set from the active theme by the bootstrap below, so the browser chrome matches. -->
+    <meta name="theme-color" content={palettes.paper.paper} />
     <link rel="sitemap" href="/sitemap.xml" />
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
     <meta name="color-scheme" content="light dark" />
@@ -57,7 +58,10 @@ const image = new URL(await ogImageFor(Astro.url.pathname), Astro.site);
     <link rel="preload" href={serifLatin} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={monoLatin} as="font" type="font/woff2" crossorigin />
     <style is:inline set:html={tokensCss} />
-    <script is:inline>
+    <script
+      is:inline
+      define:vars={{ PAPER_DAY: palettes.paper.paper, PAPER_NIGHT: palettes.night.paper }}
+    >
       // Applies the saved theme before first paint. 'auto' follows the OS.
       // Also marks the page as scripted, so the phone header renders in its final shape.
       document.documentElement.classList.add('js');
@@ -65,16 +69,23 @@ const image = new URL(await ogImageFor(Astro.url.pathname), Astro.site);
         if (window.__themeBoot) return;
         window.__themeBoot = true;
         const media = matchMedia('(prefers-color-scheme: dark)');
+        // Where storage is blocked, the theme switch keeps the choice in memory
+        // (window.__themeChoice) for as long as this document lives.
         const apply = () => {
           let choice;
           try {
             choice = localStorage.getItem('theme');
-          } catch {}
+          } catch {
+            choice = window.__themeChoice;
+          }
           if (choice !== 'paper' && choice !== 'night') choice = 'auto';
           const night = choice === 'night' || (choice === 'auto' && media.matches);
           const root = document.documentElement;
           root.dataset.theme = night ? 'night' : 'paper';
           root.dataset.themeChoice = choice;
+          document
+            .querySelector('meta[name="theme-color"]')
+            ?.setAttribute('content', night ? PAPER_NIGHT : PAPER_DAY);
         };
         apply();
         media.addEventListener('change', apply);

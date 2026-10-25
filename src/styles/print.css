@@ -1,0 +1,163 @@
+/* Print and save-as-PDF for site pages (the CV page has its own rules in cv.astro).
+   Paper colours whatever the screen theme (tokens.ts), no controls, the rail kept
+   on A4, and the address of every outside link printed after it. */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 14mm 16mm;
+  }
+
+  body {
+    font-size: 10.5pt;
+  }
+
+  .wrap {
+    max-width: none;
+    padding: 0;
+  }
+
+  /* Controls and things only a screen needs. */
+  .skip,
+  .ink-progress,
+  .inline-nav,
+  .menu-button,
+  .sheet,
+  .theme-switch,
+  .contact-form,
+  .actions,
+  .cs-nav {
+    display: none !important;
+  }
+
+  .site-header {
+    position: static !important;
+    transform: none !important;
+  }
+
+  /* The rail stays: A4 has room for a narrow label column and the red line. */
+  .row {
+    grid-template-columns: 112px minmax(0, 1fr);
+  }
+
+  .row > .mar {
+    padding: 16px 14px 0 0;
+  }
+
+  .row > .mar::after {
+    display: block;
+  }
+
+  .row > .mar.headed {
+    display: block;
+  }
+
+  .row > .mar br {
+    display: inline;
+  }
+
+  .row > .body {
+    padding: 14px 0 20px 20px;
+  }
+
+  .phone-only {
+    display: none;
+  }
+
+  /* Text sizes for paper. */
+  .prose,
+  .lede {
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+
+  .prose :is(h3) {
+    font-size: 15pt;
+    margin-top: 14pt;
+  }
+
+  .cs-name {
+    font-size: 44pt !important;
+  }
+
+  .cs-line {
+    font-size: 13pt !important;
+  }
+
+  .headline {
+    font-size: 36pt !important;
+  }
+
+  /* Figures keep their wide, left-to-right layout on A4 (on screen they stack below 900 px). */
+  .flow {
+    flex-direction: row !important;
+    gap: 8px !important;
+    font-size: 8.5pt !important;
+  }
+
+  .flow .step {
+    padding: 8px !important;
+  }
+
+  .flow .arrow {
+    transform: none !important;
+  }
+
+  /* Lists keep their desktop columns (A4 is narrower than the 900 px stack point). */
+  .work-row {
+    grid-template-columns: 44px minmax(0, 1fr) 150px 96px !important;
+    gap: 12px !important;
+    padding: 12px 0 !important;
+    margin-inline: 0 !important;
+  }
+
+  .role {
+    grid-template-columns: 76px 100px minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .role p {
+    grid-column: auto !important;
+  }
+
+  .cap {
+    grid-template-columns: 190px minmax(0, 1fr) !important;
+    gap: 14px !important;
+    padding: 10px 0 !important;
+  }
+
+  /* Keep things whole across pages. */
+  figure,
+  .sidenote,
+  .work-row,
+  .role,
+  .cap,
+  .principle,
+  .meta,
+  li {
+    break-inside: avoid;
+  }
+
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+
+  .reveal,
+  .fade {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Where an outside link goes, since paper can't be clicked. */
+  body:not(:has(.cv)) main a[href^='http']::after {
+    content: '\00a0(' attr(href) ')';
+    font: 8.5pt var(--font-mono);
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--ink-2);
+    overflow-wrap: anywhere;
+  }
+}

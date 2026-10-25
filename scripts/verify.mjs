@@ -5,7 +5,7 @@
 // The contact action and Turnstile are mocked in the browser; the real action is
 // exercised on the Vercel preview.
 // Usage: node scripts/verify.mjs [screenshot-dir]
-import { mkdirSync, readFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import { chromium } from 'playwright';
@@ -122,7 +122,9 @@ try {
           const small = await page.$$eval('a', (links) =>
             links
               .filter((a) => {
-                const box = a.getBoundingClientRect();
+                // A link stretched over its row (::after inset 0) is as big as the row.
+                const stretched = getComputedStyle(a, '::after').position === 'absolute';
+                const box = (stretched ? a.offsetParent ?? a : a).getBoundingClientRect();
                 if (!box.width || a.closest('[hidden], .visually-hidden, .skip')) return false;
                 return a.parentElement?.textContent.trim() === a.textContent.trim() && box.height < 44;
               })
@@ -341,10 +343,68 @@ try {
   // Reduced motion: content must be fully visible with no animation running.
   const rm = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
   const page = await rm.newPage();
-  await page.goto(BASE, { waitUntil: 'networkidle' });
-  const running = await page.evaluate(() => document.getAnimations().length);
-  if (running > 0) failures.push(`reduced motion: ${running} animation(s) still running`);
+  for (const route of ['/', '/work/jayne-bandy-ai/', '/cv/', '/no-such-page']) {
+    await page.goto(BASE + route, { waitUntil: 'networkidle' });
+    const running = await page.evaluate(() => document.getAnimations().length);
+    if (running > 0) failures.push(`reduced motion ${route}: ${running} animation(s) still running`);
+  }
   await rm.close();
+
+  // Theme switch with storage blocked (private modes, strict settings): the choice
+  // still applies, survives an in-site page change, and drives the browser chrome.
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    await ctx.addInitScript(() => {
+      Object.defineProperty(window, 'localStorage', {
+        get() {
+          throw new DOMException('blocked', 'SecurityError');
+        },
+      });
+    });
+    const p = await ctx.newPage();
+    const tag = 'theme switch, storage blocked';
+    await p.goto(BASE + '/', { waitUntil: 'networkidle' });
+    await p.locator('.site-footer label:has(input[value="night"])').click();
+    const state = () =>
+      p.evaluate(() => ({
+        theme: document.documentElement.dataset.theme,
+        chrome: document.querySelector('meta[name="theme-color"]')?.getAttribute('content'),
+        checked: document.querySelector('.site-footer input[data-theme-set]:checked')?.value,
+      }));
+    const after = await state();
+    if (after.theme !== 'night' || after.checked !== 'night') failures.push(`${tag}: Night didn't apply (${JSON.stringify(after)})`);
+    if (after.chrome?.toUpperCase() !== '#131412') failures.push(`${tag}: theme-color is ${after.chrome}`);
+    await p.locator('.inline-nav a[href="/cv/"]').click();
+    await p.waitForURL('**/cv/');
+    await p.waitForTimeout(300);
+    if ((await state()).theme !== 'night') failures.push(`${tag}: choice lost on an in-site page change`);
+    await p.addScriptTag({ content: axeSource });
+    const res = await p.evaluate(() => window.axe.run(document.querySelector('.site-footer'), { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa'] } }));
+    for (const v of res.violations) failures.push(`${tag}: axe ${v.id} ${v.help}`);
+    await ctx.close();
+  }
+
+  // Print: case studies fit on three A4 pages, printed from Night (paper colours).
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    await ctx.addInitScript(() => localStorage.setItem('theme', 'night'));
+    const p = await ctx.newPage();
+    await p.goto(BASE + '/', { waitUntil: 'networkidle' });
+    for (const route of ['/work/jayne-bandy-ai/', '/work/sap-automation/', '/work/ziaris/']) {
+      await p.goto(BASE + route, { waitUntil: 'networkidle' });
+      await p.evaluate(() => document.fonts.ready);
+      await p.emulateMedia({ media: 'print' });
+      await p.waitForTimeout(500); // the on-screen theme cross-fade (0.3 s)
+      const ink = await p.evaluate(() => getComputedStyle(document.body).color);
+      if (ink !== 'rgb(20, 20, 19)') failures.push(`print ${route}: text prints as ${ink}, not paper ink`);
+      const pdf = await p.pdf({ format: 'A4', preferCSSPageSize: true });
+      const pages = (pdf.toString('latin1').match(/\/Type\s*\/Page(?!s)/g) ?? []).length;
+      if (pages > 3) failures.push(`print ${route}: ${pages} A4 pages (budget 3)`);
+      if (outDir) writeFileSync(join(outDir, `print-${route.split('/')[2]}.pdf`), pdf);
+      await p.emulateMedia({ media: 'screen' });
+    }
+    await ctx.close();
+  }
 
   await browser.close();
 } catch (err) {

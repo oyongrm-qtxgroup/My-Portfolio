@@ -12,15 +12,18 @@ const { work, index } = Astro.props;
 const w = work.data;
 ---
 
-<a href={`/work/${work.id}/`} class="work-row reveal">
+<!-- The title is the link (a short name in a link list); its hit area covers the row. -->
+<article class="work-row reveal">
   <span class="mono muted">No. {w.no}</span>
   <span class="main">
-    <span class="title name">
-      <span class="ttl" transition:name={`work-${work.id}`}>{w.title}</span><span
-        class="arr"
-        aria-hidden="true">→</span
+    <h3 class="title name">
+      <a href={`/work/${work.id}/`} class="row-link"
+        ><span class="ttl" transition:name={`work-${work.id}`}>{w.title}</span><span
+          class="arr"
+          aria-hidden="true">→</span
+        ></a
       >
-    </span>
+    </h3>
     <span class="line muted">{w.short}</span>
   </span>
   <StackList items={w.stack.slice(0, 4)} class="mono muted stack" />
@@ -28,10 +31,11 @@ const w = work.data;
     <span class="mono muted">{w.period}</span>
     <Stamp status={w.status} index={index} />
   </span>
-</a>
+</article>
 
 <style>
   .work-row {
+    position: relative;
     display: grid;
     grid-template-columns: 56px minmax(0, 1fr) 220px 140px;
     gap: 20px;
@@ -40,12 +44,37 @@ const w = work.data;
     margin-inline: -12px;
     padding: 22px 12px;
     border-bottom: 1px solid var(--rule);
-    text-decoration: none;
     transition: background-color 0.2s;
   }
 
-  .work-row:hover {
-    background: color-mix(in srgb, var(--accent) 6%, transparent);
+  .row-link {
+    text-decoration: none;
+  }
+
+  .row-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .row-link:focus-visible {
+    outline: none;
+  }
+
+  .work-row:has(.row-link:focus-visible) {
+    outline: 2px solid var(--accent);
+  }
+
+  @media (hover: hover) {
+    .work-row:has(.row-link:hover) {
+      background: color-mix(in srgb, var(--accent) 6%, transparent);
+    }
+  }
+
+  /* Touch: a press shows as an ink inset instead of a hover that sticks. */
+  .work-row:has(.row-link:active) {
+    outline: 2px solid var(--ink);
+    outline-offset: -2px;
   }
 
   .main {
@@ -55,6 +84,7 @@ const w = work.data;
   }
 
   .name {
+    margin: 0;
     font-size: 34px;
   }
 
@@ -75,15 +105,29 @@ const w = work.data;
     transition: opacity 0.2s, transform 0.2s;
   }
 
-  .work-row:hover .ttl,
-  .work-row:focus-visible .ttl {
+  .row-link:focus-visible .ttl {
     text-decoration-color: var(--accent);
   }
 
-  .work-row:hover .arr,
-  .work-row:focus-visible .arr {
+  .row-link:focus-visible .arr {
     opacity: 1;
     transform: none;
+  }
+
+  @media (hover: hover) {
+    .row-link:hover .ttl {
+      text-decoration-color: var(--accent);
+    }
+
+    .row-link:hover .arr {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* A project already read: its arrow turns quiet. */
+  .row-link:visited .arr {
+    color: var(--ink-2);
   }
 
   .line {

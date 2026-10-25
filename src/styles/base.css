@@ -63,8 +63,10 @@ a {
   text-underline-offset: 0.2em;
 }
 
-a:hover {
-  text-decoration-thickness: 2px;
+@media (hover: hover) {
+  a:hover {
+    text-decoration-thickness: 2px;
+  }
 }
 
 :focus-visible {
@@ -263,6 +265,7 @@ button {
 /* ── Controls ───────────────────────────────────────────── */
 
 .seg {
+  position: relative;
   min-height: 44px;
   padding: 0 12px;
   background: none;
@@ -278,11 +281,7 @@ button {
   border-left: 0;
 }
 
-.seg[aria-pressed='true'] {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--paper);
-}
+/* The checked state lives in ThemeSwitch.astro (a radio group). */
 
 .target {
   display: inline-flex;

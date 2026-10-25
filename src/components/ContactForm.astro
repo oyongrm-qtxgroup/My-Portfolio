@@ -193,8 +193,7 @@ const siteKey =
 
     const setSending = (sending: boolean) => {
       button.disabled = sending;
-      label.textContent = sending ? 'Sending' : 'Send';
-      label.classList.toggle('dots', sending);
+      label.textContent = sending ? 'Sending…' : 'Send';
       form.setAttribute('aria-busy', String(sending));
     };
 
@@ -240,9 +239,11 @@ const siteKey =
 
       if (data) {
         const sentTo = String(new FormData(form).get('email') ?? '').trim();
+        // "Received · 25 Oct, 03:23", the site's date style.
         const now = new Date();
-        const pad = (n: number) => String(n).padStart(2, '0');
-        received.textContent = `Received · ${pad(now.getDate())}.${pad(now.getMonth() + 1)} · ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+        const day = now.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' });
+        const time = now.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit', hour12: false });
+        received.textContent = `Received · ${day}, ${time}`;
         status.textContent = `Thanks. It’s in my inbox, and I’ll reply to ${sentTo}.`;
         form.reset();
         body.hidden = true;
@@ -329,6 +330,14 @@ const siteKey =
     border-bottom-color: var(--margin);
   }
 
+  /* The field to fix keeps its error colour while focused, plus a focus outline. */
+  [aria-invalid='true']:focus-visible {
+    padding-bottom: 8.5px;
+    border-bottom: 3px solid var(--margin);
+    outline: 2px solid var(--margin);
+    outline-offset: 4px;
+  }
+
   .err {
     font: 13px/1.5 var(--font-mono);
     color: var(--margin);
@@ -359,6 +368,7 @@ const siteKey =
   }
 
   .send {
+    position: relative;
     min-height: 44px;
     min-width: 112px;
     padding: 0 16px;
@@ -371,36 +381,43 @@ const siteKey =
     cursor: pointer;
   }
 
-  .send:hover {
-    border-color: var(--accent);
-    background: var(--accent);
+  /* Buttons invert ink and paper; blue is for text links only (FIX_PLAN D12). */
+  @media (hover: hover) {
+    .send:hover {
+      background: var(--paper);
+      color: var(--ink);
+    }
   }
 
-  .send:disabled {
-    opacity: 0.7;
+  .send:active {
+    outline: 2px solid var(--paper);
+    outline-offset: -2px;
+  }
+
+  /* Sending wins over hover: full ink, "Sending…", and an ink line drawing under
+     the button (the page-change line's motion); just the label under reduced motion. */
+  .send:disabled,
+  .send:disabled:hover {
+    background: var(--ink);
+    color: var(--paper);
     cursor: progress;
   }
 
-  .dots::after {
+  .send:disabled::after {
     content: '';
-    display: inline-block;
-    width: 1.5em;
-    text-align: left;
-    animation: dots 1.2s steps(4, end) infinite;
+    position: absolute;
+    left: -1px;
+    right: -1px;
+    bottom: -6px;
+    height: 2px;
+    background: var(--ink);
+    transform-origin: left;
+    animation: ink 2.4s cubic-bezier(0.2, 0.7, 0, 1) forwards;
   }
 
-  @keyframes dots {
-    0% {
-      content: '';
-    }
-    25% {
-      content: '.';
-    }
-    50% {
-      content: '..';
-    }
-    75% {
-      content: '...';
+  @media (prefers-reduced-motion: reduce) {
+    .send:disabled::after {
+      display: none;
     }
   }
 
@@ -439,9 +456,16 @@ const siteKey =
     cursor: pointer;
   }
 
-  .again:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+  @media (hover: hover) {
+    .again:hover {
+      background: var(--ink);
+      color: var(--paper);
+    }
+  }
+
+  .again:active {
+    outline: 2px solid var(--ink);
+    outline-offset: -2px;
   }
 
   .note {

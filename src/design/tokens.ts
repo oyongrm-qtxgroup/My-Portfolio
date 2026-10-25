@@ -39,10 +39,12 @@ function declarations(mode: Mode): string {
 }
 
 // No-JS visitors get the OS preference; with JS the bootstrap script sets data-theme.
+// Print is always paper, whichever theme is on screen.
 export const tokensCss = [
   `:root,:root[data-theme="paper"]{${declarations('paper')}}`,
   `:root[data-theme="night"]{${declarations('night')}}`,
   `@media (prefers-color-scheme:dark){:root:not([data-theme]){${declarations('night')}}}`,
+  `@media print{:root,:root[data-theme],:root:not([data-theme]){${declarations('paper')}}}`,
 ].join('\n');
 
 function luminance(hex: string): number {

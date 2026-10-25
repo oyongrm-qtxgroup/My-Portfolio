@@ -247,10 +247,27 @@ const person = {
     color: var(--paper);
   }
 
-  .action:hover {
-    border-color: var(--accent);
-    background: var(--accent);
-    color: var(--paper);
+  /* Buttons invert ink and paper; blue is for text links only (FIX_PLAN D12). */
+  @media (hover: hover) {
+    .action:hover {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .action.primary:hover {
+      background: var(--paper);
+      color: var(--ink);
+    }
+  }
+
+  .action:active {
+    outline: 2px solid var(--ink);
+    outline-offset: -2px;
+  }
+
+  .action.primary:active {
+    outline: 2px solid var(--paper);
+    outline-offset: -2px;
   }
 
   .figures {

@@ -13,9 +13,8 @@ if (!result) return Astro.redirect('/#contact');
 
 const profile = await getProfile();
 const fieldErrors = result.error && isInputError(result.error) ? Object.values(result.error.fields).flat() : [];
-const now = new Date();
-const pad = (n: number) => String(n).padStart(2, '0');
-const stamp = `Received · ${pad(now.getUTCDate())}.${pad(now.getUTCMonth() + 1)}`;
+// "Received · 25 Oct", the site's date style (UTC: the server doesn't know the reader's zone).
+const stamp = `Received · ${new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'short', timeZone: 'UTC' })}`;
 ---
 
 <Base title="Contact — Raymundo Oyong" description="Contact form result." noindex>
