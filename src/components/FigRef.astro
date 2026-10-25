@@ -1,0 +1,12 @@
+---
+// A circled numeral before a sub-heading, matching the same numeral in the figure
+// above (DESIGN_PLAN Step 7). It hangs in the gutter on wide screens and sits before
+// the heading on phones; the styles are in Section.astro.
+interface Props {
+  n: number;
+}
+
+const { n } = Astro.props;
+---
+
+<span class="fig-ref" aria-hidden="true"><span class="n">{n}</span></span>

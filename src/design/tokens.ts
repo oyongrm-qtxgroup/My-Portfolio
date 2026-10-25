@@ -40,12 +40,48 @@ function declarations(mode: Mode): string {
 
 // No-JS visitors get the OS preference; with JS the bootstrap script sets data-theme.
 // Print is always paper, whichever theme is on screen.
-export const tokensCss = [
+const colourCss = [
   `:root,:root[data-theme="paper"]{${declarations('paper')}}`,
   `:root[data-theme="night"]{${declarations('night')}}`,
   `@media (prefers-color-scheme:dark){:root:not([data-theme]){${declarations('night')}}}`,
   `@media print{:root,:root[data-theme],:root:not([data-theme]){${declarations('paper')}}}`,
 ].join('\n');
+
+// ── Scales (DESIGN_PLAN Step 7: new components use these from day one; the old
+// literals are snapped to them in Step 18). Rendered as custom properties below.
+
+/** Spacing steps in px: --space-1 … --space-10. */
+export const space = [4, 8, 12, 16, 20, 24, 32, 40, 56, 72] as const;
+
+/** Rule (line) widths: hairline dividers, figure strokes, ruled rows, emphasis. */
+export const rules = { hair: '1px', fine: '1.5px', firm: '2px', heavy: '3px' } as const;
+
+/** Type sizes: mono labels, body text, titles; display sizes are fluid. */
+export const type = {
+  'mono-s': '12px',
+  mono: '13px',
+  'body-s': '17px',
+  body: '18px',
+  'body-l': '20px',
+  'title-s': '24px',
+  title: '34px',
+  'display-s': 'clamp(36px, 5vw, 56px)',
+  display: 'clamp(44px, 7.4vw, 92px)',
+  'display-l': 'clamp(56px, 10vw, 132px)',
+} as const;
+
+/** Motion: durations and the one easing curve. */
+export const motion = { fast: '0.2s', base: '0.45s', slow: '0.7s', ease: 'cubic-bezier(0.2, 0.7, 0, 1)' } as const;
+
+export const scalesCss = `:root{${[
+  ...space.map((v, i) => `--space-${i + 1}:${v}px`),
+  ...Object.entries(rules).map(([k, v]) => `--rule-${k}:${v}`),
+  ...Object.entries(type).map(([k, v]) => `--type-${k}:${v}`),
+  ...Object.entries(motion).map(([k, v]) => `--motion-${k}:${v}`),
+].join(';')}}`;
+
+/** Everything Base.astro renders into the page head: colours, then the scales. */
+export const tokensCss = `${colourCss}\n${scalesCss}`;
 
 function luminance(hex: string): number {
   const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);

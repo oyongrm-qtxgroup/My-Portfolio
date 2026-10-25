@@ -2,7 +2,8 @@
 import Base from '../layouts/Base.astro';
 import MarginRow from '../components/MarginRow.astro';
 import Stamp from '../components/Stamp.astro';
-import { palettes, contrast, wcagLevel, type Token } from '../design/tokens';
+import Figure from '../components/Figure.astro';
+import { palettes, contrast, wcagLevel, motion, rules, space, type, type Token } from '../design/tokens';
 
 // Reference page for the design system (noindex). Mirrors docs/design/System.dc.html
 // and renders from the live tokens, so it also shows Night mode correctly.
@@ -12,7 +13,7 @@ const swatches: { token: Token; name: string; use: string }[] = [
   { token: 'ink2', name: 'Ink 2', use: 'Dates, labels, control borders' },
   { token: 'rule', name: 'Rule', use: 'Decorative row dividers only' },
   { token: 'accent', name: 'Ballpoint', use: 'Links only' },
-  { token: 'margin', name: 'Margin red', use: 'Margin line, errors, “In progress”' },
+  { token: 'margin', name: 'Margin red', use: 'Margin line, errors, “In progress”, failure paths in figures' },
 ];
 
 const rows = swatches
@@ -165,9 +166,63 @@ const cssVar: Record<Token, string> = {
       </table>
     </div>
   </MarginRow>
+
+  <Figure
+    label="07 Figures"
+    caption="The figure grammar: a solid box is ordinary code, a dashed box is the model, a stamp box is a person who approves, and the dotted red path is what happens when a step fails. Circled numbers point to the paragraph that explains that part."
+    spec={{
+      nodes: [
+        { id: 'in', title: 'Input', note: 'what arrives', at: [0, 0] },
+        { id: 'model', title: 'Model', note: 'decides, within a script', kind: 'model', n: 1, at: [1, 0] },
+        { id: 'code', title: 'Code', note: 'checks and writes', at: [2, 0] },
+        { id: 'person', title: 'Person approves', note: 'nothing goes out without it', kind: 'person', at: [3, 0] },
+        { id: 'left', title: 'Left for a person', note: 'logged, not guessed', at: [2, 1] },
+      ],
+      edges: [
+        { from: 'in', to: 'model' },
+        { from: 'model', to: 'code', kind: 'two' },
+        { from: 'code', to: 'person' },
+        { from: 'code', to: 'left', kind: 'fail', label: 'when a step fails' },
+      ],
+    }}
+  />
+
+  <MarginRow index={8} ruled>
+    <Fragment slot="label">08 <br />Scales</Fragment>
+    <dl class="scales">
+      <div>
+        <dt class="label">Space</dt>
+        <dd class="mono">{space.map((v, i) => `--space-${i + 1} ${v}`).join(' · ')}</dd>
+      </div>
+      <div>
+        <dt class="label">Rules</dt>
+        <dd class="mono">{Object.entries(rules).map(([k, v]) => `--rule-${k} ${v}`).join(' · ')}</dd>
+      </div>
+      <div>
+        <dt class="label">Type</dt>
+        <dd class="mono">{Object.entries(type).map(([k, v]) => `--type-${k} ${v}`).join(' · ')}</dd>
+      </div>
+      <div>
+        <dt class="label">Motion</dt>
+        <dd class="mono">{Object.entries(motion).map(([k, v]) => `--motion-${k} ${v}`).join(' · ')}</dd>
+      </div>
+    </dl>
+  </MarginRow>
 </Base>
 
 <style>
+  .scales {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin: 0;
+  }
+
+  .scales dd {
+    margin: var(--space-1) 0 0;
+    line-height: 1.6;
+  }
+
   .page-title {
     font-size: clamp(56px, 8vw, 112px);
     line-height: 0.9;

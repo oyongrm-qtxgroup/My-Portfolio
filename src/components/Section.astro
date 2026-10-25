@@ -54,8 +54,46 @@ const [, num = label, name = ''] = label.match(/^(\S+ \S+) (.*)$/) ?? [];
   }
 
   /* The first sub-heading sits level with the label, also after a hidden h2. */
-  .prose :global(:is(h3:first-child, .visually-hidden + h3)) {
+  .prose :global(:is(h3:first-child, .visually-hidden + h3, .visually-hidden + .fig-ref + h3)) {
     margin-top: 0;
+  }
+
+  /* Circled numerals (FigRef) tying a sub-heading to the figure above. */
+  .prose {
+    position: relative;
+  }
+
+  .prose :global(.fig-ref) {
+    display: block;
+    position: relative;
+    height: 0;
+  }
+
+  .prose :global(.fig-ref .n) {
+    position: absolute;
+    top: 35px;
+    left: -32px;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border: var(--rule-fine) solid var(--ink);
+    border-radius: 50%;
+    font: 500 12px/1 var(--font-mono);
+  }
+
+  .prose :global(.visually-hidden + .fig-ref .n) {
+    top: 3px;
+  }
+
+  @media (max-width: 900px) {
+    .prose :global(.fig-ref .n) {
+      left: 0;
+    }
+
+    .prose :global(.fig-ref + h3) {
+      padding-left: 34px;
+    }
   }
 
   .prose :global(p + p) {

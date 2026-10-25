@@ -88,6 +88,15 @@
     font-size: 36pt !important;
   }
 
+  /* The drawn figures print in their wide placement. */
+  .fig-wide {
+    display: block !important;
+  }
+
+  .fig-narrow {
+    display: none !important;
+  }
+
   /* Figures keep their wide, left-to-right layout on A4 (on screen they stack below 900 px). */
   .flow {
     flex-direction: row !important;

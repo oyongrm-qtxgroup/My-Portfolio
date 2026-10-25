@@ -12,7 +12,8 @@ status: live
 skills: [voice-ai, integrations, reliability, leadership]
 ---
 
-import Flow from '../../components/Flow.astro';
+import Figure from '../../components/Figure.astro';
+import FigRef from '../../components/FigRef.astro';
 import Section from '../../components/Section.astro';
 
 <Section label="The challenge" ruled>
@@ -21,37 +22,45 @@ A dental receptionist can’t answer the phone while checking a patient in, and 
 
 </Section>
 
-<Flow
+<Figure
   label="Fig. 1 One call"
-  caption="The model decides what to say and which tool to call; the tools are ordinary code that reads and writes the practice system."
-  steps={[
-    { title: 'Caller', note: 'rings the practice’s own number (Twilio)' },
-    { title: 'Voice layer', note: 'ElevenLabs: speech to text, turn-taking, the practice’s voice' },
-    { title: 'Agent', note: 'GPT-5.5 following the reviewed script', key: true, link: 'two' },
-    { title: 'Tools', note: 'find patient · find free slots · book, move or cancel · request callback', link: 'two' },
-    { title: 'Practice system', note: 'CareStack · Core Practice · Dentally' },
-  ]}
-/>
-
-<Flow
-  label="Fig. 2 When a booking fails"
-  caption="If the practice system is down or the slot is taken mid-call, the caller hears it plainly and the practice calls back."
-  steps={[
-    { title: 'Booking fails', note: 'system down or slot just taken' },
-    { title: 'Agent', note: 'apologises and says the team will call back', key: true },
-    { title: 'Callback request', note: 'logged for the practice team' },
-  ]}
+  caption="The model decides what to say and which tool to call; the tools are ordinary code that reads and writes the practice system. If the practice system is down or the slot is taken mid-call, the caller hears it plainly and the practice calls back."
+  spec={{
+    nodes: [
+      { id: 'caller', title: 'Caller', note: 'rings the practice’s own number (Twilio)', at: [0, 0] },
+      { id: 'voice', title: 'Voice layer', note: 'ElevenLabs: speech to text, turn-taking, the practice’s voice', n: 1, at: [1, 0] },
+      { id: 'agent', title: 'Agent', note: 'GPT-5.5 following the reviewed script', kind: 'model', n: 3, at: [2, 0] },
+      { id: 'tools', title: 'Tools', note: 'find patient · find free slots · book, move or cancel · request callback', n: 2, at: [3, 0] },
+      { id: 'practice', title: 'Practice system', note: 'CareStack · Core Practice · Dentally', at: [4, 0] },
+      { id: 'sorry', title: 'Agent', note: 'apologises and says the team will call back', kind: 'model', at: [2, 1] },
+      { id: 'callback', title: 'Callback request', note: 'logged for the practice team', at: [1, 1] },
+    ],
+    edges: [
+      { from: 'caller', to: 'voice' },
+      { from: 'voice', to: 'agent' },
+      { from: 'agent', to: 'tools', kind: 'two' },
+      { from: 'tools', to: 'practice', kind: 'two' },
+      { from: 'tools', to: 'sorry', kind: 'fail', label: 'system down or slot just taken' },
+      { from: 'sorry', to: 'callback', kind: 'fail' },
+    ],
+  }}
 />
 
 <Section label="The approach" ruled>
+
+<FigRef n={1} />
 
 ### Sound like the practice’s own receptionist
 
 The agent follows a licensed library of dental-practice scripts. Each practice gets one voice that stays the same from call to call, turn-taking that stops the agent talking over people, and the real date and time on every call, so “next Tuesday” means the right day.
 
+<FigRef n={2} />
+
 ### One script, three booking systems
 
 CareStack, Core Practice and Dentally sit behind a single receptionist script and the same four tools. The number a caller rings from finds their record, and the agent confirms their name before it reads out, moves or cancels anything, which also covers patients on file under a different spelling.
+
+<FigRef n={3} />
 
 ### How every change is evaluated
 

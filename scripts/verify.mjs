@@ -107,6 +107,24 @@ try {
         });
         for (const l of lists) failures.push(`${tag}: ${l}`);
 
+        // Figures: margin red only on failure paths (DS7), never on a box or plain edge.
+        const red = await page.evaluate(() => {
+          const margin = getComputedStyle(document.documentElement).getPropertyValue('--margin').trim().toLowerCase();
+          const toHex = (c) => {
+            const m = c.match(/\d+/g);
+            return m ? '#' + m.slice(0, 3).map((n) => Number(n).toString(16).padStart(2, '0')).join('') : c;
+          };
+          const bad = [];
+          for (const el of document.querySelectorAll('[data-figure] *')) {
+            const cs = getComputedStyle(el);
+            if (cs.display === 'none') continue;
+            const isRed = [cs.stroke, cs.fill].some((c) => toHex(c) === margin);
+            if (isRed && !el.closest('.fail')) bad.push(el.getAttribute('class') ?? el.tagName);
+          }
+          return bad;
+        });
+        if (red.length) failures.push(`${tag}: margin red outside a failure path in a figure (${red.slice(0, 3).join(', ')})`);
+
         // Typographic quotes in what people read (code samples aside).
         if (width === 1440) {
           const straight = await page.evaluate(() => {
