@@ -12,8 +12,7 @@ export default defineConfig({
   // Inline all CSS: it is small, and separate files blocked the first paint.
   build: { inlineStylesheets: 'always' },
   // The old site's blog is gone; its links go home (posts: src/pages/blog/[...slug].ts).
-  // Care-plan drafting is no longer a project page (docs/FIX_PLAN.md D5); old links go home.
-  redirects: { '/blog': '/', '/work/care-plan-drafting': '/' },
+  redirects: { '/blog': '/' },
   // Contact form (src/actions). Pages stay static; only the action runs on demand.
   // Secrets are optional at build time: the action refuses to run in production
   // without them, and falls back to Cloudflare's test keys and a dry run elsewhere.
