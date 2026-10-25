@@ -43,9 +43,24 @@
   animation-delay: calc(var(--i, 0) * 110ms);
 }
 
+/* The full-height rule on wide screens follows the rows down, once. */
+@media (min-width: 1100px) {
+  .wrap::before {
+    transform-origin: top;
+    animation: draw-down 1.2s var(--ease-out) 0.3s both;
+  }
+}
+
 /* Headline lines: one block each, shown from the first paint (no set-in animation). */
 .ln {
   display: inline-block;
+}
+
+/* Narrow phones: the lines run as one balanced block instead of a staircase. */
+@media (width <= 480px) {
+  .ln {
+    display: inline;
+  }
 }
 
 .fade {

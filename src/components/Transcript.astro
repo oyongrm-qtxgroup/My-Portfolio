@@ -1,0 +1,135 @@
+---
+// An illustrative call set as a logbook page (DESIGN_PLAN DS9, Step 8): turns in
+// Source Serif with mono speaker labels, tool calls as mono lines, and margin notes
+// pointing at the turn beside them (after it on phones). Invented throughout, and
+// headed as such; never drawn from recordings or test calls.
+interface Turn {
+  who?: 'caller' | 'agent';
+  /** What was said; or, with `tool`, the call and its result. */
+  text: string;
+  tool?: boolean;
+  note?: string;
+}
+
+interface Props {
+  label: string;
+  heading: string;
+  turns: Turn[];
+}
+
+const { label, heading, turns } = Astro.props;
+const [, num = label, name = ''] = label.match(/^(\S+ \S+) (.*)$/) ?? [];
+const SPEAKER = { caller: 'Caller', agent: 'Agent' };
+---
+
+<section class="row transcript-row">
+  <div class="mar label">{num} <br />{name}</div>
+  <div class="body">
+    <h2 class="label transcript-heading">{heading}</h2>
+    <ol class="transcript">
+      {
+        turns.map((t) => (
+          <li class:list={['turn', { tool: t.tool }]}>
+            {t.tool ? (
+              <p class="mono tool-line">
+                <span class="tool-mark" aria-hidden="true">
+                  ⇄
+                </span>
+                <span class="visually-hidden">Tool call: </span>
+                {t.text}
+              </p>
+            ) : (
+              <p class="said">
+                <span class="mono speaker">{SPEAKER[t.who ?? 'agent']}</span> <span class="words">{t.text}</span>
+              </p>
+            )}
+            {t.note && <p class="sidenote turn-note">{t.note}</p>}
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .transcript-heading {
+    margin: 0 0 var(--space-4);
+  }
+
+  .transcript {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1.5px solid var(--ink);
+  }
+
+  .turn {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 240px;
+    gap: var(--space-2) var(--space-8);
+    align-items: start;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* A hanging indent: speaker in its own column, the words aligned after it. */
+  .said {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: var(--space-3);
+    align-items: baseline;
+    max-width: 42em;
+    font-size: var(--type-body-m);
+    line-height: 1.5;
+  }
+
+  .speaker {
+    font-size: var(--type-mono-s);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+
+  .turn.tool {
+    padding: var(--space-2) 0;
+  }
+
+  .tool-line {
+    padding-left: calc(64px + var(--space-3));
+    font-size: var(--type-mono);
+    color: var(--ink-2);
+  }
+
+  .tool-mark {
+    margin-right: var(--space-2);
+  }
+
+  .turn-note {
+    margin: var(--space-1) 0 0;
+  }
+
+  @media (max-width: 1099px) {
+    .turn {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .turn-note {
+      max-width: 28em;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .said {
+      display: block;
+    }
+
+    .tool-line {
+      padding-left: 0;
+    }
+
+    .speaker {
+      display: block;
+      margin-bottom: 2px;
+    }
+  }
+</style>

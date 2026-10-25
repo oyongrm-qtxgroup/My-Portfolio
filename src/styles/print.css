@@ -1,0 +1,289 @@
+/* Print and save-as-PDF for site pages (the CV page has its own rules in cv.astro).
+   Paper colours whatever the screen theme (tokens.ts), no controls, the rail kept
+   on A4, and the address of every outside link printed after it. */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 14mm 16mm;
+  }
+
+  body {
+    font-size: 10.5pt;
+  }
+
+  .wrap::before {
+    display: none !important;
+  }
+
+  .wrap {
+    max-width: none;
+    padding: 0;
+  }
+
+  /* Controls and things only a screen needs. */
+  .skip,
+  .ink-progress,
+  .inline-nav,
+  .menu-button,
+  .sheet,
+  .theme-switch,
+  .contact-form,
+  .site-footer,
+  .toc,
+  .actions,
+  .cs-nav {
+    display: none !important;
+  }
+
+  .site-header {
+    position: static !important;
+    transform: none !important;
+  }
+
+  /* The rail stays: A4 has room for a narrow label column and the red line. */
+  .row {
+    grid-template-columns: 112px minmax(0, 1fr);
+  }
+
+  .row > .mar {
+    padding: 12px 14px 0 0;
+  }
+
+  .row > .mar::after {
+    display: block;
+  }
+
+  .row > .mar.headed {
+    display: block;
+  }
+
+  .row > .mar br {
+    display: inline;
+  }
+
+  .row > .body {
+    padding: 10px 0 12px 20px;
+  }
+
+  .phone-only {
+    display: none;
+  }
+
+  /* Text sizes for paper. */
+  .prose,
+  .lede {
+    font-size: 10.5pt;
+    line-height: 1.45;
+  }
+
+  /* Figures: the caption carries the meaning on paper; the legend is for screens. */
+  .fig .legend {
+    display: none !important;
+  }
+
+  .fig .caption {
+    margin-top: 6pt !important;
+    font-size: 8pt !important;
+  }
+
+  .prose :is(h3) {
+    font-size: 15pt;
+    margin-top: 12pt;
+  }
+
+  .cs-name {
+    font-size: 44pt !important;
+  }
+
+  .cs-line {
+    font-size: 13pt !important;
+  }
+
+  .headline {
+    font-size: 36pt !important;
+  }
+
+  /* The drawn figures print in their wide placement. */
+  .fig-wide {
+    display: block !important;
+  }
+
+  .fig-narrow {
+    display: none !important;
+  }
+
+  /* Lists keep their desktop columns (A4 is narrower than the 900 px stack point). */
+  .work-row {
+    grid-template-columns: 44px minmax(0, 1fr) 150px 96px !important;
+    gap: 12px !important;
+    padding: 12px 0 !important;
+    margin-inline: 0 !important;
+  }
+
+  .role {
+    grid-template-columns: 76px 100px minmax(0, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .role p {
+    grid-column: auto !important;
+  }
+
+  /* Case-study header: the meta stays one row of four. */
+  .cs-head {
+    padding: 8pt 0 4pt !important;
+  }
+
+  .meta {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    margin-top: 16pt !important;
+  }
+
+  .meta > div {
+    padding: 8pt 10pt 2pt !important;
+    border-bottom: 0 !important;
+    border-right: 1px solid var(--rule) !important;
+  }
+
+  .meta > div:first-child {
+    padding-left: 0 !important;
+  }
+
+  .meta > div:last-child,
+  .meta > .built-with {
+    grid-column: auto !important;
+    border-right: 0 !important;
+  }
+
+  .meta dd {
+    font-size: 10pt !important;
+  }
+
+  /* The illustrative call: compact, notes beside their turn. */
+  .turn {
+    grid-template-columns: minmax(0, 1fr) 150px !important;
+    gap: 2pt 14pt !important;
+    padding: 3pt 0 !important;
+  }
+
+  .said {
+    display: grid !important;
+    grid-template-columns: 52px minmax(0, 1fr) !important;
+    font-size: 10pt !important;
+    line-height: 1.4 !important;
+  }
+
+  .speaker {
+    display: inline !important;
+    font-size: 7.5pt !important;
+  }
+
+  .tool-line {
+    padding-left: 64px !important;
+    font-size: 8pt !important;
+  }
+
+  .turn-note {
+    padding-top: 2pt !important;
+    font-size: 8pt !important;
+  }
+
+  /* Margin notes sit in a narrow right margin on paper, level with their text. */
+  .cs-body .prose {
+    max-width: calc(100% - 130px) !important;
+  }
+
+  .noted-notes {
+    position: absolute !important;
+    top: 2pt !important;
+    left: calc(100% + 14px) !important;
+    width: 116px !important;
+    margin: 0 !important;
+    gap: 4pt !important;
+  }
+
+  .noted-notes .sidenote {
+    padding-top: 2pt;
+    font-size: 7.5pt;
+    line-height: 1.35;
+  }
+
+  /* The end of a case study: skills and the closing block, sized for paper. */
+  .tags {
+    gap: 2pt 14pt !important;
+  }
+
+  .tag {
+    min-height: 0 !important;
+    font-size: 8pt !important;
+  }
+
+  .closing {
+    padding: 0 !important;
+  }
+
+  .closing-ask {
+    font-size: 15pt !important;
+  }
+
+  .closing-links {
+    margin-top: 2pt !important;
+    font-size: 10pt !important;
+  }
+
+  .closing-links a {
+    min-height: 0 !important;
+  }
+
+  .contact-set {
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    align-items: baseline !important;
+    gap: 2pt 14pt !important;
+  }
+
+  .contact-set .cs-email {
+    font-size: 11pt !important;
+  }
+
+  .contact-set .cs-links {
+    gap: 2pt 14pt !important;
+    font-size: 8pt;
+  }
+
+  /* Keep things whole across pages. */
+  figure,
+  .sidenote,
+  .work-row,
+  .role,
+  .area,
+  .principle,
+  .meta,
+  li {
+    break-inside: avoid;
+  }
+
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+
+  .reveal,
+  .fade {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Where an outside link goes, since paper can't be clicked. */
+  body:not(:has(.cv)) main a[href^='http']::after {
+    content: '\00a0(' attr(href) ')';
+    font: 8.5pt var(--font-mono);
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--ink-2);
+    overflow-wrap: anywhere;
+  }
+}

@@ -14,7 +14,7 @@ const [, num = label, name = ''] = label.match(/^(\S+ \S+) (.*)$/) ?? [];
 ---
 
 <section class:list={['row', 'cs', { ruled }]}>
-  <div class="mar label">{num}<br />{name}</div>
+  <div class:list={['mar', 'label', { headed: !!title }]}>{num} <br />{name}</div>
   <div class="body cs-body">
     <div class="prose">
       {title ? <h2 class="title cs-title">{title}</h2> : <h2 class="visually-hidden">{name || num}</h2>}
@@ -36,50 +36,87 @@ const [, num = label, name = ''] = label.match(/^(\S+ \S+) (.*)$/) ?? [];
   .cs-body {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 240px;
-    gap: 40px;
+    gap: var(--space-8);
   }
 
   .cs-title {
-    font-size: 34px;
-    margin-bottom: 16px;
+    font-size: var(--type-title);
+    margin-bottom: var(--space-4);
   }
 
   .prose :global(h3) {
+    /* "On this page" links land below the sticky header. */
+    scroll-margin-top: 80px;
     font-family: var(--font-display);
     font-stretch: 78%;
     font-weight: 700;
-    font-size: 26px;
+    font-size: var(--type-title-m);
     line-height: 1.1;
-    margin: 32px 0 8px;
+    margin: var(--space-7) 0 var(--space-2);
   }
 
-  .prose :global(h3:first-child) {
+  /* The first sub-heading sits level with the label, also after a hidden h2. */
+  .prose :global(:is(h3:first-child, .visually-hidden + h3, .visually-hidden + .fig-ref + h3)) {
     margin-top: 0;
   }
 
+  /* Circled numerals (FigRef) tying a sub-heading to the figure above. */
+  .prose :global(.fig-ref) {
+    display: block;
+    position: relative;
+    height: 0;
+  }
+
+  .prose :global(.fig-ref .n) {
+    position: absolute;
+    top: 35px;
+    left: -32px;
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border: var(--rule-fine) solid var(--ink);
+    border-radius: 50%;
+    font: 500 var(--type-mono-s)/1 var(--font-mono);
+  }
+
+  .prose :global(.visually-hidden + .fig-ref .n) {
+    top: 3px;
+  }
+
+  @media (max-width: 900px) {
+    .prose :global(.fig-ref .n) {
+      left: 0;
+    }
+
+    .prose :global(.fig-ref + h3) {
+      padding-left: var(--space-7);
+    }
+  }
+
   .prose :global(p + p) {
-    margin-top: 16px;
+    margin-top: var(--space-4);
   }
 
   .prose :global(ul) {
-    margin: 12px 0 0;
-    padding-left: 20px;
+    margin: var(--space-3) 0 0;
+    padding-left: var(--space-5);
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-2);
   }
 
   .cs-notes {
     display: flex;
     flex-direction: column;
     gap: 28px;
-    padding-top: 6px;
+    padding-top: var(--space-2);
   }
 
-  @media (max-width: 1040px) {
+  @media (max-width: 1099px) {
     .cs-body {
       grid-template-columns: minmax(0, 1fr);
-      gap: 24px;
+      gap: var(--space-6);
     }
   }
 </style>

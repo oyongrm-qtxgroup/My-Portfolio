@@ -5,9 +5,12 @@
 // it becomes the A4 sheet from docs/design/CVPage1/2.
 import Base from '../layouts/Base.astro';
 import MarginRow from '../components/MarginRow.astro';
+import Portrait from '../components/Portrait.astro';
+import Timeline from '../components/Timeline.astro';
+import { getRepos, pushedOn } from '../lib/github';
 import { getProfile, getRoles, type Role } from '../lib/content';
 
-const [profile, roles] = await Promise.all([getProfile(), getRoles()]);
+const [profile, roles, repos] = await Promise.all([getProfile(), getRoles(), getRepos()]);
 const cv = profile.cv;
 
 // Consecutive roles at the same organisation share one heading (as on the design).
@@ -32,8 +35,10 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
 >
   <article class="cv">
     <MarginRow index={0}>
-      <Fragment slot="label">Curriculum<br />vitae</Fragment>
+      <Fragment slot="label">Curriculum <br />vitae</Fragment>
       <header class="cv-head">
+        <!-- On screen only: the PDF stays photo-free (REDESIGN_PLAN §7; cv:pdf checks it). -->
+        <Portrait crop="face" width={120} class="cv-portrait" />
         <h1 class="display cv-name">{cv.name}</h1>
         <p class="title cv-title">{cv.title}</p>
         <p class="cv-contact">
@@ -48,6 +53,8 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
             Download the PDF (A4, 2 pages) →
           </a>
         </p>
+        <!-- On screen only, like the portrait: the PDF keeps its Harvard layout. -->
+        <Timeline roles={roles} now={profile.updated} class="cv-timeline" />
       </header>
     </MarginRow>
 
@@ -58,7 +65,7 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
     </MarginRow>
 
     <MarginRow index={2} ruled>
-      <Fragment slot="label">Professional<br />experience</Fragment>
+      <Fragment slot="label">Professional <br />experience</Fragment>
       <h2 class="cv-h2">Professional Experience</h2>
       {
         orgs.map((o) => (
@@ -104,10 +111,23 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
           </section>
         ))
       }
+      {
+        repos.length > 0 && (
+          <p class="mono muted cv-code">
+            Code on GitHub:{' '}
+            {repos.map((r, i) => (
+              <>
+                {i > 0 && ' · '}
+                <a href={r.url}>{r.name}</a> ({[r.language, pushedOn(r.pushed).toLowerCase()].filter(Boolean).join(', ')})
+              </>
+            ))}
+          </p>
+        )
+      }
     </MarginRow>
 
     <MarginRow index={3} ruled>
-      <Fragment slot="label">Technical<br />skills</Fragment>
+      <Fragment slot="label">Technical <br />skills</Fragment>
       <h2 class="cv-h2">Technical Skills</h2>
       <dl class="cv-skills">
         {
@@ -164,28 +184,64 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
         Skills, project pages and working principles: <a href={siteUrl}>{cv.site}</a>
       </p>
     </MarginRow>
+    <!-- Wide screens: the download stays in reach in the margin while reading (M-06). -->
+    <p class="cv-sticky">
+      <a href="/raymundo-oyong-cv.pdf" class="mono accent target" download>Download the PDF ↓</a>
+    </p>
   </article>
 </Base>
 
 <style>
+  /* Screen only: the PDF lists experience, not repositories. */
+  .cv-code {
+    padding: var(--space-1) 0 var(--space-5);
+    line-height: 1.6;
+  }
+
+  .cv-code a {
+    color: var(--ink);
+    text-underline-offset: 3px;
+  }
+
   .cv-head {
-    padding: 32px 0 20px;
+    position: relative;
+    padding: var(--space-7) 0 var(--space-5);
+  }
+
+  .cv-head :global(.cv-portrait) {
+    width: 88px;
+    margin-bottom: var(--space-4);
+  }
+
+  @media (min-width: 901px) {
+    .cv-head :global(.cv-portrait) {
+      position: absolute;
+      top: 32px;
+      right: 0;
+      width: 120px;
+      margin: 0;
+    }
+
+    .cv-name,
+    .cv-title {
+      padding-right: 144px;
+    }
   }
 
   .cv-name {
-    font-size: clamp(44px, 7vw, 76px);
+    font-size: var(--type-display-m);
   }
 
   .cv-title {
-    margin-top: 8px;
-    font-size: clamp(20px, 2.4vw, 26px);
+    margin-top: var(--space-2);
+    font-size: var(--type-lead-fluid);
     font-stretch: 85%;
     font-weight: 500;
   }
 
   .cv-contact {
-    margin-top: 14px;
-    font: 14px/1.6 var(--font-mono);
+    margin-top: var(--space-4);
+    font: var(--type-mono)/1.6 var(--font-mono);
     color: var(--ink-2);
   }
 
@@ -197,17 +253,52 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
   }
 
   .cv-availability {
-    margin-top: 10px;
+    margin-top: var(--space-3);
     max-width: 44em;
-    font-size: 16px;
+    font-size: var(--type-ui);
     line-height: 1.5;
   }
 
   .cv-pdf {
-    margin-top: 18px;
-    font-size: 13px;
+    margin-top: var(--space-5);
+    font-size: var(--type-mono);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+  }
+
+  .cv-head :global(.cv-timeline) {
+    margin-top: var(--space-6);
+    border-top: var(--rule-hair) solid var(--rule);
+  }
+
+  /* Pinned to the bottom of the margin column for as long as the CV is on screen;
+     a zero-height box, so it adds no space at the end of the page. */
+  .cv-sticky {
+    display: none;
+  }
+
+  @media (min-width: 901px) {
+    .cv-sticky {
+      display: block;
+      position: sticky;
+      bottom: var(--space-6);
+      height: 0;
+      margin: 0;
+    }
+
+    .cv-sticky a {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: calc(var(--margin-col) - var(--space-6));
+      padding: var(--space-2) 0;
+      background: var(--paper);
+      border-top: var(--rule-firm) solid var(--ink);
+      font-size: var(--type-mono-s);
+      line-height: 1.4;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
   }
 
   /* The closing pointer to the site is for paper only. */
@@ -226,14 +317,14 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
   }
 
   .cv-summary {
-    padding: 24px 0;
-    font-size: 19px;
+    padding: var(--space-6) 0;
+    font-size: var(--type-body-m);
     line-height: 1.55;
     max-width: 40em;
   }
 
   .cv-org-block {
-    padding: 24px 0;
+    padding: var(--space-6) 0;
     border-bottom: 1px solid var(--rule);
   }
 
@@ -252,25 +343,25 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
     font-family: var(--font-display);
     font-stretch: 78%;
     font-weight: 700;
-    font-size: 26px;
+    font-size: var(--type-title-m);
     line-height: 1.1;
   }
 
   .cv-meta {
-    font: 14px/1.5 var(--font-body);
+    font: var(--type-small)/1.5 var(--font-body);
     color: var(--ink-2);
   }
 
   .cv-role {
-    margin-top: 14px;
+    margin-top: var(--space-4);
   }
 
   .cv-role-title {
-    font: 600 18px/1.4 var(--font-body);
+    font: 600 var(--type-body)/1.4 var(--font-body);
   }
 
   .cv-project + .cv-project {
-    margin-top: 12px;
+    margin-top: var(--space-3);
   }
 
   .cv-lead {
@@ -282,23 +373,23 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
   }
 
   .cv-ul {
-    margin: 6px 0 0;
-    padding-left: 20px;
+    margin: var(--space-2) 0 0;
+    padding-left: var(--space-5);
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-2);
     max-width: 46em;
-    font-size: 17px;
+    font-size: var(--type-body-s);
     line-height: 1.5;
   }
 
   .cv-skills {
     margin: 0;
-    padding: 24px 0;
+    padding: var(--space-6) 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    font-size: 17px;
+    gap: var(--space-2);
+    font-size: var(--type-body-s);
     line-height: 1.5;
   }
 
@@ -309,15 +400,15 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
 
   .cv-skills dd {
     display: inline;
-    margin: 0 0 0 4px;
+    margin: 0 0 0 var(--space-1);
   }
 
   .cv-cert {
-    padding: 24px 0;
+    padding: var(--space-6) 0;
   }
 
   .cv-cert-name {
-    font: 17px/1.5 var(--font-body);
+    font: var(--type-body-s)/1.5 var(--font-body);
   }
 
   /* ── Print: the A4 sheet (docs/design/CVPage1/2) ── */
@@ -367,6 +458,18 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
 
     .cv-head {
       padding: 0 0 8pt;
+    }
+
+    .cv-head :global(.cv-portrait),
+    .cv-head :global(.cv-timeline),
+    .cv-sticky,
+    .cv-code {
+      display: none !important;
+    }
+
+    .cv-name,
+    .cv-title {
+      padding-right: 0;
     }
 
     .cv-pdf {

@@ -3,7 +3,13 @@ import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import MarginRow from '../../components/MarginRow.astro';
 import Stamp from '../../components/Stamp.astro';
-import { getProfile, getSkills, getWork, type Work } from '../../lib/content';
+import StackList from '../../components/StackList.astro';
+import Quote from '../../components/Quote.astro';
+import Glyph from '../../components/Glyph.astro';
+import ContactSet from '../../components/ContactSet.astro';
+import { articleGraph } from '../../lib/schema';
+import { ogImageFor } from '../../lib/pages';
+import { getEndorsements, getProfile, getSkills, getWork, type Work } from '../../lib/content';
 
 export async function getStaticPaths() {
   const work = await getWork();
@@ -20,20 +26,42 @@ interface Props {
 
 const { work, next } = Astro.props;
 const w = work.data;
-const { Content } = await render(work);
-const [allSkills, profile] = await Promise.all([getSkills(), getProfile()]);
+const { Content, headings } = await render(work);
+// "On this page": the sub-headings of the case study (C-08).
+const contents = headings.filter((h) => h.depth === 3);
+const [allSkills, profile, endorsements] = await Promise.all([getSkills(), getProfile(), getEndorsements()]);
+// At most one recommendation on a project page: one that names this project (DS5).
+const endorsement = endorsements.find((e) => e.data.work?.id === work.id);
 const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id));
+const site = Astro.site!;
+const jsonLd = articleGraph(site, {
+  url: new URL(Astro.url.pathname, site),
+  title: w.title,
+  description: w.line,
+  about: w.short,
+  updated: w.updated,
+  image: new URL(await ogImageFor(Astro.url.pathname), site),
+  authorName: profile.name,
+});
 ---
 
-<Base title={`${w.title} — Raymundo Oyong`} description={w.line}>
+<Base title={`${w.title} — Raymundo Oyong`} description={w.line} slimFooter ogType="article" jsonLd={jsonLd}>
   <MarginRow index={0}>
     <Fragment slot="label">
-      No. {w.no}<br />Project
+      No. {w.no} <br />Project
       <span class="label-stamp"><Stamp status={w.status} press={false} /></span>
     </Fragment>
     <header class="cs-head">
-      <h1 class="display cs-name" transition:name={`work-${work.id}`}>{w.title}</h1>
-      <p class="cs-line">{w.line}</p>
+      <div class="cs-hero">
+        <div>
+          <h1 class="display cs-name" transition:name={`work-${work.id}`}>{w.title}</h1>
+          <p class="cs-line">{w.line}</p>
+        </div>
+        <div class="cs-glyph" aria-hidden="true">
+          <Glyph work={work.id} width={280} />
+          <span class="glyph-stamp"><Stamp status={w.status} /></span>
+        </div>
+      </div>
       <p class="byline">By {profile.name}, {profile.title}</p>
       <dl class="meta">
         <div>
@@ -48,18 +76,48 @@ const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id
           <dt class="label">Built for</dt>
           <dd>{w.client}</dd>
         </div>
-        <div>
+        <div class="built-with">
           <dt class="label">Built with</dt>
-          <dd>{w.stack.join(', ')}</dd>
+          <dd><StackList items={w.stack} /></dd>
         </div>
       </dl>
+      {
+        contents.length > 0 && (
+          <nav class="toc" aria-labelledby="toc-label">
+            <p class="label" id="toc-label">
+              On this page
+            </p>
+            <ol class="mono">
+              {contents.map((h) => (
+                <li>
+                  <a href={`#${h.slug}`} class="target">
+                    {h.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )
+      }
     </header>
   </MarginRow>
 
   <Content />
 
+  {
+    endorsement && (
+      <MarginRow ruled hideLabel>
+        <Fragment slot="label">In their <br />words</Fragment>
+        <h2 class="visually-hidden">In their words</h2>
+        <div class="cs-quote">
+          <Quote endorsement={endorsement} />
+        </div>
+      </MarginRow>
+    )
+  }
+
   <MarginRow ruled hideLabel>
-    <Fragment slot="label">Skills<br />shown</Fragment>
+    <Fragment slot="label">Skills <br />shown</Fragment>
     <h2 class="visually-hidden">Skills shown</h2>
     <ul class="tags">
       {
@@ -79,37 +137,39 @@ const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id
     <Fragment slot="label">Contact</Fragment>
     <div class="closing">
       <h2 class="title closing-ask">Want to talk about this work?</h2>
-      <p class="closing-links">
-        <a href={`mailto:${profile.email}`} class="accent target">{profile.email}</a>
-        <a href="/raymundo-oyong-cv.pdf" class="accent target" download>Download CV</a>
-      </p>
+      <ContactSet class="closing-links" />
     </div>
   </MarginRow>
 
-  <nav aria-label="More work" class="cs-nav mono">
-    <a href="/#work" class="target">← All work</a>
-    <a href={`/work/${next.id}/`} class="target accent">No. {next.data.no} {next.data.title} →</a>
+  <nav aria-label="More work" class="cs-nav">
+    <a href={`/work/${next.id}/`} class="next">
+      <span class="mono muted next-label">Next · No. {next.data.no}</span>
+      <span class="display next-title">{next.data.title} <span aria-hidden="true">→</span></span>
+      <span class="next-line">{next.data.short}</span>
+      <Glyph work={next.id} width={120} class="next-glyph" />
+    </a>
+    <a href="/#work" class="mono target all-work">← All work</a>
   </nav>
 </Base>
 
 <style>
   .label-stamp {
     display: block;
-    margin-top: 16px;
+    margin-top: var(--space-4);
   }
 
   .cs-head {
-    padding: 32px 0 16px;
+    padding: var(--space-7) 0 var(--space-4);
   }
 
   .cs-name {
-    font-size: clamp(56px, 10vw, 132px);
+    font-size: var(--type-display-l);
     line-height: 0.9;
   }
 
   .cs-line {
-    margin-top: 24px;
-    font-size: clamp(21px, 2.4vw, 28px);
+    margin-top: var(--space-6);
+    font-size: var(--type-lead-fluid);
     line-height: 1.35;
     max-width: 26em;
   }
@@ -124,8 +184,8 @@ const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id
   .meta > div {
     display: flex;
     flex-direction: column;
-    gap: 6px;
-    padding: 16px 16px 4px;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-4) var(--space-1);
     border-right: 1px solid var(--rule);
   }
 
@@ -138,61 +198,162 @@ const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id
   }
 
   .meta dd {
-    font-size: 17px;
+    font-size: var(--type-body-s);
     line-height: 1.4;
   }
 
+  .toc {
+    margin-top: var(--space-6);
+  }
+
+  .toc ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-6);
+    margin: var(--space-1) 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--type-mono);
+  }
+
+  .toc a {
+    color: var(--ink);
+    text-underline-offset: 3px;
+  }
+
   .byline {
-    margin-top: 16px;
-    font-size: 16px;
+    margin-top: var(--space-4);
+    font-size: var(--type-ui);
     color: var(--ink-2);
   }
 
+  /* Quiet mono tags, each pointing at its row in the home page's proof grid (C-07). */
   .tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px 28px;
+    gap: 0 var(--space-7);
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
   .tag {
-    font-family: var(--font-display);
-    font-stretch: 78%;
-    font-weight: 700;
-    font-size: 22px;
-    color: var(--accent);
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 5px;
+    gap: var(--space-2);
+    font: var(--type-mono) / 1.5 var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink);
+    text-underline-offset: 3px;
+  }
+
+  .cs-quote {
+    padding: var(--space-2) 0 var(--space-2);
   }
 
   .closing {
-    padding: 8px 0 16px;
+    padding: var(--space-2) 0 var(--space-4);
   }
 
   .closing-ask {
-    font-size: clamp(28px, 4vw, 40px);
+    font-size: var(--type-heading);
   }
 
-  .closing-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 28px;
-    margin-top: 12px;
-    font-size: 19px;
+  .closing :global(.closing-links) {
+    margin-top: var(--space-5);
   }
 
+  /* The project's glyph beside its name on wide screens, the status stamped on it. */
+  .cs-glyph {
+    display: none;
+  }
+
+  @media (min-width: 1100px) {
+    .cs-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: var(--space-8);
+      align-items: start;
+    }
+
+    .cs-glyph {
+      position: relative;
+      display: block;
+      margin-top: var(--space-5);
+    }
+
+    .glyph-stamp {
+      position: absolute;
+      right: -8px;
+      bottom: -14px;
+    }
+
+    .label-stamp {
+      display: none;
+    }
+  }
+
+  /* Next project: a panel that keeps the reader in the evidence (C-09). */
   .cs-nav {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 20px 0 40px;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-5) 0 var(--space-8);
     border-top: 2px solid var(--ink);
+  }
+
+  .next {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 120px;
+    grid-template-areas: 'label glyph' 'title glyph' 'line glyph';
+    gap: var(--space-2) var(--space-6);
+    align-items: start;
+    padding: var(--space-3) 0;
+    text-decoration: none;
+  }
+
+  .next-label {
+    grid-area: label;
+    font-size: var(--type-mono-s);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .next-title {
+    grid-area: title;
+    font-size: var(--type-display-m);
+  }
+
+  .next-line {
+    grid-area: line;
+    max-width: 36em;
+    color: var(--ink-2);
+  }
+
+  .next :global(.next-glyph) {
+    grid-area: glyph;
+    align-self: center;
+  }
+
+  @media (hover: hover) {
+    .next:hover .next-title {
+      text-decoration: underline;
+      text-decoration-thickness: 2px;
+      text-underline-offset: 6px;
+    }
+  }
+
+  .all-work {
+    align-self: flex-start;
+    font-size: var(--type-mono);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 640px) {
+    .next {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: 'glyph' 'label' 'title' 'line';
+    }
   }
 
   @media (max-width: 900px) {
@@ -209,15 +370,22 @@ const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id
     }
 
     .meta > div:nth-child(-n + 2) {
-      padding-bottom: 16px;
+      padding-bottom: var(--space-4);
       border-bottom: 1px solid var(--rule);
+    }
+
+    /* "Built with" is the longest list: it takes the whole row. */
+    .meta > .built-with {
+      grid-column: 1 / -1;
+      padding-left: 0;
+      border-right: 0;
     }
   }
 
   @media (max-width: 760px) {
     .label-stamp {
       display: inline-block;
-      margin: 0 0 0 12px;
+      margin: 0 0 0 var(--space-3);
     }
   }
 </style>

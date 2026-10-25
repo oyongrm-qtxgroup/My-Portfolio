@@ -1,6 +1,8 @@
 # What I can do for the reader, each with proof. Rules: docs/content/WRITING.md.
 # `summary` is the one line shown under Capabilities on the home page. A proof point is one
-# sentence with an outcome; `work` links it to a project page.
+# sentence with an outcome; `work` links it to a project page, `where` to the Experience
+# row(s) it comes from when it has no project page. `used` lists work where the area was
+# used but isn't written up (the proof grid's rings), and comes only from the CV bullets.
 
 - id: voice-ai
   order: 1
@@ -20,6 +22,7 @@
     - text: Every script change runs against scripted scenarios and past calls, scored by an LLM judge, before an admin approves it, and any earlier version can be restored.
       work: jayne-bandy-ai
     - text: An AI phone agent on QTX’s internal platform books meetings into a partner’s calendar during a live call, and can only use an email address the caller actually said.
+      where: [qtx]
 
 - id: document-ai
   order: 2
@@ -32,8 +35,12 @@
     smoothed over, so a reviewer can check a draft quickly and sign it with confidence.
   proof:
     - text: Technical lead on SmartCP, care-plan drafting for an aged-care provider, where every sentence in a draft cites the page it came from and contradictions become review items for a clinician.
+      where: [qtx]
     - text: Cut each drafting action from 6.5 seconds to about 1 second by switching to a pooled database connection, not by changing the model.
+      where: [qtx]
     - text: Built AI agents on SEED, QTX’s SaaS that brings specialised AI into the work a team already does, for contract management and document chat, with each client’s data kept apart and off-topic questions refused to keep running costs down.
+      where: [qtx]
+  used: [sap-automation]
 
 - id: automation
   order: 3
@@ -51,6 +58,7 @@
       work: sap-automation
     - text: A daily job on an NDIS provider’s platform updates worker statuses, flags expired credentials and warns managers before the next ones lapse.
       work: ziaris
+  used: [qtx, earlier]
 
 - id: architecture
   order: 4
@@ -62,6 +70,7 @@
     - text: Built a disability-support provider’s platform so every shift becomes the right pay under the SCHADS award, the right invoice against NDIS funding and the right entry in MYOB.
       work: ziaris
     - text: 'Building RL Finance for a retirement-village operator: deferred management fees, CPI-based increases with an approval step, direct-debit files and group reports across entities.'
+      where: [qtx]
 
 - id: development
   order: 5
@@ -71,7 +80,10 @@
   pitch: I write production code across two very different stacks, and I’m at home in both.
   proof:
     - text: TypeScript, React, PostgreSQL (Supabase) and serverless functions on Azure and Supabase at QTX.
+      where: [qtx]
     - text: C#, ASP.NET Core, SQL Server and Xamarin at Ortigas Land and OCLP Holdings.
+      where: [ortigas-senior-associate, oclp]
+  used: [jayne-bandy-ai, ziaris]
 
 - id: integrations
   order: 6
@@ -81,7 +93,9 @@
   pitch: Most of the value in business software is in the connections, so I make them dependable.
   proof:
     - text: Integrated UnionBank UPay as Ortigas Land’s first online payment channel, with rate limiting and reCAPTCHA.
+      where: [ortigas-officer]
     - text: Web APIs that open SAP data to third-party applications; Stripe subscriptions, MYOB exports, and OAuth 2.0 connections to dental practice systems.
+      where: [ortigas-senior-associate, qtx]
 
 - id: security
   order: 7
@@ -93,6 +107,8 @@
     - text: Each person on an NDIS provider’s platform sees only the records in their reach (their own, their team’s, their sites’ or their programs’), enforced in the database.
       work: ziaris
     - text: Replaced API keys with OAuth 2.0 and an audit log for a practice-system integration; CPI-based fee increases in RL Finance go through an approval step and leave a full audit trail.
+      where: [qtx]
+  used: [earlier]
 
 - id: reliability
   order: 8
@@ -102,7 +118,9 @@
   pitch: I make failures loud and keep the database healthy, because a quiet failure costs more than a visible one.
   proof:
     - text: Added failure alerts and a health check every 15 minutes to Jayne Bandy AI, and ended recurring database-connection exhaustion on QTX’s internal platform.
+      where: [qtx]
     - text: Replaced a failing backup uploader at Ortigas Land with a Windows service that splits large database backups for Amazon S3.
+      where: [ortigas-officer]
 
 - id: leadership
   order: 9
@@ -112,7 +130,9 @@
   pitch: I lead small teams by setting the standard in code review and writing specifications people can build from.
   proof:
     - text: Led a four-person development team at Ortigas Land and introduced structured code reviews and secure development practices.
+      where: [ortigas-officer]
     - text: Lead engineer on Jayne Bandy AI; wrote the developer specifications for a sprint as technical lead on care-plan drafting.
+      where: [qtx]
 
 - id: clients
   order: 10
@@ -122,4 +142,6 @@
   pitch: I work directly with the people who will use the system, from the first conversation to sign-off.
   proof:
     - text: Matched RL Finance’s deferred management fee to the finance team’s own spreadsheet to the cent, then kept their example as an automated test.
+      where: [qtx]
     - text: Wrote the customer acceptance-test scripts for RL Finance, covering billing, statements, fees, sales, reports and permissions.
+      where: [qtx]

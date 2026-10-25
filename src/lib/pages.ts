@@ -1,6 +1,9 @@
 // Every public, indexable page: one list for the sitemap and the share images.
 import { getProfile, getSkills, getWork } from './content';
 
+/** The privacy notice's "Last updated" (shown on the page and in the sitemap). */
+export const PRIVACY_UPDATED = new Date('2026-10-24T00:00:00Z');
+
 export interface PublicPage {
   /** URL path with a trailing slash. */
   path: string;
@@ -11,6 +14,10 @@ export interface PublicPage {
   line?: string;
   /** A short line for the lower part of the share card (stack or lead skills). */
   stack?: string;
+  /** false: no card of its own; the page shares the home card (DESIGN_PLAN call 8). */
+  card?: boolean;
+  /** When the content last changed: the sitemap's lastmod. */
+  updated: Date;
 }
 
 export async function getPublicPages(): Promise<PublicPage[]> {
@@ -22,6 +29,7 @@ export async function getPublicPages(): Promise<PublicPage[]> {
       kicker: profile.title,
       title: profile.headline.join(' '),
       stack: skills.filter((s) => s.data.tier === 'lead').map((s) => s.data.name).join(' · '),
+      updated: profile.updated,
     },
     ...work.map((w) => ({
       path: `/work/${w.id}/`,
@@ -30,6 +38,7 @@ export async function getPublicPages(): Promise<PublicPage[]> {
       title: w.data.title,
       line: w.data.short,
       stack: w.data.stack.slice(0, 4).join(' · '),
+      updated: w.data.updated,
     })),
     {
       path: '/cv/',
@@ -37,13 +46,15 @@ export async function getPublicPages(): Promise<PublicPage[]> {
       kicker: 'Curriculum vitae',
       title: profile.cv.title,
       line: 'Experience, skills, education and certifications.',
+      updated: profile.updated,
     },
     {
       path: '/privacy/',
       slug: 'privacy',
       kicker: 'Site notice',
       title: 'Privacy',
-      line: 'What this site collects, and who processes it.',
+      card: false,
+      updated: PRIVACY_UPDATED,
     },
   ];
 }
@@ -51,6 +62,6 @@ export async function getPublicPages(): Promise<PublicPage[]> {
 /** Share image for a path; pages without their own card use the home card. */
 export async function ogImageFor(path: string): Promise<string> {
   const normalised = path.endsWith('/') ? path : `${path}/`;
-  const page = (await getPublicPages()).find((p) => p.path === normalised);
+  const page = (await getPublicPages()).find((p) => p.path === normalised && p.card !== false);
   return `/og/${page?.slug ?? 'home'}.png`;
 }

@@ -1,0 +1,272 @@
+---
+// Capabilities as a proof grid (DESIGN_PLAN DS12, Step 13): the ten areas down, the
+// work across. A filled dot links to the work or Experience row that proves the area;
+// a ring means the area was used there but isn't written up (only from what the CV
+// bullets say). No numbers. Phones reflow each row into the area and its work as tags.
+import type { Skill, Work } from '../lib/content';
+
+interface Props {
+  skills: Skill[];
+  work: Work[];
+}
+
+const { skills, work } = Astro.props;
+
+type Column = { key: string; name: string; href: string };
+const columns: Column[] = [
+  ...work.map((w) => ({ key: w.id, name: w.data.title, href: `/work/${w.id}/` })),
+  { key: 'qtx', name: 'Other QTX work', href: '#role-qtx' },
+  { key: 'earlier', name: 'Earlier roles', href: '#experience' },
+];
+
+// A ring names a column that must exist: a typo would otherwise drop it silently.
+for (const s of skills)
+  for (const key of s.data.used)
+    if (!columns.some((c) => c.key === key)) throw new Error(`skills.yaml ${s.id}: unknown \`used\` entry "${key}"`);
+
+// The Experience row a proof point names: QTX's row, or the earliest-listed earlier role.
+const columnOf = (role: string) => (role === 'qtx' ? 'qtx' : 'earlier');
+
+type Mark = { kind: 'dot'; href: string } | { kind: 'ring' };
+const mark = (s: Skill, c: Column): Mark | undefined => {
+  const byWork =
+    s.data.proof.some((p) => p.work?.id === c.key) ||
+    work.some((w) => w.id === c.key && w.data.skills.some((ref) => ref.id === s.id));
+  if (byWork) return { kind: 'dot', href: c.href };
+  const role = s.data.proof.flatMap((p) => p.where ?? []).find((r) => columnOf(r.id) === c.key);
+  if (role) return { kind: 'dot', href: `#role-${role.id}` };
+  if (s.data.used.includes(c.key)) return { kind: 'ring' };
+};
+---
+
+<div class="proof-grid">
+  <table>
+    <caption class="visually-hidden">
+      Capabilities, and the work that shows each one: a link where it is written up, “used” where it isn’t
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col" class="visually-hidden">Area</th>
+        {
+          columns.map((c) => (
+            <th scope="col" class="label col-head">
+              {c.name}
+            </th>
+          ))
+        }
+      </tr>
+    </thead>
+    <tbody>
+      {
+        skills.map((s) => (
+          <tr id={s.id} class:list={['area', `area--${s.data.tier}`]}>
+            <th scope="row" class="area-head">
+              <span class="title area-name">{s.data.name}</span>
+              <span class="area-line">{s.data.summary}</span>
+            </th>
+            {columns.map((c) => {
+              const m = mark(s, c);
+              return (
+                <td class:list={['cell', m?.kind ?? 'none']}>
+                  {m?.kind === 'dot' && (
+                    <a href={m.href} class="mark target" aria-label={`Shown in ${c.name}`}>
+                      <span class="disc" aria-hidden="true" />
+                      <span class="tag-name" aria-hidden="true">
+                        {c.name}
+                      </span>
+                    </a>
+                  )}
+                  {m?.kind === 'ring' && (
+                    <span class="mark">
+                      <span class="disc" aria-hidden="true" />
+                      <span class="visually-hidden">Used in {c.name}, not written up</span>
+                      <span class="tag-name" aria-hidden="true">
+                        {c.name}
+                      </span>
+                    </span>
+                  )}
+                </td>
+              );
+            })}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+  <p class="mono muted key" aria-hidden="true">
+    <span class="key-item"><span class="disc dot-disc"></span> Written up · links to it</span>
+    <span class="key-item"><span class="disc ring-disc"></span> Used, not written up</span>
+  </p>
+</div>
+
+<style>
+  .proof-grid table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .col-head {
+    width: 96px;
+    padding: 0 var(--space-2) var(--space-3);
+    vertical-align: bottom;
+    text-align: center;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  .area {
+    border-top: var(--rule-hair) solid var(--rule);
+    scroll-margin-top: 80px;
+  }
+
+  .area:target {
+    background: color-mix(in srgb, var(--accent) 6%, transparent);
+  }
+
+  .area-head {
+    padding: var(--space-4) var(--space-6) var(--space-4) 0;
+    text-align: left;
+    font-weight: 400;
+  }
+
+  .area-name {
+    display: block;
+    font-size: var(--type-title-s);
+  }
+
+  .area--lead .area-name {
+    font-size: var(--type-subhead);
+  }
+
+  .area-line {
+    display: block;
+    margin-top: var(--space-1);
+    max-width: 36em;
+    font-size: var(--type-body-s);
+    line-height: 1.45;
+    color: var(--ink-2);
+  }
+
+  .cell {
+    padding: 0;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .disc {
+    display: inline-block;
+    flex: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+  }
+
+  .dot .disc,
+  .dot-disc {
+    background: var(--ink);
+  }
+
+  .ring .disc,
+  .ring-disc {
+    border: var(--rule-fine) solid var(--ink-2);
+  }
+
+  @media (hover: hover) {
+    a.mark:hover .disc {
+      background: var(--accent);
+    }
+  }
+
+  .tag-name {
+    display: none;
+  }
+
+  .key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-6);
+    margin-top: var(--space-4);
+    font-size: var(--type-mono-s);
+  }
+
+  .key-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .key .disc {
+    width: 10px;
+    height: 10px;
+  }
+
+  /* Phones: each area becomes a block, its work as tags. */
+  @media (max-width: 900px) {
+    .proof-grid table,
+    .proof-grid tbody,
+    .proof-grid tr,
+    .proof-grid th,
+    .proof-grid td {
+      display: block;
+    }
+
+    .proof-grid thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+
+    .proof-grid .area {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0 var(--space-5);
+      padding: var(--space-5) 0 var(--space-3);
+    }
+
+    .cell {
+      text-align: left;
+    }
+
+    .area-head {
+      flex-basis: 100%;
+      padding: 0 0 var(--space-2);
+    }
+
+    .proof-grid .cell.none {
+      display: none;
+    }
+
+    .mark {
+      justify-content: flex-start;
+      gap: var(--space-2);
+      min-width: 0;
+    }
+
+    .disc {
+      width: 10px;
+      height: 10px;
+    }
+
+    .tag-name {
+      display: inline;
+      font: var(--type-mono-s) / 1.4 var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink);
+    }
+
+    .ring .tag-name {
+      color: var(--ink-2);
+    }
+  }
+</style>

@@ -1,0 +1,122 @@
+---
+// One contact set (DESIGN_PLAN call 1): email, LinkedIn, GitHub and the CV, the same
+// four everywhere a page ends in "get in touch" — home Contact, the case-study closing
+// block and the phone menu. Where it sits directly above the footer, the footer drops
+// its own copy (SiteFooter `slim`), so each link appears once per screen-end.
+import { getProfile } from '../lib/content';
+
+interface Props {
+  /** "menu": Download CV as the one button, first; elsewhere the CV is a link. */
+  variant?: 'page' | 'menu';
+  class?: string;
+}
+
+const { variant = 'page', class: className } = Astro.props;
+const profile = await getProfile();
+const CV = '/raymundo-oyong-cv.pdf';
+---
+
+<div class:list={['contact-set', `contact-set--${variant}`, className]}>
+  {
+    variant === 'menu' && (
+      <a href={CV} class="cs-button" download>
+        Download CV
+      </a>
+    )
+  }
+  <a href={`mailto:${profile.email}`} class="accent cs-email target">{profile.email}</a>
+  <ul class="mono cs-links">
+    <li><a href={profile.links.linkedin} class="target">LinkedIn</a></li>
+    <li><a href={profile.links.github} class="target">GitHub</a></li>
+    {
+      variant === 'page' && (
+        <li>
+          <a href={CV} class="target" download>
+            CV (PDF)
+          </a>
+        </li>
+      )
+    }
+  </ul>
+  <slot />
+</div>
+
+<style>
+  .contact-set {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  .cs-email {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: var(--type-lead-fluid);
+    text-underline-offset: 6px;
+    overflow-wrap: anywhere;
+  }
+
+  .cs-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-7);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .cs-links a {
+    color: var(--ink);
+    text-underline-offset: 3px;
+  }
+
+  /* The phone menu: Download CV as the one button, then email, LinkedIn and GitHub
+     on one row of 44 px targets, so the whole foot fits a 320 × 568 screen. */
+  .contact-set--menu {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 var(--space-3);
+  }
+
+  .cs-button {
+    display: flex;
+    flex-basis: 100%;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    border: 2px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    font: 600 var(--type-ui) var(--font-body);
+    text-decoration: none;
+  }
+
+  .cs-button:active {
+    outline: 2px solid var(--paper);
+    outline-offset: -5px;
+  }
+
+  .contact-set--menu .cs-email {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: var(--type-small);
+    text-underline-offset: 4px;
+  }
+
+  .contact-set--menu .cs-links {
+    gap: 0 var(--space-3);
+    font-size: var(--type-mono-s);
+    letter-spacing: 0;
+  }
+
+  .contact-set--menu .cs-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+</style>

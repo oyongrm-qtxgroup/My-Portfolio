@@ -1,20 +1,26 @@
 ---
 // One logbook row: a label in the margin column, content right of the red line.
 // `hideLabel` hides the label from assistive tech when a heading in the row already
-// says the same thing, so screen readers don't announce it twice.
+// says the same thing, so screen readers don't announce it twice. `headed`: a visible
+// heading opens the row, so in the one-column layout the label is dropped.
 interface Props {
   index?: number;
   ruled?: boolean;
   id?: string;
   class?: string;
   hideLabel?: boolean;
+  headed?: boolean;
 }
 
-const { index = 0, ruled = false, id, class: className, hideLabel = false } = Astro.props;
+const { index = 0, ruled = false, id, class: className, hideLabel = false, headed = false } = Astro.props;
 ---
 
 <section class:list={['row', { ruled }, className]} id={id}>
-  <div class="mar label" style={`--i: ${index}`} aria-hidden={hideLabel ? 'true' : undefined}>
+  <div
+    class:list={['mar', 'label', { headed }]}
+    style={`--i: ${index}`}
+    aria-hidden={hideLabel ? 'true' : undefined}
+  >
     <slot name="label" />
   </div>
   <div class="body">

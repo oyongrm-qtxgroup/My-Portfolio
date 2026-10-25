@@ -1,0 +1,251 @@
+---
+// A case-study figure drawn as inline SVG from a spec (src/lib/figure.ts): ink on
+// paper from the theme tokens, so it themes and prints. Wide screens get the
+// columns-and-rows placement, phones one column. Screen readers get the caption
+// and an ordered list of the real steps and the failure path.
+import { TYPE, layoutNarrow, layoutWide, type Box, type FigSpec, type Layout, type NodeKind } from '../lib/figure';
+import { specKey } from '../lib/figures';
+
+interface Props {
+  label: string;
+  caption: string;
+  spec: FigSpec;
+}
+
+const { label, caption, spec } = Astro.props;
+// 'Fig. 1 One call' → 'Fig. 1' / 'One call'.
+const [, num = label, name = ''] = label.match(/^(\S+ \S+) (.*)$/) ?? [];
+const id = `fig-${num.replace(/\W+/g, '').toLowerCase()}`;
+const layouts: [string, Layout][] = [
+  ['wide', layoutWide(spec)],
+  ['narrow', layoutNarrow(spec)],
+];
+
+const KIND: Record<NodeKind, string> = { code: 'code', model: 'the model', person: 'a person decides' };
+const kinds = new Set(spec.nodes.map((n) => n.kind ?? 'code'));
+const hasFail = spec.edges.some((e) => e.kind === 'fail');
+
+// The steps in reading order: the main path (row 0), then each failure branch.
+const byId = new Map(spec.nodes.map((n) => [n.id, n]));
+const main = spec.nodes.filter((n) => n.at[1] === 0).sort((a, b) => a.at[0] - b.at[0]);
+const fails = spec.edges.filter((e) => e.kind === 'fail');
+const describe = (id: string) => {
+  const n = byId.get(id)!;
+  return `${n.title} (${KIND[n.kind ?? 'code']})${n.note ? `: ${n.note}` : ''}`;
+};
+
+const lineY = (box: Box, i: number, size: number, offset: number) => box.y + offset + (i + 1) * size * TYPE.lineGap - 4;
+const noteTop = (box: Box) => 12 + box.title.length * TYPE.title * TYPE.lineGap;
+---
+
+<section class="row fig-row">
+  <div class="mar label">{num} <br />{name}</div>
+  <figure class="body fig" aria-labelledby={`${id}-cap`}>
+    {
+      layouts.map(([placement, l]) => (
+        <svg
+          class={`fig-svg fig-${placement}`}
+          viewBox={`-2 -2 ${l.width + 4} ${l.height + 4}`}
+          width={l.width + 4}
+          height={l.height + 4}
+          role="img"
+          aria-labelledby={`${id}-cap`}
+          data-figure={specKey(spec)}
+          data-boxes={l.boxes.length}
+        >
+          {l.lines.map((line) => (
+            <g class:list={['fig-edge', line.kind]}>
+              <path class="fig-line" d={line.d} />
+              {line.heads.map((h) => (
+                <path class="fig-head" d={h} />
+              ))}
+            </g>
+          ))}
+          {l.boxes.map((b) => (
+            <g class:list={['fig-node', b.kind]} transform={b.kind === 'person' ? `rotate(-1.5 ${b.x + b.w / 2} ${b.y + b.h / 2})` : undefined}>
+              <rect class="fig-box" x={b.x} y={b.y} width={b.w} height={b.h} />
+              {b.title.map((t, i) => (
+                <text class="fig-title" x={b.x + 12} y={lineY(b, i, TYPE.title, 12)}>
+                  {t}
+                </text>
+              ))}
+              {b.note.map((t, i) => (
+                <text class="fig-note" x={b.x + 12} y={lineY(b, i, TYPE.note, noteTop(b) + 4)}>
+                  {t}
+                </text>
+              ))}
+              {b.n && (
+                <g class="fig-n">
+                  <circle cx={b.x + b.w} cy={b.y} r="11" />
+                  <text x={b.x + b.w} y={b.y + 4} text-anchor="middle">
+                    {b.n}
+                  </text>
+                </g>
+              )}
+            </g>
+          ))}
+          {l.labels.map((lab) => (
+            <g class="fig-edge fail">
+              {lab.lines.map((t, i) => (
+                <text class="fig-label" x={lab.x} y={lab.y + i * TYPE.label * TYPE.lineGap} text-anchor={lab.anchor}>
+                  {t}
+                </text>
+              ))}
+            </g>
+          ))}
+        </svg>
+      ))
+    }
+    <ol class="visually-hidden">
+      {main.map((n) => <li>{describe(n.id)}</li>)}
+      {fails.map((e) => (
+        <li>
+          When it fails{e.label ? ` (${e.label})` : ''}: {describe(e.to)}
+        </li>
+      ))}
+    </ol>
+    <figcaption class="mono muted caption" id={`${id}-cap`}>{caption}</figcaption>
+    <p class="mono muted legend" aria-hidden="true">
+      {kinds.has('code') && <span class="key code">code</span>}
+      {kinds.has('model') && <span class="key model">the model</span>}
+      {kinds.has('person') && <span class="key person">a person decides</span>}
+      {hasFail && <span class="key fail">when it fails</span>}
+    </p>
+  </figure>
+</section>
+
+<style>
+  .fig {
+    padding-top: var(--space-2);
+  }
+
+  .fig-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .fig-wide {
+    max-width: 964px;
+  }
+
+  .fig-narrow {
+    display: none;
+    max-width: 360px;
+  }
+
+  /* Below the wide breakpoint the one-column placement reads better than a shrunk row. */
+  @media (max-width: 1099px) {
+    .fig-wide {
+      display: none;
+    }
+
+    .fig-narrow {
+      display: block;
+    }
+  }
+
+  .fig-box {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: var(--rule-fine);
+  }
+
+  .model .fig-box {
+    stroke-dasharray: 6 4;
+  }
+
+  .person .fig-box {
+    stroke-width: 2.5px;
+  }
+
+  .fig-title {
+    font: 500 var(--type-mono) var(--font-mono);
+    letter-spacing: 0.05em;
+    fill: var(--ink);
+  }
+
+  .fig-note {
+    font: var(--type-mono-s) var(--font-mono);
+    fill: var(--ink-2);
+  }
+
+  .fig-line {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: var(--rule-fine);
+  }
+
+  .fig-head {
+    fill: var(--ink);
+  }
+
+  /* The only red in a figure: the dotted path taken when something fails (DS7). */
+  .fail .fig-line {
+    stroke: var(--margin);
+    stroke-width: var(--rule-firm);
+    stroke-dasharray: 1 5;
+    stroke-linecap: round;
+  }
+
+  .fail .fig-head {
+    fill: var(--margin);
+  }
+
+  .fig-label {
+    font: var(--type-mono-xs) var(--font-mono);
+    fill: var(--margin);
+  }
+
+  .fig-n circle {
+    fill: var(--paper);
+    stroke: var(--ink);
+    stroke-width: var(--rule-fine);
+  }
+
+  .fig-n text {
+    font: 500 var(--type-mono-s) var(--font-mono);
+    fill: var(--ink);
+  }
+
+  .caption {
+    margin-top: var(--space-4);
+    max-width: 60em;
+    font-size: var(--type-mono-s);
+    line-height: 1.6;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-5);
+    margin-top: var(--space-2);
+    font-size: var(--type-mono-s);
+  }
+
+  .key::before {
+    content: '';
+    display: inline-block;
+    width: 18px;
+    height: 10px;
+    margin-right: var(--space-2);
+    vertical-align: -1px;
+    border: var(--rule-fine) solid var(--ink);
+  }
+
+  .key.model::before {
+    border-style: dashed;
+  }
+
+  .key.person::before {
+    border-width: 2.5px;
+  }
+
+  .key.fail::before {
+    height: 0;
+    border: 0;
+    border-top: var(--rule-firm) dotted var(--margin);
+    vertical-align: 3px;
+  }
+</style>

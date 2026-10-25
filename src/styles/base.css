@@ -1,9 +1,11 @@
 /* Logbook base styles. Colour tokens come from src/design/tokens.ts. */
 
 :root {
-  --font-display: 'Archivo Variable', 'Archivo Fallback', 'Arial Narrow', sans-serif;
-  --font-body: 'Source Serif 4 Variable', 'Source Serif Fallback', Georgia, serif;
-  --font-mono: 'IBM Plex Mono', 'Plex Mono Fallback', ui-monospace, monospace;
+  --font-display: 'Archivo Variable', 'Archivo Fallback Narrow', 'Archivo Fallback Avenir',
+    'Archivo Fallback Roboto', 'Archivo Fallback Arial', sans-serif-condensed, sans-serif;
+  --font-body: 'Source Serif 4 Variable', 'Source Serif Fallback Georgia', 'Source Serif Fallback Noto',
+    'Source Serif Fallback Times', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', 'Plex Mono Fallback', 'Plex Mono Fallback Noto', ui-monospace, monospace;
   --max: 1240px;
   --pad: 32px;
   --margin-col: 168px;
@@ -28,7 +30,7 @@ body {
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-body);
-  font-size: 18px;
+  font-size: var(--type-body);
   line-height: 1.5;
   font-optical-sizing: auto;
   text-rendering: optimizeLegibility;
@@ -61,8 +63,10 @@ a {
   text-underline-offset: 0.2em;
 }
 
-a:hover {
-  text-decoration-thickness: 2px;
+@media (hover: hover) {
+  a:hover {
+    text-decoration-thickness: 2px;
+  }
 }
 
 :focus-visible {
@@ -100,7 +104,7 @@ button {
 
 .label {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--type-mono-s);
   font-weight: 400;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -109,7 +113,7 @@ button {
 
 .mono {
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: var(--type-mono);
 }
 
 .muted {
@@ -125,14 +129,14 @@ button {
 }
 
 .lede {
-  font-size: 23px;
+  font-size: var(--type-lead);
   line-height: 1.5;
   max-width: 34em;
   text-wrap: pretty;
 }
 
 .prose {
-  font-size: 20px;
+  font-size: var(--type-body-l);
   line-height: 1.6;
   max-width: 40em;
   text-wrap: pretty;
@@ -171,10 +175,10 @@ button {
   left: 16px;
   top: -80px;
   z-index: 10;
-  padding: 12px 16px;
+  padding: var(--space-3) var(--space-4);
   background: var(--ink);
   color: var(--paper);
-  font: 500 13px var(--font-mono);
+  font: 500 var(--type-mono) var(--font-mono);
   text-decoration: none;
 }
 
@@ -200,7 +204,7 @@ button {
 
 .row > .mar {
   position: relative;
-  padding: 28px 24px 0 0;
+  padding: 28px var(--space-6) 0 0;
 }
 
 .row > .mar::after {
@@ -216,7 +220,28 @@ button {
 
 .row > .body {
   min-width: 0;
-  padding: 24px 0 40px var(--gutter);
+  padding: var(--space-6) 0 var(--space-8) var(--gutter);
+}
+
+/* Wide screens: one margin rule the full height of the page, behind the header
+   (which covers it), the rows and the footer, so it never breaks between bands or
+   stops short of the window on a short page (DESIGN_PLAN DS8). The per-row line
+   stays on top as the load motion. Same x and width as the row line: whole pixels. */
+@media (min-width: 1100px) {
+  .wrap {
+    position: relative;
+  }
+
+  .wrap::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--pad) + var(--margin-col) - 2px);
+    width: 2px;
+    background: var(--margin);
+  }
 }
 
 /* ── Stamps ─────────────────────────────────────────────── */
@@ -224,8 +249,8 @@ button {
 .stamp {
   display: inline-block;
   border: 1.5px solid currentColor;
-  padding: 3px 8px;
-  font: 500 11px/1.4 var(--font-mono);
+  padding: 3px var(--space-2);
+  font: 500 var(--type-mono-xs)/1.4 var(--font-mono);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   transform: rotate(-2deg);
@@ -249,24 +274,65 @@ button {
   color: var(--ink-2);
 }
 
+/* The 404's mark: an error, so margin red (DESIGN_PLAN DS7). */
+.stamp[data-status='no-entry'] {
+  color: var(--margin);
+  border-width: 2px;
+}
+
+/* ── Portrait: the tone for the active theme (Portrait.astro) ── */
+
+.portrait-night {
+  display: none;
+}
+
+:root[data-theme='night'] .portrait-paper {
+  display: none;
+}
+
+:root[data-theme='night'] .portrait-night {
+  display: block;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .portrait-paper {
+    display: none;
+  }
+
+  :root:not([data-theme]) .portrait-night {
+    display: block;
+  }
+}
+
+@media print {
+  :root .portrait-paper {
+    display: block;
+  }
+
+  :root .portrait-night {
+    display: none;
+  }
+}
+
 /* ── Margin notes ───────────────────────────────────────── */
 
 .sidenote {
   border-top: 1.5px solid var(--ink);
-  padding-top: 10px;
-  font: 13px/1.55 var(--font-mono);
+  padding-top: var(--space-3);
+  font: var(--type-mono)/1.55 var(--font-mono);
   color: var(--ink-2);
 }
 
 /* ── Controls ───────────────────────────────────────────── */
 
 .seg {
+  position: relative;
   min-height: 44px;
-  padding: 0 12px;
+  padding: 0 var(--space-3);
   background: none;
   border: 1px solid var(--ink-2);
   color: var(--ink);
-  font: 400 12px var(--font-mono);
+  font: 400 var(--type-mono-s) var(--font-mono);
   letter-spacing: 0.05em;
   text-transform: uppercase;
   cursor: pointer;
@@ -276,11 +342,7 @@ button {
   border-left: 0;
 }
 
-.seg[aria-pressed='true'] {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--paper);
-}
+/* The checked state lives in ThemeSwitch.astro (a radio group). */
 
 .target {
   display: inline-flex;
@@ -298,7 +360,7 @@ button {
   }
 
   .row > .mar {
-    padding: 24px 0 0;
+    padding: var(--space-6) 0 0;
   }
 
   .row > .mar::after {
@@ -306,7 +368,28 @@ button {
   }
 
   .row > .body {
-    padding: 12px 0 32px;
+    padding: var(--space-3) 0 var(--space-7);
+  }
+
+  /* Rail labels become one-line kickers: the rail's line breaks go, and a label
+     that only repeats the visible heading below it is dropped. */
+  .row > .mar br {
+    display: none;
+  }
+
+  .row > .mar.headed {
+    display: none;
+  }
+
+  .row > .mar.headed + .body {
+    padding-top: var(--space-6);
+  }
+}
+
+/* Shown only in the one-column layout (e.g. a count after a rail label). */
+@media (min-width: 901px) {
+  .phone-only {
+    display: none;
   }
 }
 
@@ -318,14 +401,14 @@ button {
   }
 
   body {
-    font-size: 17px;
+    font-size: var(--type-body-s);
   }
 
   .lede {
-    font-size: 19px;
+    font-size: var(--type-body-m);
   }
 
   .prose {
-    font-size: 18px;
+    font-size: var(--type-body);
   }
 }

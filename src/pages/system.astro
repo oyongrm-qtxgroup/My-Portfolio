@@ -2,7 +2,8 @@
 import Base from '../layouts/Base.astro';
 import MarginRow from '../components/MarginRow.astro';
 import Stamp from '../components/Stamp.astro';
-import { palettes, contrast, wcagLevel, type Token } from '../design/tokens';
+import Figure from '../components/Figure.astro';
+import { palettes, contrast, wcagLevel, motion, rules, space, type, breakpoints, type Token } from '../design/tokens';
 
 // Reference page for the design system (noindex). Mirrors docs/design/System.dc.html
 // and renders from the live tokens, so it also shows Night mode correctly.
@@ -12,7 +13,7 @@ const swatches: { token: Token; name: string; use: string }[] = [
   { token: 'ink2', name: 'Ink 2', use: 'Dates, labels, control borders' },
   { token: 'rule', name: 'Rule', use: 'Decorative row dividers only' },
   { token: 'accent', name: 'Ballpoint', use: 'Links only' },
-  { token: 'margin', name: 'Margin red', use: 'Margin line, errors, "In progress"' },
+  { token: 'margin', name: 'Margin red', use: 'Margin line, errors, “In progress”, failure paths in figures' },
 ];
 
 const rows = swatches
@@ -45,7 +46,7 @@ const cssVar: Record<Token, string> = {
   </MarginRow>
 
   <MarginRow index={1} ruled>
-    <Fragment slot="label">01<br />Type</Fragment>
+    <Fragment slot="label">01 <br />Type</Fragment>
     <div class="type-grid">
       <div>
         <p class="display sample">Aa 26</p>
@@ -66,7 +67,7 @@ const cssVar: Record<Token, string> = {
   </MarginRow>
 
   <MarginRow index={2} ruled>
-    <Fragment slot="label">02<br />Colour</Fragment>
+    <Fragment slot="label">02 <br />Colour</Fragment>
     <ul class="swatches">
       {
         swatches.map((s) => (
@@ -84,7 +85,7 @@ const cssVar: Record<Token, string> = {
   </MarginRow>
 
   <MarginRow index={3} ruled>
-    <Fragment slot="label">03<br />Parts</Fragment>
+    <Fragment slot="label">03 <br />Parts</Fragment>
     <div class="parts">
       <div>
         <p class="label">Status stamps</p>
@@ -116,17 +117,17 @@ const cssVar: Record<Token, string> = {
   </MarginRow>
 
   <MarginRow index={4} ruled>
-    <Fragment slot="label">04<br />Motion</Fragment>
+    <Fragment slot="label">04 <br />Motion</Fragment>
     <ul class="prose list">
       <li>The red margin line draws down each row on load.</li>
       <li>Headlines set line by line, 90 ms apart; stamps press in last.</li>
       <li>Rows rise as they scroll into view, where the browser supports it.</li>
-      <li>Everything is switched off under "reduce motion".</li>
+      <li>Everything is switched off under “reduce motion”.</li>
     </ul>
   </MarginRow>
 
   <MarginRow index={5} ruled>
-    <Fragment slot="label">05<br />Never</Fragment>
+    <Fragment slot="label">05 <br />Never</Fragment>
     <p class="prose">
       Gradients, glows, glass blur, drop shadows, rounded cards, neon accents, 3D globes, particles,
       typing effects, custom cursors, emoji in headings, skill-percentage bars.
@@ -134,7 +135,7 @@ const cssVar: Record<Token, string> = {
   </MarginRow>
 
   <MarginRow index={6} ruled>
-    <Fragment slot="label">06<br />Access<br />WCAG 2.2 AA</Fragment>
+    <Fragment slot="label">06 <br />Access <br />WCAG 2.2 AA</Fragment>
     <div class="table-wrap" tabindex="0" role="region" aria-label="Contrast table">
       <table>
         <caption class="label">Contrast against paper, measured from the tokens</caption>
@@ -165,35 +166,93 @@ const cssVar: Record<Token, string> = {
       </table>
     </div>
   </MarginRow>
+
+  <Figure
+    label="07 Figures"
+    caption="The figure grammar: a solid box is ordinary code, a dashed box is the model, a stamp box is where a person decides (approves, or takes over), and the dotted red path is what happens when a step fails. Circled numbers point to the paragraph that explains that part."
+    spec={{
+      nodes: [
+        { id: 'in', title: 'Input', note: 'what arrives', at: [0, 0] },
+        { id: 'model', title: 'Model', note: 'decides, within a script', kind: 'model', n: 1, at: [1, 0] },
+        { id: 'code', title: 'Code', note: 'checks and writes', at: [2, 0] },
+        { id: 'person', title: 'Person approves', note: 'nothing goes out without it', kind: 'person', at: [3, 0] },
+        { id: 'left', title: 'Left for a person', note: 'logged, not guessed', at: [2, 1] },
+      ],
+      edges: [
+        { from: 'in', to: 'model' },
+        { from: 'model', to: 'code', kind: 'two' },
+        { from: 'code', to: 'person' },
+        { from: 'code', to: 'left', kind: 'fail', label: 'when a step fails' },
+      ],
+    }}
+  />
+
+  <MarginRow index={8} ruled>
+    <Fragment slot="label">08 <br />Scales</Fragment>
+    <dl class="scales">
+      <div>
+        <dt class="label">Space</dt>
+        <dd class="mono">{space.map((v, i) => `--space-${i + 1} ${v}`).join(' · ')}</dd>
+      </div>
+      <div>
+        <dt class="label">Rules</dt>
+        <dd class="mono">{Object.entries(rules).map(([k, v]) => `--rule-${k} ${v}`).join(' · ')}</dd>
+      </div>
+      <div>
+        <dt class="label">Type</dt>
+        <dd class="mono">{Object.entries(type).map(([k, v]) => `--type-${k} ${v}`).join(' · ')}</dd>
+      </div>
+      <div>
+        <dt class="label">Breakpoints</dt>
+        <dd class="mono">{Object.entries(breakpoints).map(([k, v]) => `${k} ${v}px`).join(' · ')}</dd>
+      </div>
+      <div>
+        <dt class="label">Motion</dt>
+        <dd class="mono">{Object.entries(motion).map(([k, v]) => `--motion-${k} ${v}`).join(' · ')}</dd>
+      </div>
+    </dl>
+  </MarginRow>
 </Base>
 
 <style>
+  .scales {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin: 0;
+  }
+
+  .scales dd {
+    margin: var(--space-1) 0 0;
+    line-height: 1.6;
+  }
+
   .page-title {
-    font-size: clamp(56px, 8vw, 112px);
+    font-size: var(--type-display-l);
     line-height: 0.9;
-    margin-top: 32px;
+    margin-top: var(--space-7);
   }
 
   .lede {
-    margin-top: 20px;
+    margin-top: var(--space-5);
   }
 
   .type-grid,
   .parts {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
-    gap: 32px;
+    gap: var(--space-7);
   }
 
   .type-grid > div,
   .parts > div {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--space-3);
   }
 
   .sample {
-    font-size: 80px;
+    font-size: var(--type-display);
     line-height: 0.95;
   }
 
@@ -206,7 +265,7 @@ const cssVar: Record<Token, string> = {
   }
 
   .note {
-    font-size: 16px;
+    font-size: var(--type-ui);
   }
 
   .swatches {
@@ -214,13 +273,13 @@ const cssVar: Record<Token, string> = {
     padding: 0;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 24px;
+    gap: var(--space-6);
   }
 
   .swatches li {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-2);
   }
 
   .chip {
@@ -236,7 +295,7 @@ const cssVar: Record<Token, string> = {
   .stamps {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: var(--space-4);
   }
 
   .sidenote {
@@ -246,33 +305,33 @@ const cssVar: Record<Token, string> = {
   .logrow {
     display: grid;
     grid-template-columns: 56px 130px minmax(0, 1fr);
-    gap: 12px;
+    gap: var(--space-3);
     align-items: baseline;
-    padding: 12px 0;
+    padding: var(--space-3) 0;
     border-block: 1px solid var(--rule);
-    font-size: 17px;
+    font-size: var(--type-body-s);
   }
 
   .up {
-    font-size: 12px;
+    font-size: var(--type-mono-s);
     text-transform: uppercase;
   }
 
   .foot {
-    font-size: 40px;
+    font-size: var(--type-title-l);
   }
 
   .foot sup {
-    font: 500 13px var(--font-mono);
+    font: 500 var(--type-mono) var(--font-mono);
     vertical-align: top;
     margin-left: 3px;
   }
 
   .list {
-    padding-left: 20px;
+    padding-left: var(--space-5);
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-2);
   }
 
   .table-wrap {
@@ -282,18 +341,18 @@ const cssVar: Record<Token, string> = {
   table {
     width: 100%;
     border-collapse: collapse;
-    font: 14px var(--font-mono);
+    font: var(--type-mono) var(--font-mono);
   }
 
   caption {
     text-align: left;
-    padding-bottom: 10px;
+    padding-bottom: var(--space-3);
   }
 
   th,
   td {
     text-align: left;
-    padding: 8px 12px 8px 0;
+    padding: var(--space-2) var(--space-3) var(--space-2) 0;
     border-bottom: 1px solid var(--rule);
     font-weight: 400;
   }
@@ -306,7 +365,7 @@ const cssVar: Record<Token, string> = {
   @media (max-width: 760px) {
     .logrow {
       grid-template-columns: minmax(0, 1fr);
-      gap: 4px;
+      gap: var(--space-1);
     }
   }
 </style>

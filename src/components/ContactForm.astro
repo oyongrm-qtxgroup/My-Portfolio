@@ -193,8 +193,7 @@ const siteKey =
 
     const setSending = (sending: boolean) => {
       button.disabled = sending;
-      label.textContent = sending ? 'Sending' : 'Send';
-      label.classList.toggle('dots', sending);
+      label.textContent = sending ? 'Sending…' : 'Send';
       form.setAttribute('aria-busy', String(sending));
     };
 
@@ -240,9 +239,11 @@ const siteKey =
 
       if (data) {
         const sentTo = String(new FormData(form).get('email') ?? '').trim();
+        // "Received · 25 Oct, 03:23", the site's date style.
         const now = new Date();
-        const pad = (n: number) => String(n).padStart(2, '0');
-        received.textContent = `Received · ${pad(now.getDate())}.${pad(now.getMonth() + 1)} · ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+        const day = now.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' });
+        const time = now.toLocaleTimeString('en-AU', { hour: '2-digit', minute: '2-digit', hour12: false });
+        received.textContent = `Received · ${day}, ${time}`;
         status.textContent = `Thanks. It’s in my inbox, and I’ll reply to ${sentTo}.`;
         form.reset();
         body.hidden = true;
@@ -273,19 +274,19 @@ const siteKey =
   .contact-form {
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: var(--space-6);
     max-width: 36em;
-    margin-top: 40px;
+    margin-top: var(--space-8);
   }
 
   .field {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-2);
   }
 
   label {
-    font: 12px var(--font-mono);
+    font: var(--type-mono-s) var(--font-mono);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -293,13 +294,13 @@ const siteKey =
   input,
   textarea {
     min-height: 44px;
-    padding: 10px 0;
+    padding: var(--space-3) 0;
     border: 0;
     border-bottom: 1.5px solid var(--ink-2);
     border-radius: 0;
     background: transparent;
     color: var(--ink);
-    font: 18px/1.5 var(--font-body);
+    font: var(--type-body)/1.5 var(--font-body);
   }
 
   textarea {
@@ -320,7 +321,7 @@ const siteKey =
   }
 
   .hint {
-    font-size: 16px;
+    font-size: var(--type-ui);
     line-height: 1.45;
     color: var(--ink-2);
   }
@@ -329,8 +330,16 @@ const siteKey =
     border-bottom-color: var(--margin);
   }
 
+  /* The field to fix keeps its error colour while focused, plus a focus outline. */
+  [aria-invalid='true']:focus-visible {
+    padding-bottom: 8.5px;
+    border-bottom: 3px solid var(--margin);
+    outline: 2px solid var(--margin);
+    outline-offset: 4px;
+  }
+
   .err {
-    font: 13px/1.5 var(--font-mono);
+    font: var(--type-mono)/1.5 var(--font-mono);
     color: var(--margin);
   }
 
@@ -354,53 +363,61 @@ const siteKey =
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 20px;
+    gap: var(--space-5);
     min-height: 52px;
   }
 
   .send {
+    position: relative;
     min-height: 44px;
     min-width: 112px;
-    padding: 0 16px;
+    padding: 0 var(--space-4);
     border: 1px solid var(--ink);
     background: var(--ink);
     color: var(--paper);
-    font: 12px var(--font-mono);
+    font: var(--type-mono-s) var(--font-mono);
     text-transform: uppercase;
     letter-spacing: 0.06em;
     cursor: pointer;
   }
 
-  .send:hover {
-    border-color: var(--accent);
-    background: var(--accent);
+  /* Buttons invert ink and paper; blue is for text links only (FIX_PLAN D12). */
+  @media (hover: hover) {
+    .send:hover {
+      background: var(--paper);
+      color: var(--ink);
+    }
   }
 
-  .send:disabled {
-    opacity: 0.7;
+  .send:active {
+    outline: 2px solid var(--paper);
+    outline-offset: -2px;
+  }
+
+  /* Sending wins over hover: full ink, "Sending…", and an ink line drawing under
+     the button (the page-change line's motion); just the label under reduced motion. */
+  .send:disabled,
+  .send:disabled:hover {
+    background: var(--ink);
+    color: var(--paper);
     cursor: progress;
   }
 
-  .dots::after {
+  .send:disabled::after {
     content: '';
-    display: inline-block;
-    width: 1.5em;
-    text-align: left;
-    animation: dots 1.2s steps(4, end) infinite;
+    position: absolute;
+    left: -1px;
+    right: -1px;
+    bottom: -6px;
+    height: 2px;
+    background: var(--ink);
+    transform-origin: left;
+    animation: ink 2.4s cubic-bezier(0.2, 0.7, 0, 1) forwards;
   }
 
-  @keyframes dots {
-    0% {
-      content: '';
-    }
-    25% {
-      content: '.';
-    }
-    50% {
-      content: '..';
-    }
-    75% {
-      content: '...';
+  @media (prefers-reduced-motion: reduce) {
+    .send:disabled::after {
+      display: none;
     }
   }
 
@@ -412,7 +429,7 @@ const siteKey =
   .form-body {
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: var(--space-6);
   }
 
   .form-body[hidden],
@@ -424,29 +441,36 @@ const siteKey =
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 20px;
+    gap: var(--space-5);
   }
 
   .again {
     min-height: 44px;
-    padding: 0 16px;
+    padding: 0 var(--space-4);
     border: 1px solid var(--ink);
     background: none;
     color: var(--ink);
-    font: 12px var(--font-mono);
+    font: var(--type-mono-s) var(--font-mono);
     text-transform: uppercase;
     letter-spacing: 0.06em;
     cursor: pointer;
   }
 
-  .again:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+  @media (hover: hover) {
+    .again:hover {
+      background: var(--ink);
+      color: var(--paper);
+    }
+  }
+
+  .again:active {
+    outline: 2px solid var(--ink);
+    outline-offset: -2px;
   }
 
   .note {
     margin-top: -8px;
-    font-size: 12px;
+    font-size: var(--type-mono-s);
     line-height: 1.6;
   }
 
@@ -457,7 +481,7 @@ const siteKey =
 
   .status,
   .failed {
-    font-size: 18px;
+    font-size: var(--type-body);
     line-height: 1.5;
   }
 

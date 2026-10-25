@@ -16,6 +16,13 @@ const TYPES = {
   '.xml': 'application/xml',
   '.txt': 'text/plain',
   '.pdf': 'application/pdf',
+  '.avif': 'image/avif',
+  '.webp': 'image/webp',
+  '.jpg': 'image/jpeg',
+  '.png': 'image/png',
+  '.json': 'application/json',
+  '.ico': 'image/x-icon',
+  '.webmanifest': 'application/manifest+json',
 };
 
 /** Starts the server; resolves to { base, close }. */

@@ -1,5 +1,7 @@
 ---
 import Stamp from './Stamp.astro';
+import StackList from './StackList.astro';
+import Glyph from './Glyph.astro';
 import type { Work } from '../lib/content';
 
 interface Props {
@@ -11,48 +13,91 @@ const { work, index } = Astro.props;
 const w = work.data;
 ---
 
-<a href={`/work/${work.id}/`} class="work-row reveal">
-  <span class="mono muted">No. {w.no}</span>
+<!-- The title is the link (a short name in a link list); its hit area covers the row. -->
+<article class="work-row reveal">
+  <span class="lead">
+    <span class="mono muted">No. {w.no}</span>
+    <Glyph work={work.id} width={96} class="row-glyph" />
+  </span>
   <span class="main">
-    <span class="title name">
-      <span class="ttl" transition:name={`work-${work.id}`}>{w.title}</span><span
-        class="arr"
-        aria-hidden="true">→</span
+    <h3 class="title name">
+      <a href={`/work/${work.id}/`} class="row-link"
+        ><span class="ttl" transition:name={`work-${work.id}`}>{w.title}</span><span
+          class="arr"
+          aria-hidden="true">→</span
+        ></a
       >
-    </span>
+    </h3>
     <span class="line muted">{w.short}</span>
   </span>
-  <span class="mono muted stack">{w.stack.slice(0, 4).join(' · ')}</span>
+  <StackList items={w.stack.slice(0, 4)} class="mono muted stack" />
   <span class="meta">
     <span class="mono muted">{w.period}</span>
     <Stamp status={w.status} index={index} />
   </span>
-</a>
+</article>
 
 <style>
   .work-row {
+    position: relative;
     display: grid;
-    grid-template-columns: 56px minmax(0, 1fr) 220px 140px;
-    gap: 20px;
+    grid-template-columns: 104px minmax(0, 1fr) 220px 140px;
+    gap: var(--space-5);
     align-items: baseline;
-    padding: 22px 12px 22px 0;
+    /* Even insets for the hover wash and focus ring; the text stays on the column line. */
+    margin-inline: -12px;
+    padding: var(--space-8) var(--space-3);
     border-bottom: 1px solid var(--rule);
-    text-decoration: none;
     transition: background-color 0.2s;
   }
 
-  .work-row:hover {
-    background: color-mix(in srgb, var(--accent) 6%, transparent);
+  .row-link {
+    text-decoration: none;
+  }
+
+  .lead {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .row-link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .row-link:focus-visible {
+    outline: none;
+  }
+
+  .work-row:has(.row-link:focus-visible) {
+    outline: 2px solid var(--accent);
+  }
+
+  @media (hover: hover) {
+    .work-row:has(.row-link:hover) {
+      background: color-mix(in srgb, var(--accent) 6%, transparent);
+    }
+  }
+
+  /* Touch: a press shows as an ink inset instead of a hover that sticks. */
+  .work-row:has(.row-link:active) {
+    outline: 2px solid var(--ink);
+    outline-offset: -2px;
   }
 
   .main {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-3);
   }
 
+  /* The work leads the page, so its rows carry the most weight on it (Step 12). */
   .name {
-    font-size: 34px;
+    margin: 0;
+    font-size: var(--type-heading);
+    line-height: 1.02;
   }
 
   .ttl {
@@ -65,32 +110,46 @@ const w = work.data;
 
   .arr {
     display: inline-block;
-    margin-left: 10px;
+    margin-left: var(--space-3);
     color: var(--accent);
     opacity: 0;
     transform: translateX(-8px);
     transition: opacity 0.2s, transform 0.2s;
   }
 
-  .work-row:hover .ttl,
-  .work-row:focus-visible .ttl {
+  .row-link:focus-visible .ttl {
     text-decoration-color: var(--accent);
   }
 
-  .work-row:hover .arr,
-  .work-row:focus-visible .arr {
+  .row-link:focus-visible .arr {
     opacity: 1;
     transform: none;
   }
 
+  @media (hover: hover) {
+    .row-link:hover .ttl {
+      text-decoration-color: var(--accent);
+    }
+
+    .row-link:hover .arr {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* A project already read: its arrow turns quiet. */
+  .row-link:visited .arr {
+    color: var(--ink-2);
+  }
+
   .line {
-    font-size: 18px;
+    font-size: var(--type-body);
     line-height: 1.45;
     max-width: 36em;
   }
 
-  .stack {
-    font-size: 12px;
+  .work-row :global(.stack) {
+    font-size: var(--type-mono-s);
     line-height: 1.6;
   }
 
@@ -98,25 +157,25 @@ const w = work.data;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
-    font-size: 12px;
+    gap: var(--space-2);
+    font-size: var(--type-mono-s);
   }
 
   @media (max-width: 900px) {
     .work-row {
       grid-template-columns: minmax(0, 1fr);
-      gap: 8px;
-      padding: 18px 0;
+      gap: var(--space-2);
+      padding: var(--space-6) var(--space-3);
     }
 
     .name {
-      font-size: 28px;
+      font-size: var(--type-title-m);
     }
 
     .meta {
       flex-direction: row;
       align-items: baseline;
-      gap: 16px;
+      gap: var(--space-4);
     }
 
     .arr {

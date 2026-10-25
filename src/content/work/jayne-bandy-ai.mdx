@@ -9,10 +9,15 @@ role: Lead engineer, leading one or two developers
 period: Apr 2026 – now
 stack: [Twilio, ElevenLabs, GPT-5.5, Supabase, Stripe, CareStack, Core Practice, Dentally]
 status: live
+updated: 2026-10-25
 skills: [voice-ai, integrations, reliability, leadership]
 ---
 
-import Flow from '../../components/Flow.astro';
+import Figure from '../../components/Figure.astro';
+import { figures } from '../../lib/figures';
+import FigRef from '../../components/FigRef.astro';
+import Transcript from '../../components/Transcript.astro';
+import Noted from '../../components/Noted.astro';
 import Section from '../../components/Section.astro';
 
 <Section label="The challenge" ruled>
@@ -21,37 +26,71 @@ A dental receptionist can’t answer the phone while checking a patient in, and 
 
 </Section>
 
-<Flow
+<Figure
   label="Fig. 1 One call"
-  caption="The model decides what to say and which tool to call; the tools are ordinary code that reads and writes the practice system."
-  steps={[
-    { title: 'Caller', note: 'rings the practice’s own number (Twilio)' },
-    { title: 'Voice layer', note: 'ElevenLabs: speech to text, turn-taking, the practice’s voice' },
-    { title: 'Agent', note: 'GPT-5.5 following the reviewed script', key: true, link: 'two' },
-    { title: 'Tools', note: 'find patient · find free slots · book, move or cancel · request callback', link: 'two' },
-    { title: 'Practice system', note: 'CareStack · Core Practice · Dentally' },
+  caption="The model decides what to say and which tool to call; the tools are ordinary code that reads and writes the practice system. If the practice system is down or the slot is taken mid-call, the caller hears it plainly and the practice calls back."
+  spec={figures['jayne-bandy-ai']}
+/>
+
+<Transcript
+  label="Example call"
+  heading="Illustrative call · invented names, times and practice"
+  turns={[
+    { who: 'agent', text: 'Good morning, Sample Dental. You’re speaking with the practice’s AI assistant, and this call may be recorded. How can I help?', note: 'Callers are told it’s an AI at the start' },
+    { who: 'caller', text: 'Hi, I’d like to book a check-up. Next Tuesday, if you can.' },
+    { tool: true, text: 'find patient (caller’s number) → 1 record', note: 'The caller’s number finds the record' },
+    { who: 'agent', text: 'I can help with that. Before I do, can I confirm your name?' },
+    { who: 'caller', text: 'Jordan Moreno.', note: 'Confirms the caller’s name before booking' },
+    { tool: true, text: 'find free slots (day: Tue 3 Nov) → 9:30 am, 2:15 pm', note: '“Next Tuesday” resolved from today’s date' },
+    { who: 'agent', text: 'Thanks, Jordan. Next Tuesday, the 3rd of November, I have 9:30 in the morning or 2:15 in the afternoon.', note: 'The tool result, not the model, decides the slot' },
+    { who: 'caller', text: '9:30, please.' },
+    { tool: true, text: 'book (Tue 3 Nov, 9:30 am) → slot no longer free' },
+    { who: 'agent', text: 'I’m sorry, that time was taken while we were talking. I’ve asked the team to call you back today to find another time. Is this number the best one to reach you on?' },
+    { tool: true, text: 'request callback (slot taken)', note: 'When a booking fails: an apology and a callback' },
+    { who: 'caller', text: 'Yes, that’s fine.' },
+    { who: 'agent', text: 'Thanks, Jordan. The team will call you back today.' },
   ]}
 />
 
-<Flow
-  label="Fig. 2 When a booking fails"
-  caption="If the practice system is down or the slot is taken mid-call, the caller hears it plainly and the practice calls back."
-  steps={[
-    { title: 'Booking fails', note: 'system down or slot just taken' },
-    { title: 'Agent', note: 'apologises and says the team will call back', key: true },
-    { title: 'Callback request', note: 'logged for the practice team' },
-  ]}
+<Figure
+  label="Fig. 2 Every change"
+  caption="Before a change goes live, it runs through four or five scripted scenarios and is compared with past calls; an LLM judge scores each transcript against the expected outcome, and an admin reads the results before approving it. Every version can be restored."
+  spec={{
+    nodes: [
+      { id: 'ask', title: 'Change request', note: 'from a practice, in plain English', at: [0, 0] },
+      { id: 'runs', title: 'Test runs', note: 'four or five scripted scenarios, compared with past calls', at: [1, 0] },
+      { id: 'judge', title: 'LLM judge', note: 'scores each transcript against the expected outcome', kind: 'model', at: [2, 0] },
+      { id: 'admin', title: 'Admin approves', note: 'after reading the results', kind: 'person', n: 3, at: [3, 0] },
+      { id: 'saved', title: 'Version saved', note: 'every version can be restored', at: [4, 0] },
+    ],
+    edges: [
+      { from: 'ask', to: 'runs' },
+      { from: 'runs', to: 'judge' },
+      { from: 'judge', to: 'admin' },
+      { from: 'admin', to: 'saved' },
+    ],
+  }}
 />
 
 <Section label="The approach" ruled>
+
+<FigRef n={1} />
 
 ### Sound like the practice’s own receptionist
 
 The agent follows a licensed library of dental-practice scripts. Each practice gets one voice that stays the same from call to call, turn-taking that stops the agent talking over people, and the real date and time on every call, so “next Tuesday” means the right day.
 
+<FigRef n={2} />
+
 ### One script, three booking systems
 
+<Noted notes={['3 practice systems, 1 script', '4 tools the agent may call']}>
+
 CareStack, Core Practice and Dentally sit behind a single receptionist script and the same four tools. The number a caller rings from finds their record, and the agent confirms their name before it reads out, moves or cancels anything, which also covers patients on file under a different spelling.
+
+</Noted>
+
+<FigRef n={3} />
 
 ### How every change is evaluated
 
@@ -59,7 +98,11 @@ Practices ask for script changes in plain English. Before a change goes live, it
 
 ### Data handling
 
+<Noted notes={['Callers are told it’s an AI at the start']}>
+
 Call transcripts and logs are stored in Supabase; recordings stay with ElevenLabs and Twilio under their own retention settings. Callers are told at the start that they are speaking to an AI assistant and that the call may be recorded.
+
+</Noted>
 
 ### What I built
 

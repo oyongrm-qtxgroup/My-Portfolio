@@ -30,7 +30,7 @@ These change the locked decisions in `docs/REDESIGN_PLAN.md` §1–4 and `docs/c
 | D12 | Visual | Hero actions; one-column layout up to about 900 px; employer, date and stat labels in sentence case at 14–15 px; **blue only for links**; no red edge line on phones. | §4 Layout, System sheet mono role and accent token | D-04, D-17, D-19, D-14, D-30, D-11 |
 | D13 | CV layout | **ATS fixes plus light type changes**, single column kept, no "Selected outcomes" strip. | CVPage1/2 artboards (small changes) | R-07, D-20, D-21 |
 | D14 | AI numbers | **None can be published.** The case studies say so plainly and rest on system facts. | none | R-03, H-01, D-23 |
-| D15 | AI system facts | **Cleared to publish:** model and vendor names, evaluation method, data handling. **Not cleared:** screenshots, demo number, recordings. | §2 #6 (screenshots) stays allowed but unused | H-02, H-07, H-10, D-06 |
+| D15 | AI system facts | **Cleared to publish:** model and vendor names, evaluation method, data handling. **Not cleared:** screenshots, demo number, recordings. **Added 25 Oct 2026 (DESIGN_PLAN DS9):** invented, labelled illustrations are allowed (the illustrative call on Jayne Bandy AI, the worked shift on Ziaris): written from scratch, invented names, times and practice, never drawn from recordings, test calls or the licensed script library. | §2 #6 (screenshots) stays allowed but unused | H-02, H-07, H-10, D-06 |
 | D16 | Caller identity | Jayne Bandy AI matches the **caller's number and name**. Wording follows that; details come from the facts sheet. | none | H-08 |
 | D17 | Ortigas team | **"Led a four-person development team"** on the site, CV and case study. | none | R-11, H-20 |
 | D18 | Team facts | Supplied through the facts sheet (§4). | none | H-04 |
@@ -127,7 +127,7 @@ Because all work goes through the single branch `ccr-e6bc818b-pfij6d`, **one pul
   - **Availability line:** a new `availability` field in `profile.yaml`, shown at body size under the headline and in the CV header. The locked location line is unchanged. Draft: "Open to senior AI and automation roles with Australian teams: remote on contract, or relocating with visa sponsorship. UTC+8, overlapping most of the Sydney working day."
   - **Identity line:** full name, title, eight years.
   - **Hero actions:** "Download CV" and "Selected work".
-  - **Header and footer:** wordmark "Raymundo Oyong", no "VOL. 2026", page titles end "— Raymundo Oyong". The footer leads with name, email, LinkedIn and CV, and the colophon shrinks to one line with an unambiguous date ("24 Oct 2026").
+  - **Header and footer:** wordmark "Raymundo Oyong", no "VOL. 2026", page titles end "— Raymundo Oyong". The footer leads with name, email, LinkedIn and CV, and the colophon shrinks to one line with an unambiguous date ("24 Oct 2026"). *(Revised by DESIGN_PLAN call 1, Step 12: on the home page and case studies, which end in the contact set, the footer is colophon, Privacy and theme switch only; /cv/, /privacy/ and the 404 keep the full footer.)*
   - **404:** "Page not found" with links to Work, CV and Contact; the footer sits at the bottom on short pages.
   - **Contact section:** employer-first heading; label "What's it about?"; no example placeholders (format hints under the labels instead); Name marked "(optional)"; 2 px focus underline; after a send, the form is replaced by the confirmation; "Email is the fastest way to reach me." In verify, the form-state assertions change to match.
   - **Motion:** drop the count-up and its script; headline visible from first paint; the phone header renders in its final state from first paint. Confirm the jump first with a CLS trace on a phone profile, then fix it.
@@ -175,7 +175,7 @@ Because all work goes through the single branch `ccr-e6bc818b-pfij6d`, **one pul
 
 - **Findings:** H-12, D-05, D-15, D-18, D-31, D-14, D-30 (colour), H-23, D-16, D-17, D-19, D-11, D-12, R-12, D-23 (figures), D-25 (quotes and list markers).
 - **Content:**
-  - New order per D4. Capabilities merges `skills.yaml` lead areas and foundations into one line per area, linking to the project that proves it; no proof lists.
+  - New order per D4. Capabilities merges `skills.yaml` lead areas and foundations into one line per area, linking to the project that proves it; no proof lists. *(DESIGN_PLAN Step 13: now a proof grid, one row per area with its one-line summary, the work across, a dot linking to the proof and a ring for work that used the area without writing it up.)*
   - Three principles.
   - New figures strip (see "Calls I made").
   - Each figure and claim appears once on the page; the PR includes a table of where each fact now lives.

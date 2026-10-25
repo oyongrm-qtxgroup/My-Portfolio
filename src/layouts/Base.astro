@@ -2,13 +2,15 @@
 import { ClientRouter } from 'astro:transitions';
 import archivoLatin from '../assets/fonts/archivo-subset.woff2?url';
 import serifLatin from '../assets/fonts/source-serif-4-subset.woff2?url';
+import monoLatin from '../assets/fonts/plex-mono-400-subset.woff2?url';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
-import { tokensCss } from '../design/tokens';
+import { palettes, tokensCss } from '../design/tokens';
 import { ogImageFor } from '../lib/pages';
 import '../styles/fonts.css';
 import '../styles/base.css';
 import '../styles/motion.css';
+import '../styles/print.css';
 
 interface Props {
   title?: string;
@@ -16,6 +18,10 @@ interface Props {
   noindex?: boolean;
   /** Structured data (schema.org) for this page, rendered as JSON-LD. */
   jsonLd?: Record<string, unknown>;
+  /** "article" for the case studies (DESIGN_PLAN Step 17). */
+  ogType?: 'website' | 'article';
+  /** The page ends in a ContactSet, so the footer drops its contact links (DESIGN_PLAN call 1). */
+  slimFooter?: boolean;
 }
 
 const {
@@ -23,6 +29,8 @@ const {
   description = 'Raymundo Oyong builds AI and software that does the work people shouldn’t have to: voice agents, document AI with sources, and process automation.',
   noindex = false,
   jsonLd,
+  slimFooter = false,
+  ogType = 'website',
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -30,14 +38,14 @@ const image = new URL(await ogImageFor(Astro.url.pathname), Astro.site);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en-AU">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
     {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content="Raymundo Oyong" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -46,16 +54,23 @@ const image = new URL(await ogImageFor(Astro.url.pathname), Astro.site);
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="theme-color" content="#F6F6F3" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#131412" media="(prefers-color-scheme: dark)" />
+    <!-- Set from the active theme by the bootstrap below, so the browser chrome matches. -->
+    <meta name="theme-color" content={palettes.paper.paper} />
     <link rel="sitemap" href="/sitemap.xml" />
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
     <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="preload" href={archivoLatin} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={serifLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={monoLatin} as="font" type="font/woff2" crossorigin />
     <style is:inline set:html={tokensCss} />
-    <script is:inline>
+    <script
+      is:inline
+      define:vars={{ PAPER_DAY: palettes.paper.paper, PAPER_NIGHT: palettes.night.paper }}
+    >
       // Applies the saved theme before first paint. 'auto' follows the OS.
       // Also marks the page as scripted, so the phone header renders in its final shape.
       document.documentElement.classList.add('js');
@@ -63,16 +78,23 @@ const image = new URL(await ogImageFor(Astro.url.pathname), Astro.site);
         if (window.__themeBoot) return;
         window.__themeBoot = true;
         const media = matchMedia('(prefers-color-scheme: dark)');
+        // Where storage is blocked, the theme switch keeps the choice in memory
+        // (window.__themeChoice) for as long as this document lives.
         const apply = () => {
           let choice;
           try {
             choice = localStorage.getItem('theme');
-          } catch {}
+          } catch {
+            choice = window.__themeChoice;
+          }
           if (choice !== 'paper' && choice !== 'night') choice = 'auto';
           const night = choice === 'night' || (choice === 'auto' && media.matches);
           const root = document.documentElement;
           root.dataset.theme = night ? 'night' : 'paper';
           root.dataset.themeChoice = choice;
+          document
+            .querySelector('meta[name="theme-color"]')
+            ?.setAttribute('content', night ? PAPER_NIGHT : PAPER_DAY);
         };
         apply();
         media.addEventListener('change', apply);
@@ -96,7 +118,7 @@ const image = new URL(await ogImageFor(Astro.url.pathname), Astro.site);
       <main id="main">
         <slot />
       </main>
-      <SiteFooter />
+      <SiteFooter slim={slimFooter} />
     </div>
     <script>
       // An ink line at the top, only when a page change takes longer than 150 ms.

@@ -15,7 +15,7 @@
   skill: voice-ai
   body: >-
     When an AI product gets something wrong, I look at the data and the connections first. Most
-    "it couldn’t find my appointment" calls on Jayne Bandy AI were patients on file under a
+    “it couldn’t find my appointment” calls on Jayne Bandy AI were patients on file under a
     different spelling; matching on the caller’s number fixed them, with no change to the model.
 
 - id: spreadsheet-is-the-spec

@@ -1,10 +1,11 @@
 // Builds nothing: run `npm run build` first. Serves the built static pages
 // (scripts/serve-static.mjs), then checks every route at phone, tablet and desktop
 // widths in both themes: axe-core (WCAG 2.2 A/AA), no sideways scrolling, and a
-// screenshot of each. The contact action and Turnstile are mocked in the browser;
-// the real action is exercised on the Vercel preview.
+// screenshot of each; then layout shift with the fonts held back (the worst case).
+// The contact action and Turnstile are mocked in the browser; the real action is
+// exercised on the Vercel preview.
 // Usage: node scripts/verify.mjs [screenshot-dir]
-import { mkdirSync, readFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import { chromium } from 'playwright';
@@ -17,7 +18,7 @@ const PORT = 4329;
 const BASE = `http://localhost:${PORT}`;
 const ROUTES = ['/', '/work/jayne-bandy-ai/', '/work/sap-automation/', '/work/ziaris/', '/cv/', '/privacy/', '/system/', '/no-such-page'];
 // 320 px is WCAG reflow (a 1280 px window at 400% zoom); 390 also covers 200% zoom.
-const WIDTHS = [320, 390, 768, 1440];
+const WIDTHS = [320, 390, 768, 1024, 1440, 1920];
 const THEMES = ['paper', 'night'];
 const outDir = process.argv[2];
 if (outDir) mkdirSync(outDir, { recursive: true });
@@ -55,6 +56,8 @@ try {
       );
       await context.addInitScript((t) => localStorage.setItem('theme', t), theme);
       const page = await context.newPage();
+      // Archivo is font-display: optional; fill the cache so the shots show it.
+      await page.goto(BASE + '/', { waitUntil: 'networkidle' });
       for (const route of ROUTES) {
         const tag = `${route} @${width} ${theme}`;
         await page.goto(BASE + route, { waitUntil: 'networkidle' });
@@ -69,12 +72,103 @@ try {
         );
         if (overflow > 0) failures.push(`${tag}: scrolls sideways by ${overflow}px`);
 
+        // Lists of short items (stack, meta): no item breaks inside ("GPT-" / "5.5"),
+        // and no rendered line starts with a separator ("· Supabase").
+        const lists = await page.evaluate(() => {
+          const out = [];
+          for (const li of document.querySelectorAll('[data-stack-list] > li')) {
+            const lines = li.getBoundingClientRect().height / parseFloat(getComputedStyle(li).lineHeight);
+            if (lines < 1.5) continue;
+            // Wrapping inside is right only for an item longer than the whole line.
+            li.style.whiteSpace = 'nowrap';
+            const fits = li.scrollWidth <= li.parentElement.clientWidth - parseFloat(getComputedStyle(li).marginLeft);
+            li.style.whiteSpace = '';
+            if (fits) out.push(`"${li.textContent}" breaks inside`);
+          }
+          for (const el of document.querySelectorAll('.stack, .meta dd, [data-stack-list]')) {
+            const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+            let lastTop = null;
+            while (walker.nextNode()) {
+              const node = walker.currentNode;
+              for (let i = 0; i < node.length; i++) {
+                if (!node.data[i].trim()) continue;
+                const range = document.createRange();
+                range.setStart(node, i);
+                range.setEnd(node, i + 1);
+                const top = Math.round(range.getBoundingClientRect().top);
+                if (lastTop === null || top > lastTop + 2) {
+                  if (node.data[i] === '·') out.push(`a line starts with "·" in "${el.textContent.trim().slice(0, 40)}"`);
+                  lastTop = top;
+                }
+              }
+            }
+          }
+          return out;
+        });
+        for (const l of lists) failures.push(`${tag}: ${l}`);
+
+        // Illustrations are invented (DS9): nothing in them may look like a phone number.
+        const phoneLike = await page.evaluate(() =>
+          [...document.querySelectorAll('.transcript, [data-ledger]')]
+            .map((el) => el.textContent.replace(/\b(19|20)\d{2}\b/g, ''))
+            .find((t) => /\+?\d[\d ()-]{8,}\d/.test(t)),
+        );
+        if (phoneLike) failures.push(`${tag}: something that looks like a phone number is in an illustration`);
+        // The worked shift shows no money: no currency symbol, code or amount (DS9).
+        const money = await page.evaluate(() =>
+          [...document.querySelectorAll('[data-ledger]')].some((el) =>
+            /[$€£¥₱]|\b(AUD|USD|PHP)\b|\d+\.\d{2}\b/.test(el.textContent),
+          ),
+        );
+        if (money) failures.push(`${tag}: a currency symbol or amount is in the worked shift`);
+
+        // A project's glyph is drawn from the same spec as a figure on its page.
+        if (route.startsWith('/work/')) {
+          const glyph = await page.evaluate(() => {
+            const g = document.querySelector('.cs-glyph svg[data-glyph]');
+            const figs = [...document.querySelectorAll('svg[data-figure]')].map((f) => [f.dataset.figure, f.dataset.boxes]);
+            return g && { key: g.dataset.glyph, boxes: g.dataset.boxes, match: figs.some(([k, n]) => k === g.dataset.glyph && n === g.dataset.boxes) };
+          });
+          if (!glyph) failures.push(`${tag}: no project glyph`);
+          else if (!glyph.match) failures.push(`${tag}: the glyph doesn't match a figure on the page`);
+        }
+
+        // Figures: margin red only on failure paths (DS7), never on a box or plain edge.
+        const red = await page.evaluate(() => {
+          const margin = getComputedStyle(document.documentElement).getPropertyValue('--margin').trim().toLowerCase();
+          const toHex = (c) => {
+            const m = c.match(/\d+/g);
+            return m ? '#' + m.slice(0, 3).map((n) => Number(n).toString(16).padStart(2, '0')).join('') : c;
+          };
+          const bad = [];
+          for (const el of document.querySelectorAll('[data-figure] *')) {
+            const cs = getComputedStyle(el);
+            if (cs.display === 'none') continue;
+            const isRed = [cs.stroke, cs.fill].some((c) => toHex(c) === margin);
+            if (isRed && !el.closest('.fail')) bad.push(el.getAttribute('class') ?? el.tagName);
+          }
+          return bad;
+        });
+        if (red.length) failures.push(`${tag}: margin red outside a failure path in a figure (${red.slice(0, 3).join(', ')})`);
+
+        // Typographic quotes in what people read (code samples aside).
+        if (width === 1440) {
+          const straight = await page.evaluate(() => {
+            const main = document.querySelector('main')?.cloneNode(true);
+            main?.querySelectorAll('code, pre, script, style, [data-allow-straight]').forEach((n) => n.remove());
+            return (main?.textContent ?? '').match(/.{0,30}"/)?.[0];
+          });
+          if (straight) failures.push(`${tag}: straight double quote in "${straight.trim()}"`);
+        }
+
         // Phones: a link that stands alone (not inside a sentence) is at least 44 px tall.
         if (width <= 390) {
           const small = await page.$$eval('a', (links) =>
             links
               .filter((a) => {
-                const box = a.getBoundingClientRect();
+                // A link stretched over its row (::after inset 0) is as big as the row.
+                const stretched = getComputedStyle(a, '::after').position === 'absolute';
+                const box = (stretched ? a.offsetParent ?? a : a).getBoundingClientRect();
                 if (!box.width || a.closest('[hidden], .visually-hidden, .skip')) return false;
                 return a.parentElement?.textContent.trim() === a.textContent.trim() && box.height < 44;
               })
@@ -103,6 +197,31 @@ try {
     }
   }
 
+  // Late fonts: every font response held back 2 s, cold cache. Archivo (optional)
+  // must never swap in, and the serif and mono swaps must not move the page.
+  for (const width of [390, 1440]) {
+    for (const route of ROUTES) {
+      const ctx = await browser.newContext({ viewport: { width, height: 900 } });
+      await ctx.addInitScript(() => {
+        window.__cls = 0;
+        new PerformanceObserver((list) => {
+          for (const e of list.getEntries()) if (!e.hadRecentInput) window.__cls += e.value;
+        }).observe({ type: 'layout-shift', buffered: true });
+      });
+      await ctx.route('**/*.woff2', async (r) => {
+        await new Promise((done) => setTimeout(done, 2000));
+        await r.continue();
+      });
+      const p = await ctx.newPage();
+      await p.goto(BASE + route, { waitUntil: 'load' });
+      await p.evaluate(() => document.fonts.ready);
+      await p.waitForTimeout(500);
+      const cls = await p.evaluate(() => window.__cls);
+      if (cls >= 0.02) failures.push(`${route} @${width} late fonts: CLS ${cls.toFixed(3)} (budget < 0.02)`);
+      await ctx.close();
+    }
+  }
+
   // Phone menu: a disclosure button; Escape closes it and returns focus; axe-clean when open.
   for (const theme of THEMES) {
     const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
@@ -114,8 +233,22 @@ try {
     const button = p.locator('.menu-button');
     if (!(await button.isVisible())) failures.push(`${tag}: menu button not shown`);
     else {
+      // Opening the menu pins the header; the wordmark and button must not move.
+      const boxes = () =>
+        p.evaluate(() =>
+          ['.site-header .brand', '.menu-button'].map((s) => {
+            const r = document.querySelector(s).getBoundingClientRect();
+            return [Math.round(r.x), Math.round(r.width)];
+          }),
+        );
+      await p.mouse.wheel(0, -100); // bring the tucked header back
+      await p.waitForTimeout(400);
+      const closed = await boxes();
       await button.focus();
       await p.keyboard.press('Enter');
+      const opened = await boxes();
+      if (JSON.stringify(closed) !== JSON.stringify(opened))
+        failures.push(`${tag}: header moves when the menu opens (${JSON.stringify(closed)} → ${JSON.stringify(opened)})`);
       const expanded = await button.getAttribute('aria-expanded');
       if (expanded !== 'true') failures.push(`${tag}: aria-expanded is ${expanded} after opening`);
       if (!(await p.locator('#phone-menu').isVisible())) failures.push(`${tag}: sheet not visible`);
@@ -123,7 +256,7 @@ try {
       const inert = await p.evaluate(() => document.querySelector('main')?.inert);
       if (!inert) failures.push(`${tag}: page behind the menu is not inert`);
       const small = await p.$$eval('#phone-menu a, #phone-menu button, .menu-button', (els) =>
-        els.filter((el) => el.getBoundingClientRect().height < 44 && el.matches('button, .sheet-link')).length,
+        els.filter((el) => el.getBoundingClientRect().height < 44 && el.matches('button, .sheet-link, .contact-set a')).length,
       );
       if (small) failures.push(`${tag}: ${small} target(s) under 44 px`);
       await p.addScriptTag({ content: axeSource });
@@ -148,6 +281,296 @@ try {
         locked: document.documentElement.classList.contains('menu-lock'),
       }));
       if (after.expanded !== 'false' || after.locked) failures.push(`${tag}: menu state leaked across navigation`);
+    }
+    await ctx.close();
+  }
+
+  // The menu's foot (Download CV, contact set, availability, theme) fits above the fold
+  // on the smallest phone we support, with 56 px link rows (DESIGN_PLAN Step 12).
+  for (const theme of THEMES) {
+    const ctx = await browser.newContext({ viewport: { width: 320, height: 568 } });
+    await ctx.addInitScript((t) => localStorage.setItem('theme', t), theme);
+    const p = await ctx.newPage();
+    const tag = `menu foot 320×568 ${theme}`;
+    await p.goto(BASE + '/', { waitUntil: 'networkidle' });
+    await p.locator('.menu-button').click();
+    const m = await p.evaluate(() => {
+      const sheet = document.querySelector('#phone-menu');
+      const foot = sheet.querySelector('.sheet-foot').getBoundingClientRect();
+      const rows = [...sheet.querySelectorAll('.sheet-link')].map((a) => a.getBoundingClientRect().height);
+      const need = ['.cs-button', '.cs-email', '.cs-links', '.sheet-availability', '.theme-switch'].filter(
+        (s) => !sheet.querySelector(s),
+      );
+      return { bottom: foot.bottom, scroll: sheet.scrollHeight - sheet.clientHeight, rows, need };
+    });
+    if (m.need.length) failures.push(`${tag}: missing ${m.need.join(', ')}`);
+    if (m.bottom > 568 || m.scroll > 0) failures.push(`${tag}: foot ends at ${Math.round(m.bottom)} px (fold 568)`);
+    if (m.rows.some((h) => h < 56)) failures.push(`${tag}: link rows ${m.rows.map(Math.round).join('/')} px (56 min)`);
+    if (outDir) await p.screenshot({ path: join(outDir, `menu-open-320x568-${theme}.png`) });
+    await ctx.close();
+  }
+
+  // One contact set per screen-end: where a page ends in the contact block, email,
+  // LinkedIn, GitHub and the CV each appear once between it and the end of the page.
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const p = await ctx.newPage();
+    for (const [route, end] of [
+      ['/', '#contact'],
+      ['/work/jayne-bandy-ai/', '.closing'],
+      ['/work/ziaris/', '.closing'],
+      ['/work/sap-automation/', '.closing'],
+    ]) {
+      await p.goto(BASE + route, { waitUntil: 'networkidle' });
+      const counts = await p.evaluate((sel) => {
+        const start = document.querySelector(sel);
+        const links = [...document.querySelectorAll('main a, .site-footer a')].filter(
+          (a) =>
+            (start.compareDocumentPosition(a) & Node.DOCUMENT_POSITION_FOLLOWING || start.contains(a)) &&
+            a.checkVisibility(), // the form's failed-send fallback stays hidden until it's needed
+        );
+        const kinds = {
+          email: (h) => h.startsWith('mailto:'),
+          linkedin: (h) => h.includes('linkedin.com'),
+          github: (h) => /^https:\/\/github\.com\/[^/]+\/?$/.test(h),
+          cv: (h) => h.endsWith('.pdf'),
+        };
+        return Object.fromEntries(
+          Object.entries(kinds).map(([k, test]) => [k, links.filter((a) => test(a.getAttribute('href'))).length]),
+        );
+      }, end);
+      for (const [k, n] of Object.entries(counts))
+        if (n !== 1) failures.push(`contact set ${route}: ${k} appears ${n} times at the end of the page`);
+    }
+    await ctx.close();
+  }
+
+  // Proof grid (DESIGN_PLAN Step 13): every dot links to something that exists, every
+  // case study's "Skills shown" tag lands on a grid row, and the table has headers.
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const p = await ctx.newPage();
+    await p.goto(BASE + '/', { waitUntil: 'networkidle' });
+    const grid = await p.evaluate(() => {
+      const table = document.querySelector('.proof-grid table');
+      return {
+        rows: [...document.querySelectorAll('.proof-grid tbody tr')].map((tr) => tr.id),
+        colHeads: table?.querySelectorAll('thead th[scope="col"]').length ?? 0,
+        rowHeads: table?.querySelectorAll('tbody th[scope="row"]').length ?? 0,
+        dots: [...document.querySelectorAll('.proof-grid a.mark')].map((a) => ({
+          href: a.getAttribute('href'),
+          name: a.getAttribute('aria-label'),
+          ok: a.getAttribute('href').startsWith('#') ? !!document.getElementById(a.getAttribute('href').slice(1)) : null,
+        })),
+      };
+    });
+    if (grid.rows.length < 10 || grid.rowHeads !== grid.rows.length || grid.colHeads < 5)
+      failures.push(`proof grid: ${grid.rows.length} rows, ${grid.rowHeads} row headers, ${grid.colHeads} column headers`);
+    for (const d of grid.dots) {
+      if (!/^Shown in /.test(d.name ?? '')) failures.push(`proof grid: dot to ${d.href} has no accessible name`);
+      if (d.ok === false) failures.push(`proof grid: dot to ${d.href} lands nowhere`);
+      if (d.ok === null && (await fetch(BASE + d.href)).status !== 200) failures.push(`proof grid: dot to ${d.href} is broken`);
+    }
+    for (const route of ['/work/jayne-bandy-ai/', '/work/ziaris/', '/work/sap-automation/']) {
+      await p.goto(BASE + route, { waitUntil: 'networkidle' });
+      const tags = await p.$$eval('.tags a', (as) => as.map((a) => a.getAttribute('href')));
+      if (!tags.length) failures.push(`${route}: no "Skills shown" tags`);
+      for (const href of tags)
+        if (!href.startsWith('/#') || !grid.rows.includes(href.slice(2)))
+          failures.push(`${route}: skill tag ${href} is not a proof-grid row`);
+    }
+    await ctx.close();
+  }
+
+  // Career timeline (DESIGN_PLAN Step 14): every role's segment is as long as its dates,
+  // across on wide screens and down on phones, on the home page and /cv/.
+  for (const [route, width] of [['/', 1440], ['/', 390], ['/cv/', 1440], ['/cv/', 390]]) {
+    const ctx = await browser.newContext({ viewport: { width, height: 900 } });
+    const p = await ctx.newPage();
+    await p.goto(BASE + route, { waitUntil: 'networkidle' });
+    const off = await p.evaluate(() => {
+      const tl = document.querySelector('.timeline');
+      if (!tl) return ['no timeline'];
+      const track = tl.querySelector('.track').getBoundingClientRect();
+      const from = +tl.dataset.from;
+      const span = +tl.dataset.to - from;
+      const down = track.height > track.width;
+      const length = down ? track.height : track.width;
+      return [...tl.querySelectorAll('.segment')].flatMap((el) => {
+        const r = el.getBoundingClientRect();
+        const want = ((+el.dataset.end - +el.dataset.start) / span) * length - 2; // the 2 px gap
+        const got = down ? r.height : r.width;
+        return Math.abs(got - want) > 1 ? [`${el.dataset.start}–${el.dataset.end}: ${got.toFixed(1)} px, want ${want.toFixed(1)}`] : [];
+      });
+    });
+    for (const o of off) failures.push(`timeline ${route} @${width}: ${o}`);
+    await ctx.close();
+  }
+
+  // /cv/: the PDF download stays in reach while reading on wide screens.
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const p = await ctx.newPage();
+    await p.goto(BASE + '/cv/', { waitUntil: 'networkidle' });
+    await p.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
+    await p.waitForTimeout(300);
+    const box = await p.evaluate(() => {
+      const r = document.querySelector('.cv-sticky a')?.getBoundingClientRect();
+      return r && { top: r.top, bottom: r.bottom, left: r.left };
+    });
+    if (!box || box.top < 0 || box.bottom > 900) failures.push(`/cv/: sticky PDF download not in view mid-page (${JSON.stringify(box)})`);
+    await ctx.close();
+  }
+
+  // Wide screens (DESIGN_PLAN Step 15): one margin rule from 1100 px, on the row line's
+  // x, on whole device pixels at 1x, 1.5x and 2x, down to the window bottom on a short
+  // page; none below 1100 px.
+  for (const [width, dpr] of [[1024, 1], [1100, 1], [1440, 1], [1440, 1.5], [1920, 2]]) {
+    const ctx = await browser.newContext({ viewport: { width, height: 900 }, deviceScaleFactor: dpr });
+    const p = await ctx.newPage();
+    for (const route of ['/', '/privacy/']) {
+      await p.goto(BASE + route, { waitUntil: 'networkidle' });
+      const r = await p.evaluate(() => {
+        const wrap = document.querySelector('.wrap');
+        const cs = getComputedStyle(wrap, '::before');
+        if (cs.content === 'none' || cs.display === 'none') return { on: false };
+        const box = wrap.getBoundingClientRect();
+        const mar = document.querySelector('.row > .mar').getBoundingClientRect();
+        return {
+          on: true,
+          left: box.left + parseFloat(cs.left),
+          width: parseFloat(cs.width),
+          rowLine: mar.right - 2,
+          bottom: box.top + parseFloat(cs.top) + box.height,
+        };
+      });
+      const tag = `margin rule ${route} @${width}×${dpr}`;
+      if (width < 1100) {
+        if (r.on) failures.push(`${tag}: shown below 1100 px`);
+        continue;
+      }
+      if (!r.on) {
+        failures.push(`${tag}: missing`);
+        continue;
+      }
+      if (Math.abs(r.left - r.rowLine) > 0.01) failures.push(`${tag}: at x ${r.left}, row line at ${r.rowLine}`);
+      for (const v of [r.left * dpr, r.width * dpr])
+        if (Math.abs(v - Math.round(v)) > 0.01) failures.push(`${tag}: not on whole device pixels (${v})`);
+      if (r.bottom < 900 - 0.5) failures.push(`${tag}: stops at ${Math.round(r.bottom)} px, short of the window`);
+    }
+    await ctx.close();
+  }
+
+  // Share cards and icons (DESIGN_PLAN Step 16): every page's og:image and every icon
+  // the head names exists; /privacy/ shares the home card.
+  {
+    const ctx = await browser.newContext();
+    const p = await ctx.newPage();
+    for (const route of ROUTES.filter((r) => r !== '/no-such-page')) {
+      await p.goto(BASE + route, { waitUntil: 'domcontentloaded' });
+      const refs = await p.evaluate(() => [
+        document.querySelector('meta[property="og:image"]')?.content,
+        ...[...document.querySelectorAll('link[rel~="icon"], link[rel="apple-touch-icon"], link[rel="manifest"]')].map((l) => l.href),
+      ]);
+      if (!refs[0]) failures.push(`${route}: no og:image`);
+      if (route === '/privacy/' && !refs[0]?.endsWith('/og/home.png')) failures.push(`/privacy/: share card is ${refs[0]}, not the home card`);
+      for (const ref of refs.filter(Boolean)) {
+        const res = await fetch(BASE + new URL(ref).pathname);
+        if (res.status !== 200) failures.push(`${route}: ${new URL(ref).pathname} → ${res.status}`);
+      }
+    }
+    await ctx.close();
+  }
+
+  // Structured data (DESIGN_PLAN Step 17): JSON-LD parses; the home Person and WebSite,
+  // and each case study's Article (by that Person) and BreadcrumbList, carry their
+  // required fields; og:type matches; the sitemap gives every page a lastmod.
+  {
+    const ctx = await browser.newContext();
+    const p = await ctx.newPage();
+    const graphOf = async (route) => {
+      await p.goto(BASE + route, { waitUntil: 'domcontentloaded' });
+      const raw = await p.$$eval('script[type="application/ld+json"]', (ss) => ss.map((x) => x.textContent));
+      const og = await p.$eval('meta[property="og:type"]', (m) => m.content);
+      const nodes = raw.flatMap((r) => {
+        try {
+          const j = JSON.parse(r);
+          return j['@graph'] ?? [j];
+        } catch {
+          failures.push(`${route}: JSON-LD does not parse`);
+          return [];
+        }
+      });
+      return { nodes, og, byType: (t) => nodes.find((n) => n['@type'] === t) };
+    };
+    const missing = (route, node, keys) => {
+      for (const k of keys) if (node?.[k] === undefined) failures.push(`${route}: ${node?.['@type'] ?? 'node'} has no ${k}`);
+    };
+    const home = await graphOf('/');
+    const person = home.byType('Person');
+    if (!person) failures.push('/: no Person');
+    missing('/', person, ['@id', 'name', 'jobTitle', 'url', 'image', 'sameAs', 'alumniOf', 'hasOccupation']);
+    missing('/', home.byType('WebSite'), ['@id', 'url', 'name']);
+    if (home.og !== 'website') failures.push(`/: og:type ${home.og}`);
+    for (const route of ['/work/jayne-bandy-ai/', '/work/ziaris/', '/work/sap-automation/']) {
+      const g = await graphOf(route);
+      const art = g.byType('Article');
+      if (!art) failures.push(`${route}: no Article`);
+      missing(route, art, ['headline', 'author', 'about', 'dateModified', 'image', 'mainEntityOfPage']);
+      if (art && art.author?.['@id'] !== person?.['@id']) failures.push(`${route}: Article author is not the home Person`);
+      const crumbs = g.byType('BreadcrumbList')?.itemListElement ?? [];
+      if (crumbs.length < 2 || crumbs.some((c, i) => c.position !== i + 1 || !c.item))
+        failures.push(`${route}: BreadcrumbList incomplete`);
+      if (g.og !== 'article') failures.push(`${route}: og:type ${g.og}`);
+    }
+    const sitemap = await (await fetch(BASE + '/sitemap.xml')).text();
+    const urls = sitemap.match(/<url>.*?<\/url>/gs) ?? [];
+    if (!urls.length || urls.some((u) => !/<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/.test(u)))
+      failures.push('sitemap: a page has no lastmod');
+    await ctx.close();
+  }
+
+  // The phone menu threshold stays at 760 px (DESIGN_PLAN call 7): from 761 to 899 px,
+  // where rows already stack, the inline nav still fits on one line with the wordmark.
+  for (const width of [761, 899]) {
+    const ctx = await browser.newContext({ viewport: { width, height: 800 } });
+    const p = await ctx.newPage();
+    await p.goto(BASE + '/work/jayne-bandy-ai/', { waitUntil: 'networkidle' });
+    const h = await p.evaluate(() => {
+      const header = document.querySelector('.site-header');
+      const nav = header.querySelector('.inline-nav');
+      const brand = header.querySelector('.brand').getBoundingClientRect();
+      const items = [...nav.querySelectorAll('li')].map((li) => li.getBoundingClientRect());
+      return {
+        nav: getComputedStyle(nav).display !== 'none',
+        button: header.querySelector('.menu-button')?.checkVisibility() ?? false,
+        oneLine: items.every((r) => Math.abs(r.top - items[0].top) < 1) && Math.abs(items[0].top - brand.top) < 12,
+        overflow: header.scrollWidth > header.clientWidth + 1,
+      };
+    });
+    if (!h.nav || h.button) failures.push(`header @${width}: expected the inline nav, not the menu`);
+    if (!h.oneLine || h.overflow) failures.push(`header @${width}: the nav doesn't fit on one line beside the wordmark`);
+    await ctx.close();
+  }
+
+  // "On this page": each link lands with its heading below the sticky header.
+  for (const width of [390, 1440]) {
+    const ctx = await browser.newContext({ viewport: { width, height: 844 } });
+    const p = await ctx.newPage();
+    await p.goto(BASE + '/work/ziaris/', { waitUntil: 'networkidle' });
+    const links = await p.$$eval('.toc a', (as) => as.map((a) => a.getAttribute('href')));
+    if (!links.length) failures.push(`on this page @${width}: no contents list`);
+    for (const href of links) {
+      await p.evaluate(() => window.scrollTo(0, 0));
+      await p.click(`.toc a[href="${href}"]`);
+      await p.waitForTimeout(500);
+      const pos = await p.evaluate((id) => {
+        const h = document.getElementById(decodeURIComponent(id.slice(1)));
+        const header = document.querySelector('.site-header').getBoundingClientRect();
+        return h ? { top: h.getBoundingClientRect().top, under: Math.max(0, header.bottom) } : null;
+      }, href);
+      if (!pos) failures.push(`on this page @${width}: ${href} has no target`);
+      else if (pos.top < pos.under - 1 || pos.top > 200) failures.push(`on this page @${width}: ${href} lands at ${Math.round(pos.top)}px`);
     }
     await ctx.close();
   }
@@ -254,10 +677,68 @@ try {
   // Reduced motion: content must be fully visible with no animation running.
   const rm = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
   const page = await rm.newPage();
-  await page.goto(BASE, { waitUntil: 'networkidle' });
-  const running = await page.evaluate(() => document.getAnimations().length);
-  if (running > 0) failures.push(`reduced motion: ${running} animation(s) still running`);
+  for (const route of ['/', '/work/jayne-bandy-ai/', '/cv/', '/no-such-page']) {
+    await page.goto(BASE + route, { waitUntil: 'networkidle' });
+    const running = await page.evaluate(() => document.getAnimations().length);
+    if (running > 0) failures.push(`reduced motion ${route}: ${running} animation(s) still running`);
+  }
   await rm.close();
+
+  // Theme switch with storage blocked (private modes, strict settings): the choice
+  // still applies, survives an in-site page change, and drives the browser chrome.
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    await ctx.addInitScript(() => {
+      Object.defineProperty(window, 'localStorage', {
+        get() {
+          throw new DOMException('blocked', 'SecurityError');
+        },
+      });
+    });
+    const p = await ctx.newPage();
+    const tag = 'theme switch, storage blocked';
+    await p.goto(BASE + '/', { waitUntil: 'networkidle' });
+    await p.locator('.site-footer label:has(input[value="night"])').click();
+    const state = () =>
+      p.evaluate(() => ({
+        theme: document.documentElement.dataset.theme,
+        chrome: document.querySelector('meta[name="theme-color"]')?.getAttribute('content'),
+        checked: document.querySelector('.site-footer input[data-theme-set]:checked')?.value,
+      }));
+    const after = await state();
+    if (after.theme !== 'night' || after.checked !== 'night') failures.push(`${tag}: Night didn't apply (${JSON.stringify(after)})`);
+    if (after.chrome?.toUpperCase() !== '#131412') failures.push(`${tag}: theme-color is ${after.chrome}`);
+    await p.locator('.inline-nav a[href="/cv/"]').click();
+    await p.waitForURL('**/cv/');
+    await p.waitForTimeout(300);
+    if ((await state()).theme !== 'night') failures.push(`${tag}: choice lost on an in-site page change`);
+    await p.addScriptTag({ content: axeSource });
+    const res = await p.evaluate(() => window.axe.run(document.querySelector('.site-footer'), { runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa'] } }));
+    for (const v of res.violations) failures.push(`${tag}: axe ${v.id} ${v.help}`);
+    await ctx.close();
+  }
+
+  // Print: case studies fit on three A4 pages, printed from Night (paper colours).
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    await ctx.addInitScript(() => localStorage.setItem('theme', 'night'));
+    const p = await ctx.newPage();
+    await p.goto(BASE + '/', { waitUntil: 'networkidle' });
+    for (const route of ['/work/jayne-bandy-ai/', '/work/sap-automation/', '/work/ziaris/']) {
+      await p.goto(BASE + route, { waitUntil: 'networkidle' });
+      await p.evaluate(() => document.fonts.ready);
+      await p.emulateMedia({ media: 'print' });
+      await p.waitForTimeout(500); // the on-screen theme cross-fade (0.3 s)
+      const ink = await p.evaluate(() => getComputedStyle(document.body).color);
+      if (ink !== 'rgb(20, 20, 19)') failures.push(`print ${route}: text prints as ${ink}, not paper ink`);
+      const pdf = await p.pdf({ format: 'A4', preferCSSPageSize: true });
+      const pages = (pdf.toString('latin1').match(/\/Type\s*\/Page(?!s)/g) ?? []).length;
+      if (pages > 3) failures.push(`print ${route}: ${pages} A4 pages (budget 3)`);
+      if (outDir) writeFileSync(join(outDir, `print-${route.split('/')[2]}.pdf`), pdf);
+      await p.emulateMedia({ media: 'screen' });
+    }
+    await ctx.close();
+  }
 
   await browser.close();
 } catch (err) {

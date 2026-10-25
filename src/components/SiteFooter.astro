@@ -2,25 +2,55 @@
 import ThemeSwitch from './ThemeSwitch.astro';
 import { getProfile } from '../lib/content';
 
+interface Props {
+  /** Where the page ends in a ContactSet (home, case studies): colophon, Privacy and theme only. */
+  slim?: boolean;
+}
+
+const { slim = false } = Astro.props;
 const profile = await getProfile();
-// "25 Oct 2026": day, month and year can't be confused.
-const built = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+// "25 Oct 2026": day, month and year can't be confused. The date the content last
+// changed (profile.yaml `updated`), not the build date, which a daily rebuild moves.
+const updated = profile.updated.toLocaleDateString('en-AU', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
 ---
 
-<footer class="site-footer">
+<footer class:list={['site-footer', { slim }]}>
   <div class="contact-line">
-    <p class="who">{profile.name}</p>
+    {!slim && <p class="who">{profile.name}</p>}
     <ul class="links">
-      <li><a href={`mailto:${profile.email}`} class="target">{profile.email}</a></li>
-      <li><a href={profile.links.linkedin} class="target">LinkedIn</a></li>
-      <li><a href="/raymundo-oyong-cv.pdf" class="target" download>CV (PDF)</a></li>
+      {
+        !slim && (
+          <>
+            <li>
+              <a href={`mailto:${profile.email}`} class="target">
+                {profile.email}
+              </a>
+            </li>
+            <li>
+              <a href={profile.links.linkedin} class="target">
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="/raymundo-oyong-cv.pdf" class="target" download>
+                CV (PDF)
+              </a>
+            </li>
+          </>
+        )
+      }
       <li><a href="/privacy/" class="target">Privacy</a></li>
     </ul>
   </div>
-  <ThemeSwitch />
+  <ThemeSwitch name="footer" />
   <p class="colophon">
     Set in Archivo, Source Serif 4 and IBM Plex Mono. Built with Astro, hosted on Vercel.{' '}
-    <span class="nowrap">Updated {built}.</span>
+    <span class="nowrap">Updated {updated}.</span>
   </p>
 </footer>
 
@@ -30,10 +60,10 @@ const built = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 's
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 16px 24px;
-    padding: 20px 0 40px;
+    gap: var(--space-4) var(--space-6);
+    padding: var(--space-5) 0 var(--space-8);
     border-top: 1px solid var(--rule);
-    font: 12px/1.5 var(--font-mono);
+    font: var(--type-mono-s)/1.5 var(--font-mono);
     color: var(--ink-2);
   }
 
@@ -41,22 +71,22 @@ const built = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 's
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: 4px 20px;
+    gap: var(--space-1) var(--space-5);
   }
 
   .who {
-    font: 600 15px var(--font-body);
+    font: 600 var(--type-small) var(--font-body);
     color: var(--ink);
   }
 
   .links {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px 18px;
+    gap: var(--space-1) var(--space-5);
     margin: 0;
     padding: 0;
     list-style: none;
-    font-size: 13px;
+    font-size: var(--type-mono);
   }
 
   .links a {

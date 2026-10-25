@@ -2,8 +2,8 @@ import { defineCollection, reference } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-// What I can do, with the evidence for it. `lead` areas get a full block on the
-// home page; `foundation` areas sit in the "How I build" grid.
+// What I can do, with the evidence for it: the rows of the home page's proof grid,
+// `lead` areas set larger.
 const skills = defineCollection({
   loader: file('src/content/skills.yaml'),
   schema: z.object({
@@ -17,9 +17,15 @@ const skills = defineCollection({
         z.object({
           text: z.string(),
           work: reference('work').optional(),
+          // For a proof point with no project page: the Experience row(s) it comes from
+          // (DESIGN_PLAN Step 13). The proof grid's dot links there.
+          where: z.array(reference('roles')).optional(),
         }),
       )
       .min(1),
+    // Proof-grid rings: work where the area was used but isn't written up, from the CV
+    // bullets only. A project id, `qtx` (other QTX work) or `earlier` (earlier roles).
+    used: z.array(z.string()).default([]),
   }),
 });
 
@@ -50,6 +56,8 @@ const work = defineCollection({
     stack: z.array(z.string()).min(1),
     status: z.enum(['live', 'shipped', 'in-progress', 'handed-over']),
     skills: z.array(reference('skills')).min(1),
+    // When the page last changed: the sitemap's lastmod and the Article's dateModified.
+    updated: z.coerce.date(),
   }),
 });
 
@@ -64,7 +72,6 @@ const roles = defineCollection({
     title: z.string(),
     start: z.string(),
     end: z.string().optional(),
-    span: z.string(),
     summary: z.string(),
     highlights: z.array(z.string()).default([]),
     projects: z
@@ -84,9 +91,19 @@ const profile = defineCollection({
     summary: z.string(),
     location: z.string(),
     availability: z.string(),
+    availabilityChecked: z.coerce.string().regex(/^\d{4}-\d{2}$/),
     email: z.email(),
     links: z.object({ linkedin: z.url(), github: z.url() }),
-    figures: z.array(z.object({ value: z.string(), label: z.string() })).min(3).max(4),
+    // Repos shown in the Proof band (DESIGN_PLAN DS1): only these, each only while public.
+    github: z.object({
+      user: z.string(),
+      repos: z.array(z.object({ name: z.string(), line: z.string().optional() })).min(1),
+    }),
+    // The date the content last changed, for the footer (not the build date: a daily
+    // GitHub rebuild mustn't move it).
+    updated: z.coerce.date(),
+    // Each figure links to the case study that proves it (DESIGN_PLAN Step 12).
+    figures: z.array(z.object({ value: z.string(), label: z.string(), work: reference('work') })).min(3).max(4),
     cv: z.object({
       name: z.string(),
       title: z.string(),
@@ -107,4 +124,22 @@ const profile = defineCollection({
   }),
 });
 
-export const collections = { skills, principles, work, roles, profile };
+// Recommendations, quoted word for word (DESIGN_PLAN DS3, DS15). Attributed by role and
+// employer only; no entry without the writer's consent date.
+const endorsements = defineCollection({
+  loader: file('src/content/endorsements.yaml'),
+  schema: z.object({
+    order: z.number().int(),
+    quote: z.string().min(1),
+    role: z.string(),
+    employer: z.string(),
+    relationship: z.string().optional(),
+    work: reference('work').optional(),
+    home: z.boolean().default(false),
+    source_url: z.url(),
+    consented: z.coerce.date(),
+    checked: z.coerce.date(),
+  }),
+});
+
+export const collections = { skills, principles, work, roles, profile, endorsements };

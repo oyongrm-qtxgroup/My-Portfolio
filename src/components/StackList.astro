@@ -1,0 +1,42 @@
+---
+// A run of short items ("Twilio · ElevenLabs · GPT-5.5") that wraps cleanly: an item
+// moves to the next line whole ("GPT-" / "5.5" can't happen) and only wraps inside
+// when it is longer than the whole line; no line starts with a separator. Each
+// separator sits in the gap before its item; the list is shifted left by the gap
+// and clipped there, so the separator of an item that starts a line is cut off.
+interface Props {
+  items: string[];
+  class?: string;
+}
+
+const { items, class: className } = Astro.props;
+---
+
+<ul class:list={['stack-list', className]} data-stack-list>
+  {items.map((item) => <li>{item}</li>)}
+</ul>
+
+<style>
+  .stack-list {
+    --sep: 1.1em;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 0 0 calc(-1 * var(--sep));
+    padding: 0;
+    list-style: none;
+    clip-path: inset(-0.5em -0.5em -0.5em var(--sep));
+  }
+
+  li {
+    position: relative;
+    min-width: 0;
+    margin-left: var(--sep);
+  }
+
+  li::before {
+    content: '·' / '';
+    position: absolute;
+    left: calc(-0.5 * var(--sep));
+    transform: translateX(-50%);
+  }
+</style>

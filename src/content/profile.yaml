@@ -23,21 +23,43 @@ main:
   availability: >-
     Open to remote senior AI and automation roles anywhere, and to relocating outside the
     Philippines with visa sponsorship. UTC+8.
+  # When the availability line was last confirmed (YYYY-MM); shown beside it.
+  availabilityChecked: 2026-10
   email: oyongrm@gmail.com
   links:
     linkedin: https://www.linkedin.com/in/raymundo-oyong/
     github: https://github.com/oyongrm-qtxgroup
-  # Outcomes only: never hours logged, tasks closed or tickets counted.
+  # Code shown in the Proof band (docs/DESIGN_PLAN.md DS1). Only these repos appear,
+  # each only while it is public. `line` is ours and is checked like all content;
+  # GitHub's own description is used only where a repo has no line.
+  github:
+    user: oyongrm-qtxgroup
+    repos:
+      - name: My-Portfolio
+        line: This site. Astro, static pages, and a CV PDF and share images built from the same content, each checked in CI.
+      - name: portpeek
+        line: A Windows widget that shows which program holds each localhost port, names the project behind it, and frees the port in two clicks. Tauri, Rust and TypeScript.
+      - name: Clear-Path
+        line: A personal finance app for budgets, debts, expenses and savings goals, each person’s data kept apart by row-level security. React, TypeScript and Supabase.
+      - name: Craft-Track
+        line: An offline Windows app for a small craft business, covering orders, customers, product costs, stock alerts and spending. C#, WPF and SQLite.
+  # Bump when the content changes; the footer's "Updated" date.
+  updated: 2026-10-25
+  # Outcomes only: never hours logged, tasks closed or tickets counted. `work` is the
+  # case study each figure links to.
   figures:
     - value: '3'
       label: practice systems behind one AI receptionist
+      work: jayne-bandy-ai
     - value: 70–80%
       label: less manual SAP processing
+      work: sap-automation
     - value: 100+ h
       label: of HR work a month moved to a bot
+      work: sap-automation
   # CV only (rendered at /cv/ and in the PDF). Harvard rules: no phone, no photo.
   cv:
-    name: Raymundo M. Oyong
+    name: Raymundo Oyong
     title: Senior AI & Automation Engineer
     location: Bulacan, Philippines
     site: raymundo-oyong.vercel.app

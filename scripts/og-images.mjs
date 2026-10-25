@@ -27,6 +27,9 @@ const hash = createHash('sha256');
 
 try {
   const page = await browser.newPage({ viewport: { width: 1200, height: 630 } });
+  // Archivo is font-display: optional: fill the cache first so every card renders with it.
+  await page.goto(`${base}/og/${slugs[0]}/`, { waitUntil: 'networkidle' });
+  await page.evaluate(() => document.fonts.ready);
   for (const slug of slugs) {
     await page.goto(`${base}/og/${slug}/`, { waitUntil: 'networkidle' });
     await page.evaluate(() => document.fonts.ready);

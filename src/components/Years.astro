@@ -1,0 +1,20 @@
+---
+// The one short date form on the site: "2026 – now", "2024 – 25" (src/lib/dates.ts).
+import { yearSpan } from '../lib/dates';
+
+interface Props {
+  start: string;
+  end?: string;
+  class?: string;
+}
+
+const { start, end, class: className } = Astro.props;
+---
+
+<span class:list={['years', 'tabular', className]}>{yearSpan(start, end)}</span>
+
+<style>
+  .years {
+    white-space: nowrap;
+  }
+</style>

@@ -3,10 +3,14 @@
 // public/og/<slug>.png by `npm run og`. Not linked, not in the sitemap, noindex.
 import { palettes } from '../../design/tokens';
 import { getPublicPages, type PublicPage } from '../../lib/pages';
+import { ALT, src } from '../../lib/portrait';
+import Glyph from '../../components/Glyph.astro';
 import '../../styles/fonts.css';
 
 export async function getStaticPaths() {
-  return (await getPublicPages()).map((page) => ({ params: { slug: page.slug }, props: { page } }));
+  return (await getPublicPages())
+    .filter((page) => page.card !== false)
+    .map((page) => ({ params: { slug: page.slug }, props: { page } }));
 }
 
 interface Props {
@@ -21,7 +25,7 @@ const vars = `:root{--paper:${t.paper};--ink:${t.ink};--ink2:${t.ink2};--rule:${
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en-AU">
   <head>
     <meta charset="utf-8" />
     <meta name="robots" content="noindex" />
@@ -60,6 +64,17 @@ const vars = `:root{--paper:${t.paper};--ink:${t.ink};--ink2:${t.ink2};--rule:${
         font-size: 64px;
         line-height: 1;
         color: var(--ink);
+      }
+      .mar.glyph-mar {
+        padding: 64px 24px 0 48px;
+      }
+      .mar.portrait {
+        padding: 56px 24px 0 44px;
+      }
+      .mar.portrait img {
+        display: block;
+        width: 132px;
+        height: 132px;
       }
       .who {
         font-family: 'Archivo Variable', sans-serif;
@@ -104,15 +119,12 @@ const vars = `:root{--paper:${t.paper};--ink:${t.ink};--ink2:${t.ink2};--rule:${
         font: 500 20px/1.4 'IBM Plex Mono', monospace;
         color: var(--ink2);
       }
+      /* One line, readable at feed size: the address (DESIGN_PLAN Step 16). */
       .foot {
         margin-top: auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
         padding-top: 20px;
         border-top: 2px solid var(--ink);
-        gap: 24px;
-        font: 500 18px 'IBM Plex Mono', monospace;
+        font: 500 22px 'IBM Plex Mono', monospace;
         letter-spacing: 0.02em;
         white-space: nowrap;
       }
@@ -123,7 +135,21 @@ const vars = `:root{--paper:${t.paper};--ink:${t.ink};--ink2:${t.ink2};--rule:${
   </head>
   <body>
     <div class="card">
-      <div class="mar" aria-hidden="true">RO</div>
+      {
+        page.slug === 'home' ? (
+          <div class="mar portrait">
+            <img src={src('paper', 'face', 264, 'webp')} alt={ALT} width="132" height="132" />
+          </div>
+        ) : page.slug.startsWith('work-') ? (
+          <div class="mar glyph-mar" aria-hidden="true">
+            <Glyph work={page.slug.slice('work-'.length)} width={120} />
+          </div>
+        ) : (
+          <div class="mar" aria-hidden="true">
+            RO
+          </div>
+        )
+      }
       <div class="body">
         <div class="who">Raymundo Oyong</div>
         <div class="kicker">{page.kicker}</div>
@@ -131,7 +157,6 @@ const vars = `:root{--paper:${t.paper};--ink:${t.ink};--ink2:${t.ink2};--rule:${
         {page.line && <p class="line">{page.line}</p>}
         {page.stack && <p class="stack">{page.stack}</p>}
         <div class="foot">
-          <span>Based in the Philippines · working with QTX, Sydney</span>
           <span class="site">raymundo-oyong.vercel.app</span>
         </div>
       </div>

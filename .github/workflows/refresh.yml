@@ -1,0 +1,31 @@
+# Keeps the GitHub repos on the site current (docs/DESIGN_PLAN.md DS2): once a day
+# it fetches the allow-listed repos, checks them against DENYLIST, compares them
+# with production and, only on a difference, starts a production rebuild through
+# the Vercel Deploy Hook. Code is unchanged by such a rebuild; only GitHub-derived
+# dates and languages move. Scheduled runs only fire from main; run it by hand
+# from the Actions tab too.
+name: Refresh GitHub repos
+
+on:
+  schedule:
+    - cron: '17 19 * * *' # 03:17 in the Philippines (UTC+8)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: node scripts/github-refresh.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DENYLIST: ${{ secrets.DENYLIST }}
+          VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
