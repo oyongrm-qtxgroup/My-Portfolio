@@ -198,7 +198,7 @@ Because all work goes through the single branch `ccr-e6bc818b-pfij6d`, **one pul
   - Lighthouse mobile ≥ 98, CLS < 0.02, home JS ≤ 15 KB gzip.
 - **Verified by:** standard checks, measured page heights before and after, a script counting repeated figures in the built home HTML, and keyboard and screen-reader passes over the new header.
 
-### Step 5a: Jayne Bandy AI case study, depth without numbers (M, medium risk, blocked on facts B) — in review
+### Step 5a: Jayne Bandy AI case study, depth without numbers (M, medium risk, blocked on facts B) — merged 25 Oct 2026 (#6)
 
 - **Findings:** H-02, H-07, H-08, H-10 (partial), H-21, D-06 (diagram), D-08, D-03 (byline), H-04 (role line), D-25 (Role field date).
 - **Changes:**
@@ -213,7 +213,7 @@ Because all work goes through the single branch `ccr-e6bc818b-pfij6d`, **one pul
 - **Risk:** publishing system detail. Mitigation: every sentence traced to your facts-sheet answer, nothing beyond what D15 clears, denylist run, and you read the page before merge.
 - **Verified by:** standard checks, the denylist, the figure readable at 390 px and announced sensibly by a screen reader, and your read-through.
 
-### Step 5b: NDIS platform case study replaces care-plan drafting (M, medium risk, blocked on facts C)
+### Step 5b: NDIS platform case study replaces care-plan drafting (M, medium risk, blocked on facts C) — in review
 
 - **Findings:** H-13, D-07, H-05, R-12, D-30 (the red IN PROGRESS stamp goes), H-04.
 - **Changes:**
@@ -293,7 +293,16 @@ Original questions:
 6. Identity: when the name is confirmed, what happens with shared family or landline numbers, and what the agent may read out, move or cancel.
 7. One trade-off: why ElevenLabs (or another choice), and something tried and dropped.
 
-**C: NDIS platform (Step 5b)**
+**C: NDIS platform, Ziaris (Step 5b): answered 25 Oct 2026**
+
+- C1 Lead; built most of it with one or two other developers. Live: staff use it day to day.
+- C2 SCHADS rates and penalty rules are configured by admins in the app; little hard-coded logic.
+- C3 Pay and invoice correctness: Finance signs off sample pay runs before each release (no automated pay tests are claimed).
+- C4 Reach comes from role (worker, coordinator, manager, Finance) plus assigned teams, sites and programs, checked by row-level security. Finance uploads a bank file; each line gets a suggested invoice match; Finance approves line by line.
+- C5 Designed for: unmatched payments stay open for Finance; workers with expired credentials can't be rostered and managers are warned first.
+- C6 Outcomes: spreadsheets replaced; pay from configured award rules; payroll and invoices reach MYOB without re-keying; Finance approves suggested matches.
+
+Original questions:
 
 1. Your role, team size, built vs inherited; is it live?
 2. How SCHADS award rules and rates are modelled and updated.
