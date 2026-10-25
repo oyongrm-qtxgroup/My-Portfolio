@@ -161,13 +161,13 @@ const noteTop = (box: Box) => 12 + box.title.length * TYPE.title * TYPE.lineGap;
   }
 
   .fig-title {
-    font: 500 13px var(--font-mono);
+    font: 500 var(--type-mono) var(--font-mono);
     letter-spacing: 0.05em;
     fill: var(--ink);
   }
 
   .fig-note {
-    font: 12px var(--font-mono);
+    font: var(--type-mono-s) var(--font-mono);
     fill: var(--ink-2);
   }
 
@@ -194,7 +194,7 @@ const noteTop = (box: Box) => 12 + box.title.length * TYPE.title * TYPE.lineGap;
   }
 
   .fig-label {
-    font: 11px var(--font-mono);
+    font: var(--type-mono-xs) var(--font-mono);
     fill: var(--margin);
   }
 
@@ -205,7 +205,7 @@ const noteTop = (box: Box) => 12 + box.title.length * TYPE.title * TYPE.lineGap;
   }
 
   .fig-n text {
-    font: 500 12px var(--font-mono);
+    font: 500 var(--type-mono-s) var(--font-mono);
     fill: var(--ink);
   }
 

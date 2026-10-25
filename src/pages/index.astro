@@ -252,12 +252,12 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
 
 <style>
   .hero {
-    padding-top: 40px;
-    padding-bottom: 16px;
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-4);
   }
 
   .headline {
-    font-size: clamp(44px, 7.4vw, 92px);
+    font-size: var(--type-display);
     max-width: 20ch;
   }
 
@@ -265,7 +265,7 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: 4px 16px;
+    gap: var(--space-1) var(--space-4);
     margin-top: 28px;
     font-family: var(--font-display);
     font-stretch: 80%;
@@ -273,12 +273,12 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
   }
 
   .identity-name {
-    font-size: clamp(26px, 3vw, 34px);
+    font-size: var(--type-subhead);
     font-weight: 700;
   }
 
   .identity-title {
-    font-size: clamp(20px, 2.2vw, 26px);
+    font-size: var(--type-lead-fluid);
     font-weight: 500;
     color: var(--ink-2);
   }
@@ -288,13 +288,13 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
   }
 
   .where {
-    margin-top: 20px;
+    margin-top: var(--space-5);
   }
 
   .identity-row {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: var(--space-4);
     margin-top: 28px;
   }
 
@@ -323,15 +323,15 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
   .fact-list > div {
     display: grid;
     grid-template-columns: 76px minmax(0, 1fr);
-    gap: 12px;
+    gap: var(--space-3);
     align-items: baseline;
-    padding: 10px 0;
+    padding: var(--space-3) 0;
     border-bottom: 1px solid var(--rule);
   }
 
   .fact-list dd {
     margin: 0;
-    font-size: 16px;
+    font-size: var(--type-ui);
     line-height: 1.45;
   }
 
@@ -340,8 +340,8 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
   }
 
   .checked {
-    margin-top: 10px;
-    font-size: 12px;
+    margin-top: var(--space-3);
+    font-size: var(--type-mono-s);
   }
 
   /* Wide screens: the portrait and the facts take the empty right of the hero. */
@@ -350,7 +350,7 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
       display: grid;
       grid-template-columns: minmax(0, 1fr) 220px;
       grid-template-rows: auto auto auto auto auto 1fr;
-      column-gap: 56px;
+      column-gap: var(--space-9);
     }
 
     .headline {
@@ -367,7 +367,7 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
     .facts {
       grid-column: 2;
       grid-row: 2 / -1;
-      margin-top: 32px;
+      margin-top: var(--space-7);
     }
 
     .identity-row :global(.face) {
@@ -377,7 +377,7 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
     .facts :global(.figure) {
       display: block;
       width: 220px;
-      margin-bottom: 20px;
+      margin-bottom: var(--space-5);
     }
 
     .fact-list > div {
@@ -389,18 +389,18 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
   .actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 20px;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
   }
 
   .action {
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    padding: 0 18px;
+    padding: 0 var(--space-5);
     border: 1px solid var(--ink);
     color: var(--ink);
-    font: 500 13px var(--font-mono);
+    font: 500 var(--type-mono) var(--font-mono);
     text-transform: uppercase;
     letter-spacing: 0.06em;
     text-decoration: none;
@@ -442,7 +442,7 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
 
   /* Stat labels in sentence case: they're facts people scan, not metadata. */
   .fig-label {
-    font-size: 15px;
+    font-size: var(--type-small);
     line-height: 1.4;
     color: var(--ink-2);
   }
@@ -450,8 +450,8 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
   .figures > div {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 28px 20px 32px;
+    gap: var(--space-3);
+    padding: 28px var(--space-5) var(--space-7);
     border-right: 1px solid var(--rule);
   }
 
@@ -465,7 +465,7 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
 
   .figures dd.display {
     order: -1;
-    font-size: clamp(36px, 4.4vw, 60px);
+    font-size: var(--type-display-s);
     line-height: 1;
     white-space: nowrap;
   }
@@ -520,7 +520,7 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
 
   .proof-kicker {
     margin: 0;
-    padding: 4px 0 8px;
+    padding: var(--space-1) 0 var(--space-2);
   }
 
   .proof-account {
@@ -537,18 +537,18 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
   }
 
   .proof-part + .proof-part {
-    margin-top: 32px;
+    margin-top: var(--space-7);
   }
 
   .quotes {
     display: flex;
     flex-direction: column;
     gap: 28px;
-    padding-top: 8px;
+    padding-top: var(--space-2);
   }
 
   .all-recs {
-    margin-top: 12px;
+    margin-top: var(--space-3);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -561,16 +561,16 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
     display: grid;
     grid-template-columns: 260px minmax(0, 1fr);
     grid-template-areas: 'name line' 'name meta';
-    gap: 4px 20px;
+    gap: var(--space-1) var(--space-5);
     align-items: baseline;
-    padding: 16px 0;
+    padding: var(--space-4) 0;
     border-top: 1px solid var(--rule);
   }
 
   .repo-name {
     grid-area: name;
     margin: 0;
-    font-size: 24px;
+    font-size: var(--type-title-s);
   }
 
   .repo-name a {
@@ -581,13 +581,13 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
   .repo-line {
     grid-area: line;
     max-width: 40em;
-    font-size: 18px;
+    font-size: var(--type-body);
     line-height: 1.45;
   }
 
   .repo-meta {
     grid-area: meta;
-    font-size: 12px;
+    font-size: var(--type-mono-s);
   }
 
   /* Principles at pull-quote scale: each one a statement, not a list item. */
@@ -601,7 +601,7 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
   }
 
   .principle-title {
-    font-size: clamp(30px, 3.6vw, 44px);
+    font-size: var(--type-heading);
     line-height: 1.02;
     max-width: 22ch;
   }
@@ -615,7 +615,7 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
 
   .more {
     display: inline-block;
-    margin-top: 16px;
+    margin-top: var(--space-4);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -624,19 +624,19 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
     scroll-margin-top: 80px;
     display: grid;
     grid-template-columns: 96px 150px minmax(0, 1fr);
-    gap: 20px;
+    gap: var(--space-5);
     align-items: baseline;
-    padding: 16px 0;
+    padding: var(--space-4) 0;
     border-bottom: 1px solid var(--rule);
   }
 
   .role-org {
-    font-size: 15px;
+    font-size: var(--type-small);
     font-weight: 600;
   }
 
   .role p {
-    font-size: 18px;
+    font-size: var(--type-body);
     line-height: 1.45;
   }
 
@@ -647,8 +647,8 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
   .contact {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 32px;
-    padding: 16px 0 24px;
+    gap: var(--space-7);
+    padding: var(--space-4) 0 var(--space-6);
   }
 
   /* Wide screens: email and profiles beside the form instead of an empty half. */
@@ -659,13 +659,13 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
     }
 
     .contact-side {
-      padding-top: 8px;
+      padding-top: var(--space-2);
     }
   }
 
   /* The closing statement: the page's last word, set near the headline's scale. */
   .ask {
-    font-size: clamp(40px, 6.4vw, 80px);
+    font-size: var(--type-display-m);
     line-height: 0.98;
     max-width: 14ch;
   }
@@ -678,7 +678,7 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
 
   @media (max-width: 900px) {
     .hero {
-      padding-top: 8px;
+      padding-top: var(--space-2);
     }
 
     .figures {
@@ -686,21 +686,21 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
     }
 
     .figures > div {
-      padding: 18px 16px 18px 0;
+      padding: var(--space-5) var(--space-4) var(--space-5) 0;
     }
 
     .figures > div + div {
-      padding-left: 16px;
+      padding-left: var(--space-4);
     }
 
     .role {
       grid-template-columns: auto minmax(0, 1fr);
-      gap: 6px 14px;
+      gap: var(--space-2) var(--space-4);
     }
 
     .role p {
       grid-column: 1 / -1;
-      font-size: 17px;
+      font-size: var(--type-body-s);
     }
 
     .repo {
@@ -719,7 +719,7 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
 
     .action {
       justify-content: center;
-      padding: 0 8px;
+      padding: 0 var(--space-2);
     }
   }
 
@@ -730,7 +730,7 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
 
     .figures > div,
     .figures > div + div {
-      padding: 16px 0;
+      padding: var(--space-4) 0;
       border-right: 0;
       border-bottom: 1px solid var(--rule);
     }
@@ -741,12 +741,12 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
 
     .principle {
       grid-template-columns: minmax(0, 1fr);
-      gap: 6px;
+      gap: var(--space-2);
       padding: var(--space-7) 0;
     }
 
     .principle-title {
-      font-size: 28px;
+      font-size: var(--type-title-m);
     }
   }
 </style>

@@ -274,19 +274,19 @@ const siteKey =
   .contact-form {
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: var(--space-6);
     max-width: 36em;
-    margin-top: 40px;
+    margin-top: var(--space-8);
   }
 
   .field {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-2);
   }
 
   label {
-    font: 12px var(--font-mono);
+    font: var(--type-mono-s) var(--font-mono);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -294,13 +294,13 @@ const siteKey =
   input,
   textarea {
     min-height: 44px;
-    padding: 10px 0;
+    padding: var(--space-3) 0;
     border: 0;
     border-bottom: 1.5px solid var(--ink-2);
     border-radius: 0;
     background: transparent;
     color: var(--ink);
-    font: 18px/1.5 var(--font-body);
+    font: var(--type-body)/1.5 var(--font-body);
   }
 
   textarea {
@@ -321,7 +321,7 @@ const siteKey =
   }
 
   .hint {
-    font-size: 16px;
+    font-size: var(--type-ui);
     line-height: 1.45;
     color: var(--ink-2);
   }
@@ -339,7 +339,7 @@ const siteKey =
   }
 
   .err {
-    font: 13px/1.5 var(--font-mono);
+    font: var(--type-mono)/1.5 var(--font-mono);
     color: var(--margin);
   }
 
@@ -363,7 +363,7 @@ const siteKey =
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 20px;
+    gap: var(--space-5);
     min-height: 52px;
   }
 
@@ -371,11 +371,11 @@ const siteKey =
     position: relative;
     min-height: 44px;
     min-width: 112px;
-    padding: 0 16px;
+    padding: 0 var(--space-4);
     border: 1px solid var(--ink);
     background: var(--ink);
     color: var(--paper);
-    font: 12px var(--font-mono);
+    font: var(--type-mono-s) var(--font-mono);
     text-transform: uppercase;
     letter-spacing: 0.06em;
     cursor: pointer;
@@ -429,7 +429,7 @@ const siteKey =
   .form-body {
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: var(--space-6);
   }
 
   .form-body[hidden],
@@ -441,16 +441,16 @@ const siteKey =
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 20px;
+    gap: var(--space-5);
   }
 
   .again {
     min-height: 44px;
-    padding: 0 16px;
+    padding: 0 var(--space-4);
     border: 1px solid var(--ink);
     background: none;
     color: var(--ink);
-    font: 12px var(--font-mono);
+    font: var(--type-mono-s) var(--font-mono);
     text-transform: uppercase;
     letter-spacing: 0.06em;
     cursor: pointer;
@@ -470,7 +470,7 @@ const siteKey =
 
   .note {
     margin-top: -8px;
-    font-size: 12px;
+    font-size: var(--type-mono-s);
     line-height: 1.6;
   }
 
@@ -481,7 +481,7 @@ const siteKey =
 
   .status,
   .failed {
-    font-size: 18px;
+    font-size: var(--type-body);
     line-height: 1.5;
   }
 

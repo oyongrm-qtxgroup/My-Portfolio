@@ -24,7 +24,7 @@ const attribution = [`${e.role}, ${e.employer}`, e.relationship].filter(Boolean)
 <style>
   .quote {
     margin: 0;
-    padding-top: 14px;
+    padding-top: var(--space-4);
     border-top: 1.5px solid var(--ink);
   }
 
@@ -35,7 +35,7 @@ const attribution = [`${e.role}, ${e.employer}`, e.relationship].filter(Boolean)
   blockquote p {
     position: relative;
     max-width: 34em;
-    font-size: 22px;
+    font-size: var(--type-lead);
     line-height: 1.45;
     text-wrap: pretty;
   }
@@ -48,8 +48,8 @@ const attribution = [`${e.role}, ${e.employer}`, e.relationship].filter(Boolean)
   }
 
   figcaption {
-    margin-top: 10px;
-    font-size: 12px;
+    margin-top: var(--space-3);
+    font-size: var(--type-mono-s);
     line-height: 1.6;
   }
 
@@ -61,7 +61,7 @@ const attribution = [`${e.role}, ${e.employer}`, e.relationship].filter(Boolean)
   /* Phones have no gutter to hang it in: the mark sits inline. */
   @media (max-width: 760px) {
     blockquote p {
-      font-size: 19px;
+      font-size: var(--type-body-m);
     }
 
     .mark {

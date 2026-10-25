@@ -2,6 +2,7 @@
 // Rules: docs/REDESIGN_PLAN.md §8 and the "Never" list in docs/design/System.dc.html.
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, extname, relative } from 'node:path';
+import { breakpoints } from '../src/design/tokens.ts';
 
 const ROOT = new URL('..', import.meta.url).pathname;
 const SCAN = ['src'];
@@ -32,6 +33,13 @@ const emoji = /\p{Extended_Pictographic}/u;
 // No italic is shipped (DESIGN_PLAN call 6): no <em> or *emphasis* in content.
 const italic = [/<em\b/i, /(?<![*\w])\*(?![\s*])[^*\n]+?(?<![\s*])\*(?![*\w])/];
 const isContent = (file) => /src\/content\/.+\.(mdx?|ya?ml)$/.test(file);
+// Scales and breakpoints (DESIGN_PLAN Step 18): type sizes come from the tokens, and
+// every width query uses a named breakpoint (the value, or one above it for min-width).
+// Share cards (1200 px images) and print (points) size themselves.
+const isStyled = (file) => /\.(astro|css)$/.test(file) && !/og\/\[slug\]|print\.css$/.test(file);
+const literalSize = /\bfont(-size)?\s*:[^;{}]*?(?<![\w-])\d+(\.\d+)?px/;
+const widths = new Set(Object.values(breakpoints).flatMap((v) => [v, v - 1, v + 1]));
+const widthQuery = /\(\s*(?:(?:min|max)-width\s*:\s*|width\s*[<>]=?\s*)(\d+)px/g;
 const headingLine = /^\s*(#{1,6}\s|<h[1-6][\s>])/i;
 
 function* walk(dir) {
@@ -51,6 +59,10 @@ for (const base of SCAN) {
       for (const [re, what] of cssRules) if (re.test(line)) problems.push(`${where}  ${what}`);
       for (const re of wordRules) if (re.test(line)) problems.push(`${where}  banned word "${line.match(re)[0]}"`);
       if (headingLine.test(line) && emoji.test(line)) problems.push(`${where}  emoji in a heading`);
+      if (isStyled(file) && literalSize.test(line)) problems.push(`${where}  literal font size (use a --type-* token)`);
+      if (isStyled(file) && line.includes('@media'))
+        for (const m of line.matchAll(widthQuery))
+          if (!widths.has(+m[1])) problems.push(`${where}  breakpoint ${m[1]}px is not a named one (tokens.ts)`);
       if (isContent(file) && !line.trimStart().startsWith('#') && italic.some((re) => re.test(line)))
         problems.push(`${where}  italic in content (none is shipped)`);
     });

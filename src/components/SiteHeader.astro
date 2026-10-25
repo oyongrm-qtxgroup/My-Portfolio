@@ -152,10 +152,10 @@ const ariaCurrent = (l: (typeof links)[number]) =>
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 8px 24px;
-    padding: 10px 0;
+    gap: var(--space-2) var(--space-6);
+    padding: 10px 0; /* sets the header's height (66 px), which scroll offsets assume */
     border-bottom: 2px solid var(--ink);
-    font: 400 13px var(--font-mono);
+    font: 400 var(--type-mono) var(--font-mono);
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }
@@ -209,7 +209,7 @@ const ariaCurrent = (l: (typeof links)[number]) =>
   .menu-button {
     min-width: 76px;
     min-height: 44px;
-    padding: 0 12px;
+    padding: 0 var(--space-3);
     border: 1px solid var(--ink);
     background: none;
     color: inherit;
@@ -230,7 +230,7 @@ const ariaCurrent = (l: (typeof links)[number]) =>
     inset: var(--sheet-top, 66px) 0 0;
     display: flex;
     flex-direction: column;
-    padding: 8px var(--pad) 24px;
+    padding: var(--space-2) var(--pad) var(--space-6);
     background: var(--paper);
     overflow-y: auto;
     text-transform: none;
@@ -246,14 +246,14 @@ const ariaCurrent = (l: (typeof links)[number]) =>
   .sheet-link {
     display: flex;
     align-items: baseline;
-    gap: 16px;
+    gap: var(--space-4);
     min-height: 56px;
-    padding: 10px 0;
+    padding: var(--space-2) 0;
     border-bottom: 1px solid var(--rule);
   }
 
   .sheet-no {
-    font: 12px var(--font-mono);
+    font: var(--type-mono-s) var(--font-mono);
     color: var(--ink-2);
   }
 
@@ -261,7 +261,7 @@ const ariaCurrent = (l: (typeof links)[number]) =>
     font-family: var(--font-display);
     font-stretch: 72%;
     font-weight: 700;
-    font-size: 36px;
+    font-size: var(--type-title);
     line-height: 1;
   }
 
@@ -289,7 +289,7 @@ const ariaCurrent = (l: (typeof links)[number]) =>
 
   .sheet-availability {
     padding-bottom: var(--space-2);
-    font: 13px/1.35 var(--font-body);
+    font: var(--type-mono)/1.35 var(--font-body);
     color: var(--ink-2);
   }
 
@@ -328,7 +328,7 @@ const ariaCurrent = (l: (typeof links)[number]) =>
 
     .inline-nav ul {
       flex-wrap: wrap;
-      gap: 8px 18px;
+      gap: var(--space-2) var(--space-5);
     }
 
     .has-menu .inline-nav {

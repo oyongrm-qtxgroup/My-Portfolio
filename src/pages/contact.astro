@@ -61,15 +61,15 @@ const stamp = `Received · ${new Date().toLocaleDateString('en-AU', { day: 'nume
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 20px;
-    padding: 40px 0 24px;
-    font-size: 19px;
+    gap: var(--space-5);
+    padding: var(--space-8) 0 var(--space-6);
+    font-size: var(--type-body-m);
     line-height: 1.5;
     max-width: 36em;
   }
 
   .result h1 {
-    font-size: clamp(48px, 8vw, 96px);
+    font-size: var(--type-display);
   }
 
   .received {
@@ -78,13 +78,13 @@ const stamp = `Received · ${new Date().toLocaleDateString('en-AU', { day: 'nume
 
   .errors {
     margin: 0;
-    padding-left: 20px;
+    padding-left: var(--space-5);
     color: var(--margin);
   }
 
   .back {
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    font-size: 13px;
+    font-size: var(--type-mono);
   }
 </style>

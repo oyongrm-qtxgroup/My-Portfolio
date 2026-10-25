@@ -60,10 +60,10 @@ const updated = profile.updated.toLocaleDateString('en-AU', {
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 16px 24px;
-    padding: 20px 0 40px;
+    gap: var(--space-4) var(--space-6);
+    padding: var(--space-5) 0 var(--space-8);
     border-top: 1px solid var(--rule);
-    font: 12px/1.5 var(--font-mono);
+    font: var(--type-mono-s)/1.5 var(--font-mono);
     color: var(--ink-2);
   }
 
@@ -71,22 +71,22 @@ const updated = profile.updated.toLocaleDateString('en-AU', {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: 4px 20px;
+    gap: var(--space-1) var(--space-5);
   }
 
   .who {
-    font: 600 15px var(--font-body);
+    font: 600 var(--type-small) var(--font-body);
     color: var(--ink);
   }
 
   .links {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px 18px;
+    gap: var(--space-1) var(--space-5);
     margin: 0;
     padding: 0;
     list-style: none;
-    font-size: 13px;
+    font-size: var(--type-mono);
   }
 
   .links a {

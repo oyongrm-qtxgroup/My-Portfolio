@@ -530,6 +530,29 @@ try {
     await ctx.close();
   }
 
+  // The phone menu threshold stays at 760 px (DESIGN_PLAN call 7): from 761 to 899 px,
+  // where rows already stack, the inline nav still fits on one line with the wordmark.
+  for (const width of [761, 899]) {
+    const ctx = await browser.newContext({ viewport: { width, height: 800 } });
+    const p = await ctx.newPage();
+    await p.goto(BASE + '/work/jayne-bandy-ai/', { waitUntil: 'networkidle' });
+    const h = await p.evaluate(() => {
+      const header = document.querySelector('.site-header');
+      const nav = header.querySelector('.inline-nav');
+      const brand = header.querySelector('.brand').getBoundingClientRect();
+      const items = [...nav.querySelectorAll('li')].map((li) => li.getBoundingClientRect());
+      return {
+        nav: getComputedStyle(nav).display !== 'none',
+        button: header.querySelector('.menu-button')?.checkVisibility() ?? false,
+        oneLine: items.every((r) => Math.abs(r.top - items[0].top) < 1) && Math.abs(items[0].top - brand.top) < 12,
+        overflow: header.scrollWidth > header.clientWidth + 1,
+      };
+    });
+    if (!h.nav || h.button) failures.push(`header @${width}: expected the inline nav, not the menu`);
+    if (!h.oneLine || h.overflow) failures.push(`header @${width}: the nav doesn't fit on one line beside the wordmark`);
+    await ctx.close();
+  }
+
   // "On this page": each link lands with its heading below the sticky header.
   for (const width of [390, 1440]) {
     const ctx = await browser.newContext({ viewport: { width, height: 844 } });

@@ -53,7 +53,7 @@ const SPEAKER = { caller: 'Caller', agent: 'Agent' };
 
 <style>
   .transcript-heading {
-    margin: 0 0 16px;
+    margin: 0 0 var(--space-4);
   }
 
   .transcript {
@@ -66,9 +66,9 @@ const SPEAKER = { caller: 'Caller', agent: 'Agent' };
   .turn {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 240px;
-    gap: 8px 40px;
+    gap: var(--space-2) var(--space-8);
     align-items: start;
-    padding: 12px 0;
+    padding: var(--space-3) 0;
     border-bottom: 1px solid var(--rule);
   }
 
@@ -79,36 +79,36 @@ const SPEAKER = { caller: 'Caller', agent: 'Agent' };
     gap: var(--space-3);
     align-items: baseline;
     max-width: 42em;
-    font-size: 19px;
+    font-size: var(--type-body-m);
     line-height: 1.5;
   }
 
   .speaker {
-    font-size: 12px;
+    font-size: var(--type-mono-s);
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--ink-2);
   }
 
   .turn.tool {
-    padding: 8px 0;
+    padding: var(--space-2) 0;
   }
 
   .tool-line {
     padding-left: calc(64px + var(--space-3));
-    font-size: 13px;
+    font-size: var(--type-mono);
     color: var(--ink-2);
   }
 
   .tool-mark {
-    margin-right: 8px;
+    margin-right: var(--space-2);
   }
 
   .turn-note {
-    margin: 4px 0 0;
+    margin: var(--space-1) 0 0;
   }
 
-  @media (max-width: 1040px) {
+  @media (max-width: 1099px) {
     .turn {
       grid-template-columns: minmax(0, 1fr);
     }

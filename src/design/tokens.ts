@@ -56,19 +56,37 @@ export const space = [4, 8, 12, 16, 20, 24, 32, 40, 56, 72] as const;
 /** Rule (line) widths: hairline dividers, figure strokes, ruled rows, emphasis. */
 export const rules = { hair: '1px', fine: '1.5px', firm: '2px', heavy: '3px' } as const;
 
-/** Type sizes: mono labels, body text, titles; display sizes are fluid. */
+/** Type sizes (Step 7, completed in Step 18 with the sizes the site actually sets):
+ *  mono labels; body text from small print to the lead; titles; and fluid headings
+ *  and display sizes, which scale with the window between their two ends. */
 export const type = {
+  'mono-xs': '11px',
   'mono-s': '12px',
   mono: '13px',
+  small: '15px',
+  ui: '16px',
   'body-s': '17px',
   body: '18px',
+  'body-m': '19px',
   'body-l': '20px',
+  lead: '22px',
   'title-s': '24px',
+  'title-m': '28px',
   title: '34px',
+  'title-l': '40px',
+  'lead-fluid': 'clamp(20px, 2.4vw, 28px)',
+  subhead: 'clamp(26px, 3vw, 34px)',
+  heading: 'clamp(30px, 3.4vw, 44px)',
   'display-s': 'clamp(36px, 5vw, 56px)',
+  'display-m': 'clamp(40px, 6.4vw, 80px)',
   display: 'clamp(44px, 7.4vw, 92px)',
   'display-l': 'clamp(56px, 10vw, 132px)',
 } as const;
+
+/** Breakpoints (Step 18), as plain numbers: CSS media queries can't read custom
+ *  properties, so `npm run lint:design` holds every width query in src/ to these
+ *  (a max-width at the value, a min-width one above it). */
+export const breakpoints = { narrow: 480, phone: 640, menu: 760, stack: 900, wide: 1100 } as const;
 
 /** Motion: durations and the one easing curve. */
 export const motion = { fast: '0.2s', base: '0.45s', slow: '0.7s', ease: 'cubic-bezier(0.2, 0.7, 0, 1)' } as const;

@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import MarginRow from '../components/MarginRow.astro';
 import Stamp from '../components/Stamp.astro';
 import Figure from '../components/Figure.astro';
-import { palettes, contrast, wcagLevel, motion, rules, space, type, type Token } from '../design/tokens';
+import { palettes, contrast, wcagLevel, motion, rules, space, type, breakpoints, type Token } from '../design/tokens';
 
 // Reference page for the design system (noindex). Mirrors docs/design/System.dc.html
 // and renders from the live tokens, so it also shows Night mode correctly.
@@ -203,6 +203,10 @@ const cssVar: Record<Token, string> = {
         <dd class="mono">{Object.entries(type).map(([k, v]) => `--type-${k} ${v}`).join(' · ')}</dd>
       </div>
       <div>
+        <dt class="label">Breakpoints</dt>
+        <dd class="mono">{Object.entries(breakpoints).map(([k, v]) => `${k} ${v}px`).join(' · ')}</dd>
+      </div>
+      <div>
         <dt class="label">Motion</dt>
         <dd class="mono">{Object.entries(motion).map(([k, v]) => `--motion-${k} ${v}`).join(' · ')}</dd>
       </div>
@@ -224,31 +228,31 @@ const cssVar: Record<Token, string> = {
   }
 
   .page-title {
-    font-size: clamp(56px, 8vw, 112px);
+    font-size: var(--type-display-l);
     line-height: 0.9;
-    margin-top: 32px;
+    margin-top: var(--space-7);
   }
 
   .lede {
-    margin-top: 20px;
+    margin-top: var(--space-5);
   }
 
   .type-grid,
   .parts {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
-    gap: 32px;
+    gap: var(--space-7);
   }
 
   .type-grid > div,
   .parts > div {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--space-3);
   }
 
   .sample {
-    font-size: 80px;
+    font-size: var(--type-display);
     line-height: 0.95;
   }
 
@@ -261,7 +265,7 @@ const cssVar: Record<Token, string> = {
   }
 
   .note {
-    font-size: 16px;
+    font-size: var(--type-ui);
   }
 
   .swatches {
@@ -269,13 +273,13 @@ const cssVar: Record<Token, string> = {
     padding: 0;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 24px;
+    gap: var(--space-6);
   }
 
   .swatches li {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-2);
   }
 
   .chip {
@@ -291,7 +295,7 @@ const cssVar: Record<Token, string> = {
   .stamps {
     display: flex;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: var(--space-4);
   }
 
   .sidenote {
@@ -301,33 +305,33 @@ const cssVar: Record<Token, string> = {
   .logrow {
     display: grid;
     grid-template-columns: 56px 130px minmax(0, 1fr);
-    gap: 12px;
+    gap: var(--space-3);
     align-items: baseline;
-    padding: 12px 0;
+    padding: var(--space-3) 0;
     border-block: 1px solid var(--rule);
-    font-size: 17px;
+    font-size: var(--type-body-s);
   }
 
   .up {
-    font-size: 12px;
+    font-size: var(--type-mono-s);
     text-transform: uppercase;
   }
 
   .foot {
-    font-size: 40px;
+    font-size: var(--type-title-l);
   }
 
   .foot sup {
-    font: 500 13px var(--font-mono);
+    font: 500 var(--type-mono) var(--font-mono);
     vertical-align: top;
     margin-left: 3px;
   }
 
   .list {
-    padding-left: 20px;
+    padding-left: var(--space-5);
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-2);
   }
 
   .table-wrap {
@@ -337,18 +341,18 @@ const cssVar: Record<Token, string> = {
   table {
     width: 100%;
     border-collapse: collapse;
-    font: 14px var(--font-mono);
+    font: var(--type-mono) var(--font-mono);
   }
 
   caption {
     text-align: left;
-    padding-bottom: 10px;
+    padding-bottom: var(--space-3);
   }
 
   th,
   td {
     text-align: left;
-    padding: 8px 12px 8px 0;
+    padding: var(--space-2) var(--space-3) var(--space-2) 0;
     border-bottom: 1px solid var(--rule);
     font-weight: 400;
   }
@@ -361,7 +365,7 @@ const cssVar: Record<Token, string> = {
   @media (max-width: 760px) {
     .logrow {
       grid-template-columns: minmax(0, 1fr);
-      gap: 4px;
+      gap: var(--space-1);
     }
   }
 </style>
