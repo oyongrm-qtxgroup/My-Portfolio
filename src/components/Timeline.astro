@@ -1,0 +1,225 @@
+---
+// Eight years on one ruled line (DESIGN_PLAN G-07, Step 14), drawn to scale from the
+// start and end months in roles.yaml: a tick per year, a segment per role in ink
+// weighted by seniority, employers above, and a mark where LLM work begins. Across on
+// wide screens; down on phones, newest at the top like the list beside it. Hidden from
+// assistive tech: the roles are listed in full right after it.
+import type { Role } from '../lib/content';
+
+interface Props {
+  roles: Role[];
+  /** The right-hand end ("now"): the content's `updated` date, not the build date. */
+  now: Date;
+  /** When LLM work began (YYYY-MM). */
+  llmFrom?: string;
+  class?: string;
+}
+
+const { roles, now, llmFrom = '2026-01', class: className } = Astro.props;
+
+// Months as decimal years: "January 2026" → 2026.0; an end month runs to its last day.
+const month = (s: string) => {
+  const d = new Date(`1 ${s} UTC`);
+  if (Number.isNaN(d.getTime())) throw new Error(`Not a month: "${s}"`);
+  return d.getUTCFullYear() + d.getUTCMonth() / 12;
+};
+const oldest = [...roles].sort((a, b) => month(a.data.start) - month(b.data.start));
+const from = Math.floor(month(oldest[0].data.start));
+const to = now.getUTCFullYear() + (now.getUTCMonth() + 1) / 12;
+const pct = (t: number) => `${(((t - from) / (to - from)) * 100).toFixed(3)}%`;
+const years = Array.from({ length: Math.floor(to) - from + 1 }, (_, i) => from + i);
+
+// Seniority: each role is heavier than the one before it (2 px up to 6 px).
+const segments = oldest.map((r, i) => ({
+  role: r,
+  start: month(r.data.start),
+  end: r.data.end ? month(r.data.end) + 1 / 12 : to,
+  weight: Math.min(2 + i, 6),
+}));
+// Employers: consecutive roles at one organisation share a label.
+const employers: { name: string; start: number; end: number }[] = [];
+for (const s of segments) {
+  const last = employers.at(-1);
+  if (last && last.name === s.role.data.short) last.end = s.end;
+  else employers.push({ name: s.role.data.short, start: s.start, end: s.end });
+}
+const [ly, lm] = llmFrom.split('-').map(Number);
+const llm = ly + (lm - 1) / 12;
+---
+
+<div class:list={['timeline', className]} aria-hidden="true" data-from={from} data-to={to.toFixed(4)}>
+  <div class="track">
+    {
+      employers.map((e) => (
+        <span class="employer mono" style={`--a: ${pct(e.start)}; --b: ${pct(e.end)}`}>
+          {e.name}
+        </span>
+      ))
+    }
+    <span class="axis"></span>
+    {
+      segments.map((s) => (
+        <span
+          class="segment"
+          style={`--a: ${pct(s.start)}; --b: ${pct(s.end)}; --w: ${s.weight}px`}
+          data-start={s.start.toFixed(4)}
+          data-end={s.end.toFixed(4)}
+        />
+      ))
+    }
+    {
+      years.map((y) => (
+        <span class="tick mono" style={`--a: ${pct(y)}`}>
+          <span class="tick-label">{y}</span>
+        </span>
+      ))
+    }
+    <span class="llm mono" style={`--a: ${pct(llm)}`}>
+      <span class="llm-label">LLM work</span>
+    </span>
+  </div>
+</div>
+
+<style>
+  .timeline {
+    padding: var(--space-6) 0 var(--space-7);
+  }
+
+  .track {
+    position: relative;
+    height: 96px;
+    margin: 0 var(--space-7) 0 var(--space-4);
+  }
+
+  /* An employer's name over its years; a short stint wraps to two lines. */
+  .employer {
+    position: absolute;
+    bottom: calc(100% - 36px);
+    left: var(--a);
+    width: calc(var(--b) - var(--a));
+    padding: 0 var(--space-2) 0 var(--space-1);
+    font-size: var(--type-mono-s);
+    line-height: 1.3;
+    color: var(--ink);
+  }
+
+  .axis {
+    position: absolute;
+    top: 48px;
+    left: 0;
+    right: 0;
+    border-top: var(--rule-hair) solid var(--rule);
+  }
+
+  /* Each role: a bar on the axis, heavier with seniority, a hairline gap between roles. */
+  .segment {
+    position: absolute;
+    top: calc(48px - var(--w) / 2);
+    left: var(--a);
+    width: calc(var(--b) - var(--a) - 2px);
+    height: var(--w);
+    background: var(--ink);
+  }
+
+  .tick {
+    position: absolute;
+    top: 56px;
+    left: var(--a);
+    height: 8px;
+    border-left: var(--rule-hair) solid var(--ink-2);
+  }
+
+  .tick-label {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    transform: translateX(-50%);
+    font-size: var(--type-mono-s);
+    color: var(--ink-2);
+  }
+
+  .llm {
+    position: absolute;
+    top: 30px;
+    left: var(--a);
+    height: 30px;
+    border-left: var(--rule-firm) dotted var(--ink);
+  }
+
+  .llm-label {
+    position: absolute;
+    top: -2px;
+    right: calc(100% + var(--space-2));
+    font-size: var(--type-mono-s);
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-2);
+  }
+
+  /* Phones: the line runs down, newest at the top, so it reads with the list. */
+  @media (max-width: 640px) {
+    .track {
+      height: 360px;
+      margin-right: 0;
+    }
+
+    .employer {
+      display: flex;
+      align-items: center;
+      top: calc(100% - var(--b));
+      bottom: auto;
+      left: 96px;
+      width: auto;
+      height: calc(var(--b) - var(--a));
+      padding: 0;
+    }
+
+    .axis {
+      top: 0;
+      bottom: 0;
+      left: 64px;
+      right: auto;
+      border-top: 0;
+      border-left: var(--rule-hair) solid var(--rule);
+    }
+
+    .segment {
+      top: calc(100% - var(--b) + 2px);
+      left: calc(64px - var(--w) / 2);
+      width: var(--w);
+      height: calc(var(--b) - var(--a) - 2px);
+    }
+
+    .tick {
+      top: calc(100% - var(--a));
+      left: 48px;
+      width: 8px;
+      height: 0;
+      border-left: 0;
+      border-top: var(--rule-hair) solid var(--ink-2);
+    }
+
+    .tick-label {
+      top: 0;
+      left: auto;
+      right: calc(100% + var(--space-2));
+      transform: translateY(-50%);
+    }
+
+    .llm {
+      top: calc(100% - var(--a));
+      left: 56px;
+      width: 30px;
+      height: 0;
+      border-left: 0;
+      border-top: var(--rule-firm) dotted var(--ink);
+    }
+
+    .llm-label {
+      top: var(--space-1);
+      right: auto;
+      left: 40px;
+    }
+  }
+</style>

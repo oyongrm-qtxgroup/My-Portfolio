@@ -6,6 +6,7 @@
 import Base from '../layouts/Base.astro';
 import MarginRow from '../components/MarginRow.astro';
 import Portrait from '../components/Portrait.astro';
+import Timeline from '../components/Timeline.astro';
 import { getRepos, pushedOn } from '../lib/github';
 import { getProfile, getRoles, type Role } from '../lib/content';
 
@@ -52,6 +53,8 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
             Download the PDF (A4, 2 pages) →
           </a>
         </p>
+        <!-- On screen only, like the portrait: the PDF keeps its Harvard layout. -->
+        <Timeline roles={roles} now={profile.updated} class="cv-timeline" />
       </header>
     </MarginRow>
 
@@ -181,6 +184,10 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
         Skills, project pages and working principles: <a href={siteUrl}>{cv.site}</a>
       </p>
     </MarginRow>
+    <!-- Wide screens: the download stays in reach in the margin while reading (M-06). -->
+    <p class="cv-sticky">
+      <a href="/raymundo-oyong-cv.pdf" class="mono accent target" download>Download the PDF ↓</a>
+    </p>
   </article>
 </Base>
 
@@ -257,6 +264,41 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+  }
+
+  .cv-head :global(.cv-timeline) {
+    margin-top: var(--space-6);
+    border-top: var(--rule-hair) solid var(--rule);
+  }
+
+  /* Pinned to the bottom of the margin column for as long as the CV is on screen;
+     a zero-height box, so it adds no space at the end of the page. */
+  .cv-sticky {
+    display: none;
+  }
+
+  @media (min-width: 901px) {
+    .cv-sticky {
+      display: block;
+      position: sticky;
+      bottom: var(--space-6);
+      height: 0;
+      margin: 0;
+    }
+
+    .cv-sticky a {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: calc(var(--margin-col) - var(--space-6));
+      padding: var(--space-2) 0;
+      background: var(--paper);
+      border-top: var(--rule-firm) solid var(--ink);
+      font-size: var(--type-mono-s);
+      line-height: 1.4;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
   }
 
   /* The closing pointer to the site is for paper only. */
@@ -419,6 +461,8 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
     }
 
     .cv-head :global(.cv-portrait),
+    .cv-head :global(.cv-timeline),
+    .cv-sticky,
     .cv-code {
       display: none !important;
     }

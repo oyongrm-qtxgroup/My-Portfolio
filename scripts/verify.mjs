@@ -382,6 +382,46 @@ try {
     await ctx.close();
   }
 
+  // Career timeline (DESIGN_PLAN Step 14): every role's segment is as long as its dates,
+  // across on wide screens and down on phones, on the home page and /cv/.
+  for (const [route, width] of [['/', 1440], ['/', 390], ['/cv/', 1440], ['/cv/', 390]]) {
+    const ctx = await browser.newContext({ viewport: { width, height: 900 } });
+    const p = await ctx.newPage();
+    await p.goto(BASE + route, { waitUntil: 'networkidle' });
+    const off = await p.evaluate(() => {
+      const tl = document.querySelector('.timeline');
+      if (!tl) return ['no timeline'];
+      const track = tl.querySelector('.track').getBoundingClientRect();
+      const from = +tl.dataset.from;
+      const span = +tl.dataset.to - from;
+      const down = track.height > track.width;
+      const length = down ? track.height : track.width;
+      return [...tl.querySelectorAll('.segment')].flatMap((el) => {
+        const r = el.getBoundingClientRect();
+        const want = ((+el.dataset.end - +el.dataset.start) / span) * length - 2; // the 2 px gap
+        const got = down ? r.height : r.width;
+        return Math.abs(got - want) > 1 ? [`${el.dataset.start}–${el.dataset.end}: ${got.toFixed(1)} px, want ${want.toFixed(1)}`] : [];
+      });
+    });
+    for (const o of off) failures.push(`timeline ${route} @${width}: ${o}`);
+    await ctx.close();
+  }
+
+  // /cv/: the PDF download stays in reach while reading on wide screens.
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const p = await ctx.newPage();
+    await p.goto(BASE + '/cv/', { waitUntil: 'networkidle' });
+    await p.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
+    await p.waitForTimeout(300);
+    const box = await p.evaluate(() => {
+      const r = document.querySelector('.cv-sticky a')?.getBoundingClientRect();
+      return r && { top: r.top, bottom: r.bottom, left: r.left };
+    });
+    if (!box || box.top < 0 || box.bottom > 900) failures.push(`/cv/: sticky PDF download not in view mid-page (${JSON.stringify(box)})`);
+    await ctx.close();
+  }
+
   // "On this page": each link lands with its heading below the sticky header.
   for (const width of [390, 1440]) {
     const ctx = await browser.newContext({ viewport: { width, height: 844 } });

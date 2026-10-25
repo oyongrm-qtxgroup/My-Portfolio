@@ -10,6 +10,7 @@ import { getRepos, pushedOn } from '../lib/github';
 import Quote from '../components/Quote.astro';
 import ContactSet from '../components/ContactSet.astro';
 import ProofGrid from '../components/ProofGrid.astro';
+import Timeline from '../components/Timeline.astro';
 import { getEndorsements, getPrinciples, getProfile, getRoles, getSkills, getWork } from '../lib/content';
 
 const [profile, skills, principles, work, roles, repos, endorsements] = await Promise.all([
@@ -156,6 +157,7 @@ const person = {
   <MarginRow index={3} ruled id="experience" hideLabel>
     <Fragment slot="label">Experience</Fragment>
     <h2 class="visually-hidden">Experience</h2>
+    <Timeline roles={roles} now={profile.updated} />
     <div class="list">
       {
         roles.map((r) => (
