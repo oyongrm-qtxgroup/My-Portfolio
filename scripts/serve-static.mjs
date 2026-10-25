@@ -21,6 +21,8 @@ const TYPES = {
   '.jpg': 'image/jpeg',
   '.png': 'image/png',
   '.json': 'application/json',
+  '.ico': 'image/x-icon',
+  '.webmanifest': 'application/manifest+json',
 };
 
 /** Starts the server; resolves to { base, close }. */

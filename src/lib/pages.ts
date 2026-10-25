@@ -11,6 +11,8 @@ export interface PublicPage {
   line?: string;
   /** A short line for the lower part of the share card (stack or lead skills). */
   stack?: string;
+  /** false: no card of its own; the page shares the home card (DESIGN_PLAN call 8). */
+  card?: boolean;
 }
 
 export async function getPublicPages(): Promise<PublicPage[]> {
@@ -43,7 +45,7 @@ export async function getPublicPages(): Promise<PublicPage[]> {
       slug: 'privacy',
       kicker: 'Site notice',
       title: 'Privacy',
-      line: 'What this site collects, and who processes it.',
+      card: false,
     },
   ];
 }
@@ -51,6 +53,6 @@ export async function getPublicPages(): Promise<PublicPage[]> {
 /** Share image for a path; pages without their own card use the home card. */
 export async function ogImageFor(path: string): Promise<string> {
   const normalised = path.endsWith('/') ? path : `${path}/`;
-  const page = (await getPublicPages()).find((p) => p.path === normalised);
+  const page = (await getPublicPages()).find((p) => p.path === normalised && p.card !== false);
   return `/og/${page?.slug ?? 'home'}.png`;
 }

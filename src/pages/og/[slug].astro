@@ -8,7 +8,9 @@ import Glyph from '../../components/Glyph.astro';
 import '../../styles/fonts.css';
 
 export async function getStaticPaths() {
-  return (await getPublicPages()).map((page) => ({ params: { slug: page.slug }, props: { page } }));
+  return (await getPublicPages())
+    .filter((page) => page.card !== false)
+    .map((page) => ({ params: { slug: page.slug }, props: { page } }));
 }
 
 interface Props {
@@ -117,15 +119,12 @@ const vars = `:root{--paper:${t.paper};--ink:${t.ink};--ink2:${t.ink2};--rule:${
         font: 500 20px/1.4 'IBM Plex Mono', monospace;
         color: var(--ink2);
       }
+      /* One line, readable at feed size: the address (DESIGN_PLAN Step 16). */
       .foot {
         margin-top: auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
         padding-top: 20px;
         border-top: 2px solid var(--ink);
-        gap: 24px;
-        font: 500 18px 'IBM Plex Mono', monospace;
+        font: 500 22px 'IBM Plex Mono', monospace;
         letter-spacing: 0.02em;
         white-space: nowrap;
       }
@@ -158,7 +157,6 @@ const vars = `:root{--paper:${t.paper};--ink:${t.ink};--ink2:${t.ink2};--rule:${
         {page.line && <p class="line">{page.line}</p>}
         {page.stack && <p class="stack">{page.stack}</p>}
         <div class="foot">
-          <span>Based in the Philippines · working with QTX, Sydney</span>
           <span class="site">raymundo-oyong.vercel.app</span>
         </div>
       </div>

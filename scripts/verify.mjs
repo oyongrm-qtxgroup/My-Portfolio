@@ -461,6 +461,27 @@ try {
     await ctx.close();
   }
 
+  // Share cards and icons (DESIGN_PLAN Step 16): every page's og:image and every icon
+  // the head names exists; /privacy/ shares the home card.
+  {
+    const ctx = await browser.newContext();
+    const p = await ctx.newPage();
+    for (const route of ROUTES.filter((r) => r !== '/no-such-page')) {
+      await p.goto(BASE + route, { waitUntil: 'domcontentloaded' });
+      const refs = await p.evaluate(() => [
+        document.querySelector('meta[property="og:image"]')?.content,
+        ...[...document.querySelectorAll('link[rel~="icon"], link[rel="apple-touch-icon"], link[rel="manifest"]')].map((l) => l.href),
+      ]);
+      if (!refs[0]) failures.push(`${route}: no og:image`);
+      if (route === '/privacy/' && !refs[0]?.endsWith('/og/home.png')) failures.push(`/privacy/: share card is ${refs[0]}, not the home card`);
+      for (const ref of refs.filter(Boolean)) {
+        const res = await fetch(BASE + new URL(ref).pathname);
+        if (res.status !== 200) failures.push(`${route}: ${new URL(ref).pathname} → ${res.status}`);
+      }
+    }
+    await ctx.close();
+  }
+
   // "On this page": each link lands with its heading below the sticky header.
   for (const width of [390, 1440]) {
     const ctx = await browser.newContext({ viewport: { width, height: 844 } });

@@ -1,0 +1,12 @@
+{
+  "name": "Raymundo Oyong",
+  "short_name": "R. Oyong",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#F6F6F3",
+  "theme_color": "#F6F6F3",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}
