@@ -1,6 +1,6 @@
 # Design and frontend plan after the October 2026 design review
 
-Status: **approved by the owner on 25 Oct 2026**, with the owner's inputs (portrait, repos, recommendations, LinkedIn URL) folded in. Implementation starts with Step 0. Tick each step off here as it merges.
+Status: **approved by the owner on 25 Oct 2026**, with the owner's inputs (portrait, repos, recommendations, LinkedIn URL) folded in. Implementation starts with Step 0. Tick each step off here as it merges. **All steps merged by 25 Oct 2026** (Step 0 in #11; Steps 1–18, the recommendations and the four repos in #12).
 
 - Design review (64 findings, screenshots, "What to keep", "Make it pop", "Decisions for you"): https://claude.ai/artifact/Xia4cYPptqMorBu9DbTaGG
 - Baseline: `main` at `73334e4`, live at https://raymundo-oyong.vercel.app (auto-deploys from `main`).
@@ -155,7 +155,7 @@ Effort: S under half a day, M one to two days, L more. "Identity risk" is risk t
 
 ### Phase A: defects and measured regressions
 
-#### Step 1: No jump on phones (S–M, identity risk low)
+#### Step 1: No jump on phones (S–M, identity risk low) — merged 25 Oct 2026 (#12)
 
 - **Findings:** T-01, T-04, T-03, F-07 (CLS check, 1024 and 1920 widths).
 - **Changes:**
@@ -169,7 +169,7 @@ Effort: S under half a day, M one to two days, L more. "Identity risk" is risk t
 - **Verified by:** CLS before and after on the throttled profile (target 0 on every run); the delayed-font run failing on `main` and passing on the branch; 320 px headline shots; font bytes before and after; a check whether a late-arriving Archivo is picked up after an in-site navigation (ClientRouter) or only on the next full load, reported in the PR.
 - **Needs from you:** a look at the preview on your own phone. The Apple condensed face can't be measured here (it isn't available on Linux), so its `size-adjust` comes from published metrics; with `optional` that only affects how a slow first visit looks, not CLS.
 
-#### Step 2: Layout bugs (M, identity risk low)
+#### Step 2: Layout bugs (M, identity risk low) — merged 25 Oct 2026 (#12)
 
 - **Findings:** H-04 and C-03, N-01, C-05, H-02, H-05, C-02, C-06, S-02, V-04, H-08, F-07 (header, stack and quote checks).
 - **Changes:**
@@ -187,7 +187,7 @@ Effort: S under half a day, M one to two days, L more. "Identity risk" is risk t
 - **Verified by:** each new check shown failing on `main` and passing on the branch; before/after shots of the work rows, meta grid, menu open/closed, and the first sub-heading at all six widths in both themes.
 - **Needs from you:** nothing.
 
-#### Step 3: States, accessibility and print (M, identity risk low)
+#### Step 3: States, accessibility and print (M, identity risk low) — merged 25 Oct 2026 (#12)
 
 - **Findings:** S-01, V-05, S-03, S-04, S-05, N-03, N-04, N-05, F-03, F-05, F-06, M-04, F-07 (print check).
 - **Changes:**
@@ -210,7 +210,7 @@ Effort: S under half a day, M one to two days, L more. "Identity risk" is risk t
 
 ### Phase B: proof and identity
 
-#### Step 4: Portrait and the hero (M, identity risk low–medium)
+#### Step 4: Portrait and the hero (M, identity risk low–medium) — merged 25 Oct 2026 (#12)
 
 - **Findings:** G-01, H-01, I-01 (home card), M-03 (`Person.image`), M-06 (name, DS10), M-07 ("Availability checked").
 - **Changes:**
@@ -227,7 +227,7 @@ Effort: S under half a day, M one to two days, L more. "Identity risk" is risk t
 - **Verified by:** `exiftool` (or sharp metadata) on the committed files shows no metadata; LCP element still the lede on phone and desktop; image bytes per width; shots at all six widths in both themes; the PDF check failing when a test image is added to the print view; home card at 500 px wide.
 - **Needs from you:** nothing beyond a look at the preview; the proof was approved on 25 Oct 2026. Alt text: "Raymundo Oyong".
 
-#### Step 5: Code on GitHub (M, identity risk low)
+#### Step 5: Code on GitHub (M, identity risk low) — merged 25 Oct 2026 (#12)
 
 - **Findings:** M-01, M-07 (footer date), the repos half of DS5.
 - **Changes:**
@@ -252,7 +252,7 @@ Effort: S under half a day, M one to two days, L more. "Identity risk" is risk t
   - A **Deploy Hook** (how to create it is in §6) stored as the `VERCEL_DEPLOY_HOOK` Actions secret.
   - Optional: a read-only `GITHUB_TOKEN` in Vercel.
 
-#### Step 6: In their words (S–M, identity risk low)
+#### Step 6: In their words (S–M, identity risk low) — merged 25 Oct 2026 (#12)
 
 - **Findings:** M-02, the quotes half of DS5, T-05 (lint rule).
 - **Changes:**
@@ -273,7 +273,7 @@ Effort: S under half a day, M one to two days, L more. "Identity risk" is risk t
 
 ### Phase C: the figure system
 
-#### Step 7: Figure component and the Jayne Bandy AI figure (L, identity risk low)
+#### Step 7: Figure component and the Jayne Bandy AI figure (L, identity risk low) — merged 25 Oct 2026 (#12)
 
 - **Findings:** C-01, F-04, C-02 (superseded), the token-scale half of F-02 and T-02 (new tokens only).
 - **Changes:**
@@ -288,7 +288,7 @@ Effort: S under half a day, M one to two days, L more. "Identity risk" is risk t
 - **Verified by:** figure at 320, 390, 768, 1024, 1440, 1920 in both themes, and printed; no sideways scroll at 320; a screen reader reading the hidden list (NVDA or VoiceOver transcript in the PR); red used only on failure edges (a test over the SVG); HTML weight added per page.
 - **Needs from you:** a read of the figure against the facts.
 
-#### Step 8: Illustrative call (M, identity risk low)
+#### Step 8: Illustrative call (M, identity risk low) — merged 25 Oct 2026 (#12)
 
 - **Findings:** G-03 (DS9).
 - **Changes:**
@@ -299,7 +299,7 @@ Effort: S under half a day, M one to two days, L more. "Identity risk" is risk t
 - **Verified by:** denylist; a check that no number in the transcript looks like a phone number (the CV's phone pattern reused); shots; screen reader order (turn, then its note); your read-through.
 - **Needs from you:** confirm that the wording isn't from the licensed script library. I'll write it fresh, and won't use the test-call transcripts at all (open item).
 
-#### Step 9: The other figures (M, identity risk low)
+#### Step 9: The other figures (M, identity risk low) — merged 25 Oct 2026 (#12)
 
 - **Findings:** G-06, G-04, G-05, and C-01 on the remaining pages.
 - **Changes:**
@@ -312,7 +312,7 @@ Effort: S under half a day, M one to two days, L more. "Identity risk" is risk t
 - **Verified by:** as Step 7; no currency symbol or amount in the ledger (a test); your read-through.
 - **Needs from you:** a read of each figure against the facts.
 
-#### Step 10: Margin notes and reading aids (M, identity risk low)
+#### Step 10: Margin notes and reading aids (M, identity risk low) — merged 25 Oct 2026 (#12)
 
 - **Findings:** C-04, C-08.
 - **Changes:**
@@ -322,7 +322,7 @@ Effort: S under half a day, M one to two days, L more. "Identity risk" is risk t
 - **Verified by:** each note traced to its paragraph in a table in the PR; sticky contents not covering the tucked header; anchor links landing below the header; shots.
 - **Needs from you:** a read of the notes.
 
-#### Step 11: Project glyphs (M, identity risk low)
+#### Step 11: Project glyphs (M, identity risk low) — merged 25 Oct 2026 (#12)
 
 - **Findings:** G-02, C-09, C-10, I-01 (work cards).
 - **Changes:**
@@ -334,7 +334,7 @@ Effort: S under half a day, M one to two days, L more. "Identity risk" is risk t
 
 ### Phase D: home rhythm
 
-#### Step 12: Home rhythm and one contact set (M, identity risk medium)
+#### Step 12: Home rhythm and one contact set (M, identity risk medium) — merged 25 Oct 2026 (#12)
 
 - **Findings:** V-02, H-03, H-07, N-02, N-06.
 - **Changes:**
@@ -346,7 +346,7 @@ Effort: S under half a day, M one to two days, L more. "Identity risk" is risk t
 - **Verified by:** shots; existing menu checks plus "menu foot fits above the fold at 320 × 568"; each contact link appears once per screen-end (a test).
 - **Needs from you:** a look at the preview.
 
-#### Step 13: Proof grid (M, identity risk low)
+#### Step 13: Proof grid (M, identity risk low) — merged 25 Oct 2026 (#12)
 
 - **Findings:** H-06, G-08, C-07 (DS12).
 - **Changes:**
@@ -359,7 +359,7 @@ Effort: S under half a day, M one to two days, L more. "Identity risk" is risk t
 - **Verified by:** every dot resolves to an existing id (a test); axe; a screen-reader pass of the table; shots.
 - **Needs from you:** check each ring.
 
-#### Step 14: Career timeline and the CV page (M, identity risk low)
+#### Step 14: Career timeline and the CV page (M, identity risk low) — merged 25 Oct 2026 (#12)
 
 - **Findings:** G-07, M-06 (sticky download).
 - **Changes:**
@@ -369,7 +369,7 @@ Effort: S under half a day, M one to two days, L more. "Identity risk" is risk t
 - **Verified by:** segment lengths match the dates (a test); the PDF unchanged (`cv:pdf -- --check`); shots.
 - **Needs from you:** nothing.
 
-#### Step 15: Wide screens (S, identity risk medium)
+#### Step 15: Wide screens (S, identity risk medium) — merged 25 Oct 2026 (#12)
 
 - **Findings:** V-03 (DS8).
 - **Changes:**
@@ -382,7 +382,7 @@ Effort: S under half a day, M one to two days, L more. "Identity risk" is risk t
 
 ### Phase E: edges
 
-#### Step 16: Share cards and icons (S–M, identity risk low)
+#### Step 16: Share cards and icons (S–M, identity risk low) — merged 25 Oct 2026 (#12)
 
 - **Findings:** I-01 (rest), I-02, M-05.
 - **Changes:**
@@ -393,7 +393,7 @@ Effort: S under half a day, M one to two days, L more. "Identity risk" is risk t
 - **Verified by:** cards at 500 px; favicon at 16 and 32 px in light and dark tabs; after merge, LinkedIn Post Inspector and an X card check on production (previews are login-protected).
 - **Needs from you:** nothing.
 
-#### Step 17: 404 and structured data (S, identity risk low)
+#### Step 17: 404 and structured data (S, identity risk low) — merged 25 Oct 2026 (#12)
 
 - **Findings:** I-03, M-03 (rest).
 - **Changes:**
@@ -405,7 +405,7 @@ Effort: S under half a day, M one to two days, L more. "Identity risk" is risk t
 - **Verified by:** JSON-LD validated (schema.org validator offline copy or Google's Rich Results test on production after merge); shots of the 404; reduced-motion check on the 404.
 - **Needs from you:** nothing.
 
-#### Step 18: Scales and breakpoints (M, identity risk low)
+#### Step 18: Scales and breakpoints (M, identity risk low) — merged 25 Oct 2026 (#12)
 
 - **Findings:** T-02, F-02 (rest), F-01.
 - **Changes:**
@@ -461,7 +461,7 @@ Leave out the names that are allowed on the site: QTX, Ortigas Land, OCLP Holdin
 
 ## 8. Open items (mentioned, not fixed)
 
-- **The `DENYLIST` Actions secret isn't set**, so CI skips the name check. That matters more once GitHub data and quotes are pulled in. Steps 5 and 6 don't merge until it's set, and Step 5 makes CI fail when it's missing.
+- ~~The `DENYLIST` Actions secret isn't set.~~ Set 25 Oct 2026, with `VERCEL_DEPLOY_HOOK`; CI runs the name check on every build.
 - **Jayne Bandy AI test-call transcripts aren't de-identified.** The illustrative call (Step 8) doesn't draw on them in any way; raise de-identification with the team separately.
 - ~~A custom LinkedIn URL hasn't been claimed.~~ Claimed 25 Oct 2026 (`/in/raymundo-oyong`); the site and CV switched to it in Step 0 (#11).
 - Your LinkedIn headline reads "Senior AI Software Engineer | Microsoft Certified" while the site and CV say "Senior AI & Automation Engineer". Recruiters compare them; whether to align them is your call on LinkedIn, not a site change.
