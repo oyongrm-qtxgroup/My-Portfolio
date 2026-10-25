@@ -15,7 +15,7 @@ const axeSource = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 
 const PORT = 4329;
 const BASE = `http://localhost:${PORT}`;
-const ROUTES = ['/', '/work/jayne-bandy-ai/', '/work/sap-automation/', '/work/care-plan-drafting', '/cv/', '/privacy/', '/system/', '/no-such-page'];
+const ROUTES = ['/', '/work/jayne-bandy-ai/', '/work/sap-automation/', '/work/ziaris/', '/cv/', '/privacy/', '/system/', '/no-such-page'];
 // 320 px is WCAG reflow (a 1280 px window at 400% zoom); 390 also covers 200% zoom.
 const WIDTHS = [320, 390, 768, 1440];
 const THEMES = ['paper', 'night'];

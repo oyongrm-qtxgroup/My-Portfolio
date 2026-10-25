@@ -10,7 +10,7 @@
 
 - `src/content/skills.yaml`: 3 lead skills + 7 foundations, each with proof points (outcomes only).
 - `src/content/principles.yaml`: "How I work" principles.
-- `src/content/work/*.mdx`: 3 project pages (Jayne Bandy AI, SAP & HR automation, care-plan drafting).
+- `src/content/work/*.mdx`: 3 project pages (Jayne Bandy AI, Ziaris, SAP & HR automation). Care-plan drafting (SmartCP) is a line in the QTX role; its old URL redirects home.
 - `src/content/roles.yaml`: career rows and every CV bullet.
 - `src/content/profile.yaml`: headline, lede, CV summary, figures, links.
 

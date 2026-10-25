@@ -1,0 +1,75 @@
+---
+no: '02'
+order: 2
+title: Ziaris
+short: A workforce and care platform that turns each shift into the right pay, the right NDIS invoice and the right MYOB entry.
+line: A workforce and care platform for a disability-support provider. Each shift becomes the right pay under the SCHADS award, the right invoice against NDIS funding and the right entry in MYOB, and Finance approves every payment match.
+client: A disability-support provider (NDIS)
+role: Lead engineer, with one or two developers
+period: 2026 – now
+stack: [TypeScript, React, Supabase, PostgreSQL row-level security, MYOB, Azure OpenAI]
+status: live
+skills: [architecture, security, integrations, leadership]
+---
+
+import Flow from '../../components/Flow.astro';
+import Section from '../../components/Section.astro';
+
+<Section label="The challenge" ruled>
+
+A disability-support provider ran rostering, timesheets and invoicing across spreadsheets. Every shift has to become the right pay under the SCHADS award, the right invoice against the participant’s National Disability Insurance Scheme (NDIS) funding and the right entry in MYOB, and a mistake in any of them costs a worker or the provider money.
+
+</Section>
+
+<Flow
+  label="Fig. 1 From shift to pay and invoice"
+  caption="Each approved shift is priced from the configured award rules, then exported to MYOB without re-keying."
+  steps={[
+    { title: 'Roster', note: 'worker, participant, site' },
+    { title: 'Timesheet', note: 'approved hours' },
+    { title: 'Award rules', note: 'SCHADS rates and penalties, configured by admins', key: true },
+    { title: 'Pay and invoice', note: 'invoice by funding type' },
+    { title: 'MYOB', note: 'payroll and sales-journal export' },
+  ]}
+/>
+
+<Flow
+  label="Fig. 2 Payment reconciliation"
+  caption="Nothing closes on its own: a line with no clear match stays open for Finance."
+  steps={[
+    { title: 'Bank file', note: 'uploaded by Finance' },
+    { title: 'Suggested match', note: 'each line to an invoice', key: true },
+    { title: 'Finance approves', note: 'one line at a time' },
+    { title: 'Invoice closed', note: 'with the approval recorded' },
+  ]}
+/>
+
+<Section label="The approach" ruled>
+
+### Award rules as configuration
+
+SCHADS pay rates and penalty rules are configured by admins in the app rather than written into code, so a rate change doesn’t wait for a developer. Each approved shift is priced from those rules for pay, and invoiced against the participant’s funding type.
+
+### Access that follows the organisation
+
+Each person’s reach comes from their role (worker, coordinator, manager or Finance) and the teams, sites and programs they’re assigned to. Row-level security in the database checks those links, so the rule holds whichever screen or API asks.
+
+### Reconciliation Finance approves
+
+Finance uploads the bank file, the platform suggests which invoice each line belongs to, and Finance approves one line at a time. A line with no clear match stays open instead of being guessed.
+
+### Built to fail safely
+
+A daily job flags workers whose credentials have expired, so they can’t be rostered, and warns managers before the next ones lapse. Finance signs off sample pay runs before each release.
+
+### What I built
+
+I lead Ziaris and built most of it with one or two other developers: rostering, award-based pay, timesheets, invoicing by funding type, the MYOB exports, reconciliation, row-level security, and a staff assistant that answers questions with Azure OpenAI.
+
+</Section>
+
+<Section label="The result" ruled>
+
+Ziaris is live. Rostering, timesheets and invoicing moved from spreadsheets into one system; each shift’s pay comes from the configured award rules instead of being worked out by hand; payroll and invoices reach MYOB without re-keying; and Finance approves suggested payment matches instead of matching them by hand.
+
+</Section>

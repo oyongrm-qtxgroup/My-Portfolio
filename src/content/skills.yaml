@@ -15,7 +15,7 @@
   proof:
     - text: Lead engineer on Jayne Bandy AI, a live AI receptionist that answers and books calls for dental practices.
       work: jayne-bandy-ai
-    - text: One receptionist script books into three practice systems (CareStack, Core Practice and Dentally) finds callers by the number they ring from, and confirms their name before changing anything.
+    - text: One receptionist script books into three practice systems (CareStack, Core Practice and Dentally), finds callers by the number they ring from and confirms their name before changing anything.
       work: jayne-bandy-ai
     - text: Every script change runs against scripted scenarios and past calls, scored by an LLM judge, before an admin approves it, and any earlier version can be restored.
       work: jayne-bandy-ai
@@ -31,10 +31,8 @@
     Every statement links to its source, and anything uncertain goes to a person instead of being
     smoothed over, so a reviewer can check a draft quickly and sign it with confidence.
   proof:
-    - text: Technical lead on care-plan drafting for an aged-care provider, where every sentence in a draft cites the page it came from and contradictions become review items for a clinician.
-      work: care-plan-drafting
+    - text: Technical lead on SmartCP, care-plan drafting for an aged-care provider, where every sentence in a draft cites the page it came from and contradictions become review items for a clinician.
     - text: Cut each drafting action from 6.5 seconds to about 1 second by switching to a pooled database connection, not by changing the model.
-      work: care-plan-drafting
     - text: Built AI agents on SEED, QTX’s SaaS that brings specialised AI into the work a team already does, for contract management and document chat, with each client’s data kept apart and off-topic questions refused to keep running costs down.
 
 - id: automation
@@ -52,6 +50,7 @@
     - text: Automated government remittance processing with Power Automate and AI document extraction, removing more than 100 hours a month of manual HR work.
       work: sap-automation
     - text: A daily job on an NDIS provider’s platform updates worker statuses, flags expired credentials and warns managers before the next ones lapse.
+      work: ziaris
 
 - id: architecture
   order: 4
@@ -61,6 +60,7 @@
   pitch: 'I design the whole system, not just the screen in front of me: where the data lives, what each part owns, and where a person has to approve.'
   proof:
     - text: Built a disability-support provider’s platform so every shift becomes the right pay under the SCHADS award, the right invoice against NDIS funding and the right entry in MYOB.
+      work: ziaris
     - text: 'Building RL Finance for a retirement-village operator: deferred management fees, CPI-based increases with an approval step, direct-debit files and group reports across entities.'
 
 - id: development
@@ -90,7 +90,8 @@
   summary: Access rules and audit trails designed in, where software holds health records or moves money.
   pitch: Access rules and audit trails are part of the design, especially where software holds health records or moves money.
   proof:
-    - text: Each person on an NDIS provider’s platform sees only the records in their reach (their own, their team’s, their sites' or their programs'), enforced in the database.
+    - text: Each person on an NDIS provider’s platform sees only the records in their reach (their own, their team’s, their sites’ or their programs’), enforced in the database.
+      work: ziaris
     - text: Replaced API keys with OAuth 2.0 and an audit log for a practice-system integration; CPI-based fee increases in RL Finance go through an approval step and leave a full audit trail.
 
 - id: reliability
