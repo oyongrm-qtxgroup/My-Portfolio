@@ -15,6 +15,7 @@ skills: [architecture, security, integrations, leadership]
 import Figure from '../../components/Figure.astro';
 import FigRef from '../../components/FigRef.astro';
 import Ledger from '../../components/Ledger.astro';
+import Noted from '../../components/Noted.astro';
 import Section from '../../components/Section.astro';
 
 <Section label="The challenge" ruled>
@@ -80,17 +81,29 @@ A disability-support provider ran rostering, timesheets and invoicing across spr
 
 ### Award rules as configuration
 
+<Noted notes={['Award rules are set by admins, not written into code']}>
+
 SCHADS pay rates and penalty rules are configured by admins in the app rather than written into code, so a rate change doesn’t wait for a developer. Each approved shift is priced from those rules for pay, and invoiced against the participant’s funding type.
+
+</Noted>
 
 ### Access that follows the organisation
 
+<Noted notes={['Access is checked in the database']}>
+
 Each person’s reach comes from their role (worker, coordinator, manager or Finance) and the teams, sites and programs they’re assigned to. Row-level security in the database checks those links, so the rule holds whichever screen or API asks.
+
+</Noted>
 
 <FigRef n={2} />
 
 ### Reconciliation Finance approves
 
+<Noted notes={['Finance approves line by line']}>
+
 Finance uploads the bank file, the platform suggests which invoice each line belongs to, and Finance approves one line at a time. A line with no clear match stays open instead of being guessed.
+
+</Noted>
 
 ### Built to fail safely
 

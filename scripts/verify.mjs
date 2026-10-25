@@ -274,6 +274,28 @@ try {
     await ctx.close();
   }
 
+  // "On this page": each link lands with its heading below the sticky header.
+  for (const width of [390, 1440]) {
+    const ctx = await browser.newContext({ viewport: { width, height: 844 } });
+    const p = await ctx.newPage();
+    await p.goto(BASE + '/work/ziaris/', { waitUntil: 'networkidle' });
+    const links = await p.$$eval('.toc a', (as) => as.map((a) => a.getAttribute('href')));
+    if (!links.length) failures.push(`on this page @${width}: no contents list`);
+    for (const href of links) {
+      await p.evaluate(() => window.scrollTo(0, 0));
+      await p.click(`.toc a[href="${href}"]`);
+      await p.waitForTimeout(500);
+      const pos = await p.evaluate((id) => {
+        const h = document.getElementById(decodeURIComponent(id.slice(1)));
+        const header = document.querySelector('.site-header').getBoundingClientRect();
+        return h ? { top: h.getBoundingClientRect().top, under: Math.max(0, header.bottom) } : null;
+      }, href);
+      if (!pos) failures.push(`on this page @${width}: ${href} has no target`);
+      else if (pos.top < pos.under - 1 || pos.top > 200) failures.push(`on this page @${width}: ${href} lands at ${Math.round(pos.top)}px`);
+    }
+    await ctx.close();
+  }
+
   // Header: tucks away while scrolling down, comes back on any scroll up.
   for (const width of [390, 1440]) {
     const ctx = await browser.newContext({ viewport: { width, height: 844 } });

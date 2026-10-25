@@ -15,7 +15,7 @@ Adapted from the Harvard Extension School OCS guide (resume language), minus the
 ## Deliberately different from a CV
 
 - **Lead with the work, then say what it proves** (changed 25 Oct 2026, `docs/FIX_PLAN.md` D4). The home page shows the projects and the experience first; Capabilities then sums up what that work shows, one line per area, linked to the project behind it.
-- **State each fact once**, where it carries the most weight. A number in the figures strip isn't repeated in the intro or the capabilities.
+- **State each fact once**, where it carries the most weight. A number in the figures strip isn't repeated in the intro or the capabilities. One exception (DESIGN_PLAN call 2): a **margin note** on a case study may pull out a fact from the section beside it ("4 tools the agent may call", "Finance approves line by line"). No new facts, and no number that isn't already in that section.
 - **First person is fine** on the site. No incident diaries or dated logs of what happened at work.
 - **Never measure effort.** No hours logged, tasks closed, tickets or defects counted, or "delivered X work packages". Those belong in a status report, not a portfolio. Numbers describe outcomes only.
 - **No client or people names.** Describe clients generically ("a disability-support provider"). `npm run lint:denylist` checks this.

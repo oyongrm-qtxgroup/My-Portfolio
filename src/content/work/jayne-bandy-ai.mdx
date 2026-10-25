@@ -15,6 +15,7 @@ skills: [voice-ai, integrations, reliability, leadership]
 import Figure from '../../components/Figure.astro';
 import FigRef from '../../components/FigRef.astro';
 import Transcript from '../../components/Transcript.astro';
+import Noted from '../../components/Noted.astro';
 import Section from '../../components/Section.astro';
 
 <Section label="The challenge" ruled>
@@ -99,7 +100,11 @@ The agent follows a licensed library of dental-practice scripts. Each practice g
 
 ### One script, three booking systems
 
+<Noted notes={['3 practice systems, 1 script', '4 tools the agent may call']}>
+
 CareStack, Core Practice and Dentally sit behind a single receptionist script and the same four tools. The number a caller rings from finds their record, and the agent confirms their name before it reads out, moves or cancels anything, which also covers patients on file under a different spelling.
+
+</Noted>
 
 <FigRef n={3} />
 
@@ -109,7 +114,11 @@ Practices ask for script changes in plain English. Before a change goes live, it
 
 ### Data handling
 
+<Noted notes={['Callers are told it’s an AI at the start']}>
+
 Call transcripts and logs are stored in Supabase; recordings stay with ElevenLabs and Twilio under their own retention settings. Callers are told at the start that they are speaking to an AI assistant and that the call may be recorded.
+
+</Noted>
 
 ### What I built
 

@@ -14,6 +14,7 @@ skills: [automation, integrations, leadership]
 
 import Figure from '../../components/Figure.astro';
 import FigRef from '../../components/FigRef.astro';
+import Noted from '../../components/Noted.astro';
 import Section from '../../components/Section.astro';
 
 <Section label="The challenge" ruled>
@@ -64,17 +65,29 @@ Two jobs at Ortigas Land took people’s time without needing their judgement. S
 
 ### Use SAP the way staff do
 
+<Noted notes={['Stops on an unexpected screen']}>
+
 The SAP bot drives the same desktop client staff use and follows the same steps a person would, so SAP itself didn’t have to change to be automated. When a screen isn’t what the bot expects, it stops, logs the item and leaves it for a person instead of guessing.
+
+</Noted>
 
 <FigRef n={2} />
 
 ### Read the documents, then a person approves
 
+<Noted notes={['HR approves every payment']}>
+
 The remittance bot uses AI document extraction to read the figures from HR’s source documents and does the keying. HR reviews the extracted figures and approves them before anything is paid, so the bot saves the typing, not the judgement.
+
+</Noted>
 
 ### How the savings were measured
 
+<Noted notes={['Savings measured from staff timings and run logs']}>
+
 Staff timed the manual process before the bots went live. Afterwards, the bots’ run logs and the manual time that remained gave the comparison behind both figures.
+
+</Noted>
 
 ### Lead the team that builds them
 

@@ -22,7 +22,9 @@ interface Props {
 
 const { work, next } = Astro.props;
 const w = work.data;
-const { Content } = await render(work);
+const { Content, headings } = await render(work);
+// "On this page": the sub-headings of the case study (C-08).
+const contents = headings.filter((h) => h.depth === 3);
 const [allSkills, profile, endorsements] = await Promise.all([getSkills(), getProfile(), getEndorsements()]);
 // At most one recommendation on a project page: one that names this project (DS5).
 const endorsement = endorsements.find((e) => e.data.work?.id === work.id);
@@ -57,6 +59,24 @@ const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id
           <dd><StackList items={w.stack} /></dd>
         </div>
       </dl>
+      {
+        contents.length > 0 && (
+          <nav class="toc" aria-labelledby="toc-label">
+            <p class="label" id="toc-label">
+              On this page
+            </p>
+            <ol class="mono">
+              {contents.map((h) => (
+                <li>
+                  <a href={`#${h.slug}`} class="target">
+                    {h.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )
+      }
     </header>
   </MarginRow>
 
@@ -156,6 +176,25 @@ const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id
   .meta dd {
     font-size: 17px;
     line-height: 1.4;
+  }
+
+  .toc {
+    margin-top: var(--space-6);
+  }
+
+  .toc ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--space-6);
+    margin: var(--space-1) 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--type-mono);
+  }
+
+  .toc a {
+    color: var(--ink);
+    text-underline-offset: 3px;
   }
 
   .byline {

@@ -1,0 +1,43 @@
+---
+// A paragraph (or two) with margin notes beside it (DESIGN_PLAN Step 10). Each note
+// pulls out a fact from the text it sits next to (WRITING.md, the note exception).
+// Wide screens: the notes sit in the margin column, level with the text. Narrower:
+// they follow the text, as ruled side notes.
+interface Props {
+  notes: string[];
+}
+
+const { notes } = Astro.props;
+---
+
+<div class="noted">
+  <slot />
+  <aside class="noted-notes" aria-label="Margin notes">
+    {notes.map((n) => <p class="sidenote">{n}</p>)}
+  </aside>
+</div>
+
+<style>
+  .noted {
+    position: relative;
+  }
+
+  .noted-notes {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+    max-width: 28em;
+  }
+
+  /* The case-study body has a 240 px notes column 40 px to the right of the text. */
+  @media (min-width: 1041px) {
+    .noted-notes {
+      position: absolute;
+      top: 6px;
+      left: calc(100% + 40px);
+      width: 240px;
+      margin: 0;
+    }
+  }
+</style>

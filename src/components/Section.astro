@@ -45,6 +45,8 @@ const [, num = label, name = ''] = label.match(/^(\S+ \S+) (.*)$/) ?? [];
   }
 
   .prose :global(h3) {
+    /* "On this page" links land below the sticky header. */
+    scroll-margin-top: 80px;
     font-family: var(--font-display);
     font-stretch: 78%;
     font-weight: 700;
@@ -59,10 +61,6 @@ const [, num = label, name = ''] = label.match(/^(\S+ \S+) (.*)$/) ?? [];
   }
 
   /* Circled numerals (FigRef) tying a sub-heading to the figure above. */
-  .prose {
-    position: relative;
-  }
-
   .prose :global(.fig-ref) {
     display: block;
     position: relative;

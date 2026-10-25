@@ -26,6 +26,7 @@
   .theme-switch,
   .contact-form,
   .site-footer,
+  .toc,
   .actions,
   .cs-nav {
     display: none !important;
@@ -188,6 +189,53 @@
   .turn-note {
     padding-top: 2pt !important;
     font-size: 8pt !important;
+  }
+
+  /* Margin notes sit in a narrow right margin on paper, level with their text. */
+  .cs-body .prose {
+    max-width: calc(100% - 130px) !important;
+  }
+
+  .noted-notes {
+    position: absolute !important;
+    top: 2pt !important;
+    left: calc(100% + 14px) !important;
+    width: 116px !important;
+    margin: 0 !important;
+    gap: 4pt !important;
+  }
+
+  .noted-notes .sidenote {
+    padding-top: 2pt;
+    font-size: 7.5pt;
+    line-height: 1.35;
+  }
+
+  /* The end of a case study: skills and the closing block, sized for paper. */
+  .tags {
+    gap: 2pt 14pt !important;
+  }
+
+  .tag {
+    min-height: 0 !important;
+    font-size: 11pt !important;
+  }
+
+  .closing {
+    padding: 0 !important;
+  }
+
+  .closing-ask {
+    font-size: 15pt !important;
+  }
+
+  .closing-links {
+    margin-top: 2pt !important;
+    font-size: 10pt !important;
+  }
+
+  .closing-links a {
+    min-height: 0 !important;
   }
 
   /* Keep things whole across pages. */
