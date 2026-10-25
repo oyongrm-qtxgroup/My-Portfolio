@@ -28,6 +28,10 @@ export default defineConfig({
         default: 'Portfolio contact form <onboarding@resend.dev>',
       }),
       VERCEL_ENV: envField.string({ context: 'server', access: 'public', optional: true }),
+      // GitHub repos for the Proof band (src/lib/github.ts). The token is optional and
+      // only lifts the rate limit; the API address can point at a test server.
+      GITHUB_TOKEN: envField.string({ context: 'server', access: 'secret', optional: true }),
+      GITHUB_API: envField.string({ context: 'server', access: 'public', default: 'https://api.github.com' }),
     },
   },
 });

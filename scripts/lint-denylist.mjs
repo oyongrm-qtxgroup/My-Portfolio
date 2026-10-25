@@ -1,6 +1,8 @@
 // Confidentiality guard: fails if any client or people name appears in the site.
 // The names live outside the public repo, in the DENYLIST environment variable
-// (a CI secret), one name per line or comma-separated.
+// (a CI secret), one name per line or comma-separated. Locally it skips when the
+// variable is empty; in CI it fails, because an unset secret would check nothing.
+// It scans the sources and the built site (which carries GitHub data).
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
@@ -11,6 +13,10 @@ const names = (process.env.DENYLIST ?? '')
   .filter(Boolean);
 
 if (names.length === 0) {
+  if (process.env.CI) {
+    console.error('lint:denylist: DENYLIST is not set; add it as an Actions secret (docs/DESIGN_PLAN.md §6)');
+    process.exit(1);
+  }
   console.log('lint:denylist skipped (DENYLIST is not set)');
   process.exit(0);
 }
@@ -28,7 +34,7 @@ function* walk(dir) {
 }
 
 const hits = [];
-for (const dir of ['src', 'public', 'docs', 'dist']) {
+for (const dir of ['src', 'public', 'docs', 'dist', '.vercel/output/static']) {
   const abs = join(ROOT, dir);
   if (!existsSync(abs)) continue;
   for (const file of walk(abs)) {

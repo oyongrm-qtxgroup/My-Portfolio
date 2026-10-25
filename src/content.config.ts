@@ -86,6 +86,14 @@ const profile = defineCollection({
     availabilityChecked: z.coerce.string().regex(/^\d{4}-\d{2}$/),
     email: z.email(),
     links: z.object({ linkedin: z.url(), github: z.url() }),
+    // Repos shown in the Proof band (DESIGN_PLAN DS1): only these, each only while public.
+    github: z.object({
+      user: z.string(),
+      repos: z.array(z.object({ name: z.string(), line: z.string().optional() })).min(1),
+    }),
+    // The date the content last changed, for the footer (not the build date: a daily
+    // GitHub rebuild mustn't move it).
+    updated: z.coerce.date(),
     figures: z.array(z.object({ value: z.string(), label: z.string() })).min(3).max(4),
     cv: z.object({
       name: z.string(),

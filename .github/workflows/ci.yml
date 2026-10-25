@@ -20,9 +20,7 @@ jobs:
       - run: npm run build
         env:
           ASTRO_TELEMETRY_DISABLED: 1
-      - run: npm run lint:denylist
-        env:
-          DENYLIST: ${{ secrets.DENYLIST }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npx playwright install --with-deps chromium
       - run: npm run verify
       # The committed CV PDF must match the content and pass the Harvard checks.
@@ -31,3 +29,8 @@ jobs:
       - run: npm run cv:pdf -- --check
       # Likewise the share images in public/og.
       - run: npm run og -- --check
+      # Last, so the other checks still report while the secret is missing: it
+      # fails when DENYLIST is unset (docs/DESIGN_PLAN.md §5 call 4).
+      - run: npm run lint:denylist
+        env:
+          DENYLIST: ${{ secrets.DENYLIST }}

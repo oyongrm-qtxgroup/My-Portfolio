@@ -3,8 +3,14 @@ import ThemeSwitch from './ThemeSwitch.astro';
 import { getProfile } from '../lib/content';
 
 const profile = await getProfile();
-// "25 Oct 2026": day, month and year can't be confused.
-const built = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+// "25 Oct 2026": day, month and year can't be confused. The date the content last
+// changed (profile.yaml `updated`), not the build date, which a daily rebuild moves.
+const updated = profile.updated.toLocaleDateString('en-AU', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
 ---
 
 <footer class="site-footer">
@@ -20,7 +26,7 @@ const built = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 's
   <ThemeSwitch name="footer" />
   <p class="colophon">
     Set in Archivo, Source Serif 4 and IBM Plex Mono. Built with Astro, hosted on Vercel.{' '}
-    <span class="nowrap">Updated {built}.</span>
+    <span class="nowrap">Updated {updated}.</span>
   </p>
 </footer>
 

@@ -29,6 +29,19 @@ main:
   links:
     linkedin: https://www.linkedin.com/in/raymundo-oyong/
     github: https://github.com/oyongrm-qtxgroup
+  # Code shown in the Proof band (docs/DESIGN_PLAN.md DS1). Only these repos appear,
+  # each only while it is public. `line` is ours and is checked like all content;
+  # GitHub's own description is used only where a repo has no line.
+  github:
+    user: oyongrm-qtxgroup
+    repos:
+      - name: My-Portfolio
+        line: This site. Astro, static pages, and a CV PDF and share images built from the same content, each checked in CI.
+      - name: portpeek
+      - name: Clear-Path
+      - name: Craft-Track
+  # Bump when the content changes; the footer's "Updated" date.
+  updated: 2026-10-25
   # Outcomes only: never hours logged, tasks closed or tickets counted.
   figures:
     - value: '3'
