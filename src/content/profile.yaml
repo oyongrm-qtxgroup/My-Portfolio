@@ -13,9 +13,10 @@ main:
     the system, build it, and lead it through to the version people rely on every day.
   # CV profile line (no first person).
   summary: >-
-    Software engineer with eight years of building business systems, leading with AI and automation:
-    voice agents that book into practice systems, document drafting with every statement linked to
-    its source, and robotic process automation that cut manual SAP processing by 70–80%. Owns a
+    Software engineer with eight years of building business systems; since 2026, building production
+    LLM and voice AI for Australian health, disability-care and aged-care clients: voice agents that
+    book into practice systems, and document drafting with every statement linked to its source.
+    Before that, robotic process automation (RPA) that cut manual SAP processing by 70–80%. Owns a
     system from the first client conversation to live support.
   location: Based in the Philippines · working with QTX, Sydney
   # Who can hire me and how (docs/FIX_PLAN.md D6–D8). Shown under the intro and in the CV header.
@@ -44,9 +45,9 @@ main:
     site: raymundo-oyong.vercel.app
     skills:
       - label: AI
-        items: Large language model (LLM) prompt design and evaluation, retrieval-augmented generation, voice agents (ElevenLabs, Twilio), Azure Document Intelligence, Azure OpenAI
+        items: Large language model (LLM) prompt design and evaluation, retrieval-augmented generation (RAG), AI agents, voice agents (ElevenLabs, Twilio), Azure Document Intelligence, Azure OpenAI
       - label: Automation
-        items: Power Automate (desktop and cloud flows), SAP ECC 6 (Basis, FI-CO, MM), SharePoint
+        items: RPA with Power Automate (desktop and cloud flows), SAP ECC 6 (Basis, FI-CO, MM), SharePoint
       - label: Platforms
         items: Supabase (PostgreSQL, row-level security, Edge Functions), Azure Functions, MS SQL Server, Vercel, Stripe
       - label: Languages
@@ -59,8 +60,7 @@ main:
         degree: Bachelor of Science in Computer Science
         year: '2018'
         notes:
-          - 'Thesis: Android augmented-reality game built in Unity with C#; named Best Thesis Presenter.'
-          - First Runner-Up, App and Running timed Android development competition.
+          - 'Thesis: Android augmented-reality game built in Unity with C#.'
     certifications:
       - name: 'Microsoft Certified: Azure Developer Associate'
         date: February 2026

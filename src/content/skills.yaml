@@ -30,9 +30,9 @@
   proof:
     - text: Technical lead on care-plan drafting for an aged-care provider, where every sentence in a draft cites the page it came from and contradictions become review items for a clinician.
       work: care-plan-drafting
-    - text: Cut each drafting action from 6.5 seconds to about 1 second by fixing the database connection, not the model.
+    - text: Cut each drafting action from 6.5 seconds to about 1 second by switching to a pooled database connection, not by changing the model.
       work: care-plan-drafting
-    - text: Built SEED agents for contract management and document chat, with each client's data kept apart and off-topic questions refused to keep running costs down.
+    - text: Built AI agents on SEED, QTX's SaaS that brings specialised AI into the work a team already does, for contract management and document chat, with each client's data kept apart and off-topic questions refused to keep running costs down.
 
 - id: automation
   order: 3
@@ -73,7 +73,7 @@
   name: Integrations & payments
   pitch: Most of the value in business software is in the connections, so I make them dependable.
   proof:
-    - text: Built Ortigas Land's first in-house payment gateway (UnionBank UPay), with rate limiting and reCAPTCHA.
+    - text: Integrated UnionBank UPay as Ortigas Land's first online payment channel, with rate limiting and reCAPTCHA.
     - text: Web APIs that open SAP data to third-party applications; Stripe subscriptions, MYOB exports, and OAuth 2.0 connections to dental practice systems.
 
 - id: security

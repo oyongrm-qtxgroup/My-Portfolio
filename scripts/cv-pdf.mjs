@@ -4,6 +4,7 @@
 // so the new PDF ships.
 //   npm run cv:pdf             write the PDF and its content hash
 //   npm run cv:pdf -- --check  fail if the PDF is stale or a rule is broken (CI)
+import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -20,7 +21,7 @@ const check = process.argv.includes('--check');
 const VERBS = new Set(
   `Added Administered Automated Built Building Cleared Coded Configured Created Cut Delivered Designed
   Developed Drafted Eliminated Enabled Established Hardened Implemented Improved Integrated Introduced
-  Launched Lead Leads Led Maintained Mentored Migrated Modernised Optimised Owned Partitioned Rebuilt
+  Launched Lead Leads Led Maintained Mentored Migrated Modernised Moved Optimised Owned Partitioned Rebuilt
   Reduced Replaced Resolved Restricted Shipped Specified Streamlined Tuned Wrote`.split(/\s+/),
 );
 
@@ -36,7 +37,18 @@ try {
 
   const facts = await page.evaluate(() => ({
     text: document.querySelector('.cv')?.innerText ?? '',
-    bullets: [...document.querySelectorAll('[data-cv-bullet]')].map((li) => li.textContent.trim()),
+    // A project's first bullet opens with its name in bold; the verb rule applies to what follows.
+    bullets: [...document.querySelectorAll('[data-cv-bullet]')].map((li) =>
+      (li.querySelector('[data-cv-text]') ?? li).textContent.trim(),
+    ),
+    // Per role: its header line and the start of its first bullet, to check reading order.
+    roles: [...document.querySelectorAll('.cv-role')]
+      .filter((el) => el.querySelector('[data-cv-text]'))
+      .map((el) => ({
+        header: el.querySelector('.cv-line')?.textContent.replace(/\s+/g, ' ').trim() ?? '',
+        first: el.querySelector('[data-cv-text]')?.textContent.replace(/\s+/g, ' ').trim() ?? '',
+      })),
+    compounds: [...new Set(document.querySelector('.cv')?.innerText.match(/[A-Za-z]+-[A-Za-z]+/g) ?? [])],
     name: document.querySelector('.cv-name')?.textContent?.trim() ?? '',
     email: document.querySelector('.cv-contact a[href^="mailto:"]')?.textContent?.trim() ?? '',
   }));
@@ -69,6 +81,30 @@ try {
   });
 
   const pdf = readFileSync(out, 'latin1');
+
+  // What an applicant tracking system reads: the PDF's extracted text, in order.
+  let extracted = '';
+  try {
+    extracted = execFileSync('pdftotext', [out, '-'], { encoding: 'utf8' }).replace(/\s+/g, ' ');
+  } catch {
+    failures.push('pdftotext is not installed (poppler-utils); it is needed to check the text an ATS reads');
+  }
+  if (extracted) {
+    for (const word of ['Senior', 'LLM', 'RAG', 'RPA', 'retrieval-augmented'])
+      if (!extracted.includes(word)) failures.push(`keyword "${word}" is missing from the extracted text`);
+    // Each role's title and dates come before its bullets, never after them.
+    for (const r of facts.roles) {
+      const at = extracted.indexOf(r.header);
+      const first = extracted.indexOf(r.first.split(' ').slice(0, 6).join(' '));
+      if (at < 0) failures.push(`role header "${r.header}" is not one line in the extracted text`);
+      else if (first < 0 || first < at) failures.push(`"${r.header}" is read after its first bullet`);
+    }
+    // A compound broken at a line end loses its hyphen in extraction ("retrievalaugmented").
+    for (const c of facts.compounds) {
+      const fused = c.replace('-', '');
+      if (!extracted.includes(c) && extracted.includes(fused)) failures.push(`"${c}" is split at a line end`);
+    }
+  }
   const pages = (pdf.match(/\/Type\s*\/Page(?!s)/g) ?? []).length;
   if (pages !== 2) failures.push(`the PDF has ${pages} page(s); it must be exactly 2`);
   // Every link must work from a forwarded PDF: email or an absolute https URL,
