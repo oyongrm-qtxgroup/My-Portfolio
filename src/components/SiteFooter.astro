@@ -2,6 +2,12 @@
 import ThemeSwitch from './ThemeSwitch.astro';
 import { getProfile } from '../lib/content';
 
+interface Props {
+  /** Where the page ends in a ContactSet (home, case studies): colophon, Privacy and theme only. */
+  slim?: boolean;
+}
+
+const { slim = false } = Astro.props;
 const profile = await getProfile();
 // "25 Oct 2026": day, month and year can't be confused. The date the content last
 // changed (profile.yaml `updated`), not the build date, which a daily rebuild moves.
@@ -13,13 +19,31 @@ const updated = profile.updated.toLocaleDateString('en-AU', {
 });
 ---
 
-<footer class="site-footer">
+<footer class:list={['site-footer', { slim }]}>
   <div class="contact-line">
-    <p class="who">{profile.name}</p>
+    {!slim && <p class="who">{profile.name}</p>}
     <ul class="links">
-      <li><a href={`mailto:${profile.email}`} class="target">{profile.email}</a></li>
-      <li><a href={profile.links.linkedin} class="target">LinkedIn</a></li>
-      <li><a href="/raymundo-oyong-cv.pdf" class="target" download>CV (PDF)</a></li>
+      {
+        !slim && (
+          <>
+            <li>
+              <a href={`mailto:${profile.email}`} class="target">
+                {profile.email}
+              </a>
+            </li>
+            <li>
+              <a href={profile.links.linkedin} class="target">
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="/raymundo-oyong-cv.pdf" class="target" download>
+                CV (PDF)
+              </a>
+            </li>
+          </>
+        )
+      }
       <li><a href="/privacy/" class="target">Privacy</a></li>
     </ul>
   </div>

@@ -42,14 +42,18 @@ main:
       - name: Craft-Track
   # Bump when the content changes; the footer's "Updated" date.
   updated: 2026-10-25
-  # Outcomes only: never hours logged, tasks closed or tickets counted.
+  # Outcomes only: never hours logged, tasks closed or tickets counted. `work` is the
+  # case study each figure links to.
   figures:
     - value: '3'
       label: practice systems behind one AI receptionist
+      work: jayne-bandy-ai
     - value: 70–80%
       label: less manual SAP processing
+      work: sap-automation
     - value: 100+ h
       label: of HR work a month moved to a bot
+      work: sap-automation
   # CV only (rendered at /cv/ and in the PDF). Harvard rules: no phone, no photo.
   cv:
     name: Raymundo Oyong

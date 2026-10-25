@@ -94,7 +94,8 @@ const profile = defineCollection({
     // The date the content last changed, for the footer (not the build date: a daily
     // GitHub rebuild mustn't move it).
     updated: z.coerce.date(),
-    figures: z.array(z.object({ value: z.string(), label: z.string() })).min(3).max(4),
+    // Each figure links to the case study that proves it (DESIGN_PLAN Step 12).
+    figures: z.array(z.object({ value: z.string(), label: z.string(), work: reference('work') })).min(3).max(4),
     cv: z.object({
       name: z.string(),
       title: z.string(),

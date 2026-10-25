@@ -6,6 +6,7 @@ import Stamp from '../../components/Stamp.astro';
 import StackList from '../../components/StackList.astro';
 import Quote from '../../components/Quote.astro';
 import Glyph from '../../components/Glyph.astro';
+import ContactSet from '../../components/ContactSet.astro';
 import { getEndorsements, getProfile, getSkills, getWork, type Work } from '../../lib/content';
 
 export async function getStaticPaths() {
@@ -32,7 +33,7 @@ const endorsement = endorsements.find((e) => e.data.work?.id === work.id);
 const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id));
 ---
 
-<Base title={`${w.title} — Raymundo Oyong`} description={w.line}>
+<Base title={`${w.title} — Raymundo Oyong`} description={w.line} slimFooter>
   <MarginRow index={0}>
     <Fragment slot="label">
       No. {w.no} <br />Project
@@ -124,10 +125,7 @@ const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id
     <Fragment slot="label">Contact</Fragment>
     <div class="closing">
       <h2 class="title closing-ask">Want to talk about this work?</h2>
-      <p class="closing-links">
-        <a href={`mailto:${profile.email}`} class="accent target">{profile.email}</a>
-        <a href="/raymundo-oyong-cv.pdf" class="accent target" download>Download CV</a>
-      </p>
+      <ContactSet class="closing-links" />
     </div>
   </MarginRow>
 
@@ -249,12 +247,8 @@ const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id
     font-size: clamp(28px, 4vw, 40px);
   }
 
-  .closing-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 28px;
-    margin-top: 12px;
-    font-size: 19px;
+  .closing :global(.closing-links) {
+    margin-top: var(--space-5);
   }
 
   /* The project's glyph beside its name on wide screens, the status stamped on it. */

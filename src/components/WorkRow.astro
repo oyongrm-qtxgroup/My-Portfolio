@@ -46,7 +46,7 @@ const w = work.data;
     align-items: baseline;
     /* Even insets for the hover wash and focus ring; the text stays on the column line. */
     margin-inline: -12px;
-    padding: 22px 12px;
+    padding: var(--space-8) 12px;
     border-bottom: 1px solid var(--rule);
     transition: background-color 0.2s;
   }
@@ -90,12 +90,14 @@ const w = work.data;
   .main {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-3);
   }
 
+  /* The work leads the page, so its rows carry the most weight on it (Step 12). */
   .name {
     margin: 0;
-    font-size: 34px;
+    font-size: clamp(34px, 3.4vw, 44px);
+    line-height: 1.02;
   }
 
   .ttl {
@@ -163,11 +165,11 @@ const w = work.data;
     .work-row {
       grid-template-columns: minmax(0, 1fr);
       gap: 8px;
-      padding: 18px 12px;
+      padding: var(--space-6) 12px;
     }
 
     .name {
-      font-size: 28px;
+      font-size: 30px;
     }
 
     .meta {

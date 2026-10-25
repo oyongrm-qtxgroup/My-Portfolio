@@ -238,6 +238,22 @@
     min-height: 0 !important;
   }
 
+  .contact-set {
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    align-items: baseline !important;
+    gap: 2pt 14pt !important;
+  }
+
+  .contact-set .cs-email {
+    font-size: 11pt !important;
+  }
+
+  .contact-set .cs-links {
+    gap: 2pt 14pt !important;
+    font-size: 8pt;
+  }
+
   /* Keep things whole across pages. */
   figure,
   .sidenote,

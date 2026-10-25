@@ -256,7 +256,7 @@ try {
       const inert = await p.evaluate(() => document.querySelector('main')?.inert);
       if (!inert) failures.push(`${tag}: page behind the menu is not inert`);
       const small = await p.$$eval('#phone-menu a, #phone-menu button, .menu-button', (els) =>
-        els.filter((el) => el.getBoundingClientRect().height < 44 && el.matches('button, .sheet-link')).length,
+        els.filter((el) => el.getBoundingClientRect().height < 44 && el.matches('button, .sheet-link, .contact-set a')).length,
       );
       if (small) failures.push(`${tag}: ${small} target(s) under 44 px`);
       await p.addScriptTag({ content: axeSource });
@@ -281,6 +281,66 @@ try {
         locked: document.documentElement.classList.contains('menu-lock'),
       }));
       if (after.expanded !== 'false' || after.locked) failures.push(`${tag}: menu state leaked across navigation`);
+    }
+    await ctx.close();
+  }
+
+  // The menu's foot (Download CV, contact set, availability, theme) fits above the fold
+  // on the smallest phone we support, with 56 px link rows (DESIGN_PLAN Step 12).
+  for (const theme of THEMES) {
+    const ctx = await browser.newContext({ viewport: { width: 320, height: 568 } });
+    await ctx.addInitScript((t) => localStorage.setItem('theme', t), theme);
+    const p = await ctx.newPage();
+    const tag = `menu foot 320×568 ${theme}`;
+    await p.goto(BASE + '/', { waitUntil: 'networkidle' });
+    await p.locator('.menu-button').click();
+    const m = await p.evaluate(() => {
+      const sheet = document.querySelector('#phone-menu');
+      const foot = sheet.querySelector('.sheet-foot').getBoundingClientRect();
+      const rows = [...sheet.querySelectorAll('.sheet-link')].map((a) => a.getBoundingClientRect().height);
+      const need = ['.cs-button', '.cs-email', '.cs-links', '.sheet-availability', '.theme-switch'].filter(
+        (s) => !sheet.querySelector(s),
+      );
+      return { bottom: foot.bottom, scroll: sheet.scrollHeight - sheet.clientHeight, rows, need };
+    });
+    if (m.need.length) failures.push(`${tag}: missing ${m.need.join(', ')}`);
+    if (m.bottom > 568 || m.scroll > 0) failures.push(`${tag}: foot ends at ${Math.round(m.bottom)} px (fold 568)`);
+    if (m.rows.some((h) => h < 56)) failures.push(`${tag}: link rows ${m.rows.map(Math.round).join('/')} px (56 min)`);
+    if (outDir) await p.screenshot({ path: join(outDir, `menu-open-320x568-${theme}.png`) });
+    await ctx.close();
+  }
+
+  // One contact set per screen-end: where a page ends in the contact block, email,
+  // LinkedIn, GitHub and the CV each appear once between it and the end of the page.
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const p = await ctx.newPage();
+    for (const [route, end] of [
+      ['/', '#contact'],
+      ['/work/jayne-bandy-ai/', '.closing'],
+      ['/work/ziaris/', '.closing'],
+      ['/work/sap-automation/', '.closing'],
+    ]) {
+      await p.goto(BASE + route, { waitUntil: 'networkidle' });
+      const counts = await p.evaluate((sel) => {
+        const start = document.querySelector(sel);
+        const links = [...document.querySelectorAll('main a, .site-footer a')].filter(
+          (a) =>
+            (start.compareDocumentPosition(a) & Node.DOCUMENT_POSITION_FOLLOWING || start.contains(a)) &&
+            a.checkVisibility(), // the form's failed-send fallback stays hidden until it's needed
+        );
+        const kinds = {
+          email: (h) => h.startsWith('mailto:'),
+          linkedin: (h) => h.includes('linkedin.com'),
+          github: (h) => /^https:\/\/github\.com\/[^/]+\/?$/.test(h),
+          cv: (h) => h.endsWith('.pdf'),
+        };
+        return Object.fromEntries(
+          Object.entries(kinds).map(([k, test]) => [k, links.filter((a) => test(a.getAttribute('href'))).length]),
+        );
+      }, end);
+      for (const [k, n] of Object.entries(counts))
+        if (n !== 1) failures.push(`contact set ${route}: ${k} appears ${n} times at the end of the page`);
     }
     await ctx.close();
   }
