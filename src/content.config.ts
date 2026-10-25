@@ -83,6 +83,7 @@ const profile = defineCollection({
     summary: z.string(),
     location: z.string(),
     availability: z.string(),
+    availabilityChecked: z.coerce.string().regex(/^\d{4}-\d{2}$/),
     email: z.email(),
     links: z.object({ linkedin: z.url(), github: z.url() }),
     figures: z.array(z.object({ value: z.string(), label: z.string() })).min(3).max(4),

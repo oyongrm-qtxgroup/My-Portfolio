@@ -5,6 +5,7 @@
 // it becomes the A4 sheet from docs/design/CVPage1/2.
 import Base from '../layouts/Base.astro';
 import MarginRow from '../components/MarginRow.astro';
+import Portrait from '../components/Portrait.astro';
 import { getProfile, getRoles, type Role } from '../lib/content';
 
 const [profile, roles] = await Promise.all([getProfile(), getRoles()]);
@@ -34,6 +35,8 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
     <MarginRow index={0}>
       <Fragment slot="label">Curriculum <br />vitae</Fragment>
       <header class="cv-head">
+        <!-- On screen only: the PDF stays photo-free (REDESIGN_PLAN §7; cv:pdf checks it). -->
+        <Portrait crop="face" width={120} class="cv-portrait" />
         <h1 class="display cv-name">{cv.name}</h1>
         <p class="title cv-title">{cv.title}</p>
         <p class="cv-contact">
@@ -169,7 +172,28 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
 
 <style>
   .cv-head {
+    position: relative;
     padding: 32px 0 20px;
+  }
+
+  .cv-head :global(.cv-portrait) {
+    width: 88px;
+    margin-bottom: 16px;
+  }
+
+  @media (min-width: 901px) {
+    .cv-head :global(.cv-portrait) {
+      position: absolute;
+      top: 32px;
+      right: 0;
+      width: 120px;
+      margin: 0;
+    }
+
+    .cv-name,
+    .cv-title {
+      padding-right: 144px;
+    }
   }
 
   .cv-name {
@@ -367,6 +391,15 @@ const keepCompounds = (text: string) => text.split(/(\S+-\S+)/);
 
     .cv-head {
       padding: 0 0 8pt;
+    }
+
+    .cv-head :global(.cv-portrait) {
+      display: none !important;
+    }
+
+    .cv-name,
+    .cv-title {
+      padding-right: 0;
     }
 
     .cv-pdf {

@@ -31,7 +31,7 @@ Status: **launched 24 Oct 2026** (`main` at `add74fe` serves production). Post-l
 | 3 | Domain | **Stay on `*.vercel.app`** (no budget for a custom domain yet). Proposed free alias: `raymundo-oyong.vercel.app`, falling back to the current `portfolio-sigma-nine-ikzbpiwe3p.vercel.app` if taken. | Phase 6 |
 | 4 | "In hindsight" paragraphs | **Drafted from the Workable timesheets and tasks:** [`docs/content/case-study-notes.md`](content/case-study-notes.md). Review the wording before publishing. | Phase 2 |
 | 5 | Location line | Confirmed: "Based in the Philippines · working with QTX, Sydney". | Phase 2 |
-| 6 | Visuals | **Screenshots with no client data, plus a diagram where one helps.** Capture from demo/test environments seeded with made-up data, never from production; see Phase 2. | Phase 2 |
+| 6 | Visuals | **Screenshots with no client data, plus a diagram where one helps.** Capture from demo/test environments seeded with made-up data, never from production; see Phase 2. **Since 25 Oct 2026 (DESIGN_PLAN DS4, DS6, Step 4) the site also has a portrait:** ink-toned per theme from the approved masters in `src/assets/portrait/`, in the home hero (220 px beside the facts block from 1100 px; an 88 px face crop beside the name below that), on the home share card, as JSON-LD `Person.image` (`/portrait/raymundo-oyong.jpg`) and in the /cv/ web page header. Every size is derived at build time by `src/pages/portrait/[file].ts` (sharp; no metadata). Never on the CV PDF, never the LCP element. | Phase 2 |
 | 7 | Contact backend | **Astro Action → Turnstile verify → Resend email, no database.** Supabase is removed entirely. | Phase 4 |
 
 ## 3. Architecture
@@ -179,7 +179,8 @@ First version (6 case studies, 49-entry dated log, "2026 in figures" with hours 
 ## 7. CV rules (Harvard Extension School OCS guide)
 
 - Language: specific, active, fact-based (quantified), easy to skim; strong action verbs.
-- Never: "I"/personal pronouns, narrative style, picture, age or sex, references, lines starting with a date, unexplained abbreviations (spell out NDIS etc. on first use).
+- Never: "I"/personal pronouns, narrative style, picture, age or sex, references, lines starting with a date, unexplained abbreviations (spell out NDIS etc. on first use). The /cv/ web page shows the portrait on screen only (hidden in print); `cv:pdf` fails if `pdfimages -list` finds any image in the PDF.
+- Name: "Raymundo Oyong" on the site, the /cv/ page and the PDF (DESIGN_PLAN DS10).
 - Always: email (the guide also asks for a phone; deliberately omitted on this public PDF, by your choice), reverse chronological order, no gaps, consistent formatting, headings in order of importance, clean PDF conversion.
 - Automated checks: no `\bI\b|\bmy\b|\bme\b` in CV text; every bullet starts with a verb from an allow-list; ≤ 2 pages; text extractable from the PDF.
 - Since 25 Oct 2026 (FIX_PLAN Step 3): every header reads as one line in reading order (organisation · place, then title · dates), and QTX projects are bold lead-ins inside one job, so an applicant tracking system sees one employer with its dates before the bullets. `cv:pdf` also checks the text `pdftotext` extracts: each role's header comes before its first bullet, the keywords Senior, LLM, RAG, RPA and retrieval-augmented are present, and no hyphenated compound is split at a line end. Every PDF link must be `mailto:` or public `https://`. CI installs `poppler-utils` for these checks.

@@ -130,6 +130,13 @@ try {
   const fonts = (pdf.match(/\/Subtype\s*\/(Type0|Type1|Type3|TrueType|MMType1)\b/g) ?? []).length;
   const mapped = (pdf.match(/\/ToUnicode/g) ?? []).length;
   if (!fonts || mapped < fonts) failures.push(`only ${mapped} of ${fonts} fonts map to Unicode; text may not copy out`);
+  // Harvard rules: no photo. The PDF carries no images at all (pdfimages lists none).
+  try {
+    const images = execFileSync('pdfimages', ['-list', out], { encoding: 'utf8' }).trim().split('\n').slice(2);
+    if (images.length) failures.push(`the PDF contains ${images.length} image(s); the CV stays photo-free`);
+  } catch {
+    failures.push('pdfimages is not installed (poppler-utils); it is needed to check the PDF has no photo');
+  }
   // The web fonts, not their fallbacks, must be what the PDF carries (Chromium
   // names Type 3 fonts in their descriptor, so /FontName as well as /BaseFont).
   for (const name of ['Archivo', 'SourceSerif4'])

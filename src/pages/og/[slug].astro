@@ -3,6 +3,7 @@
 // public/og/<slug>.png by `npm run og`. Not linked, not in the sitemap, noindex.
 import { palettes } from '../../design/tokens';
 import { getPublicPages, type PublicPage } from '../../lib/pages';
+import { ALT, src } from '../../lib/portrait';
 import '../../styles/fonts.css';
 
 export async function getStaticPaths() {
@@ -21,7 +22,7 @@ const vars = `:root{--paper:${t.paper};--ink:${t.ink};--ink2:${t.ink2};--rule:${
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en-AU">
   <head>
     <meta charset="utf-8" />
     <meta name="robots" content="noindex" />
@@ -60,6 +61,14 @@ const vars = `:root{--paper:${t.paper};--ink:${t.ink};--ink2:${t.ink2};--rule:${
         font-size: 64px;
         line-height: 1;
         color: var(--ink);
+      }
+      .mar.portrait {
+        padding: 56px 24px 0 44px;
+      }
+      .mar.portrait img {
+        display: block;
+        width: 132px;
+        height: 132px;
       }
       .who {
         font-family: 'Archivo Variable', sans-serif;
@@ -123,7 +132,17 @@ const vars = `:root{--paper:${t.paper};--ink:${t.ink};--ink2:${t.ink2};--rule:${
   </head>
   <body>
     <div class="card">
-      <div class="mar" aria-hidden="true">RO</div>
+      {
+        page.slug === 'home' ? (
+          <div class="mar portrait">
+            <img src={src('paper', 'face', 264, 'webp')} alt={ALT} width="132" height="132" />
+          </div>
+        ) : (
+          <div class="mar" aria-hidden="true">
+            RO
+          </div>
+        )
+      }
       <div class="body">
         <div class="who">Raymundo Oyong</div>
         <div class="kicker">{page.kicker}</div>

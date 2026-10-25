@@ -1,0 +1,46 @@
+---
+// The portrait in both tones. Only the tone for the active theme is displayed (the
+// rules are in base.css); both are lazy, so the hidden one is never fetched, and
+// neither is preloaded, so the text stays the largest paint.
+import { ALT, FORMATS, TONES, height, src, srcset, type Crop } from '../lib/portrait';
+
+interface Props {
+  crop: Crop;
+  /** Rendered width in CSS pixels (the `sizes` value). */
+  width: number;
+  class?: string;
+}
+
+const { crop, width, class: className } = Astro.props;
+---
+
+<span class:list={['portrait', className]}>
+  {
+    TONES.map((tone) => (
+      <picture class={`portrait-${tone}`}>
+        {FORMATS.map((format) => (
+          <source type={`image/${format}`} srcset={srcset(tone, crop, format)} sizes={`${width}px`} />
+        ))}
+        <img
+          src={src(tone, crop, width, 'webp')}
+          alt={ALT}
+          width={width}
+          height={height(crop, width)}
+          loading="lazy"
+          decoding="async"
+        />
+      </picture>
+    ))
+  }
+</span>
+
+<style>
+  .portrait {
+    display: block;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+</style>

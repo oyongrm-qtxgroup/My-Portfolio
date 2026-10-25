@@ -4,6 +4,8 @@ import MarginRow from '../components/MarginRow.astro';
 import WorkRow from '../components/WorkRow.astro';
 import ContactForm from '../components/ContactForm.astro';
 import Years from '../components/Years.astro';
+import Portrait from '../components/Portrait.astro';
+import { STABLE as portraitUrl } from '../lib/portrait';
 import { getPrinciples, getProfile, getRoles, getSkills, getWork } from '../lib/content';
 
 const [profile, skills, principles, work, roles] = await Promise.all([
@@ -20,6 +22,17 @@ const workById = new Map(work.map((w) => [w.id, w]));
 const projectFor = (proof: { work?: { id: string } }[]) =>
   proof.map((p) => p.work && workById.get(p.work.id)).find(Boolean);
 
+// The availability line, set as labelled facts beside the portrait. The words are the
+// profile's own, split at "Open to" and the time zone; anything else shows whole.
+const parts = profile.availability.match(/^Open to (.+?)\s+(UTC[+−-]\d+)\.?$/s);
+const openTo = parts ? parts[1] : profile.availability;
+const hours = parts?.[2];
+const checked = new Date(`${profile.availabilityChecked}-01T00:00:00Z`).toLocaleDateString('en-AU', {
+  month: 'short',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+
 // schema.org Person for search engines: who, what, where, and the profiles that confirm it.
 const currentRole = roles.find((r) => r.data.current);
 const person = {
@@ -30,7 +43,7 @@ const person = {
   description: profile.summary,
   url: Astro.site?.href,
   email: `mailto:${profile.email}`,
-  image: new URL('/og/home.png', Astro.site).href,
+  image: new URL(portraitUrl, Astro.site).href,
   address: { '@type': 'PostalAddress', addressCountry: 'PH' },
   ...(currentRole && { worksFor: { '@type': 'Organization', name: currentRole.data.org } }),
   knowsAbout: skills.map((s) => s.data.name),
@@ -50,20 +63,54 @@ const person = {
           </Fragment>
         ))}
       </h1>
-      <p class="identity">
-        <span class="identity-name">{profile.name}</span>
-        <span class="identity-title">{profile.title}</span>
-      </p>
+      <div class="identity-row">
+        <Portrait crop="face" width={88} class="face" />
+        <p class="identity">
+          <span class="identity-name">{profile.name}</span>
+          <span class="identity-title">{profile.title}</span>
+        </p>
+      </div>
       <p class="actions">
         <a href="/raymundo-oyong-cv.pdf" class="action primary" download>Download CV</a>
         <a href="#work" class="action">Selected work</a>
       </p>
+      <!-- Who, available for what, when and how to reach: one glanceable block. -->
+      <div class="facts">
+        <Portrait crop="full" width={220} class="figure" />
+        <dl class="fact-list">
+          {
+            parts ? (
+              <div>
+                <dt class="label">Open to</dt>
+                <dd>{openTo}</dd>
+              </div>
+            ) : (
+              <div>
+                <dt class="visually-hidden">Availability</dt>
+                <dd>{openTo}</dd>
+              </div>
+            )
+          }
+          {
+            hours && (
+              <div>
+                <dt class="label">Hours</dt>
+                <dd>{hours}</dd>
+              </div>
+            )
+          }
+          <div>
+            <dt class="label">Contact</dt>
+            <dd>
+              <a href={`mailto:${profile.email}`} class="accent target">{profile.email}</a>
+            </dd>
+          </div>
+        </dl>
+        <p class="mono muted checked">Availability checked {checked}</p>
+      </div>
       <!-- Not faded: the largest text block on a phone must paint at once (LCP). -->
       <p class="lede">{profile.lede}</p>
-      <p class="availability">{profile.availability}</p>
-      <p class="mono muted where">
-        {profile.location} · <a href={`mailto:${profile.email}`} class="accent">{profile.email}</a>
-      </p>
+      <p class="mono muted where">{profile.location}</p>
     </div>
   </MarginRow>
 
@@ -211,15 +258,103 @@ const person = {
     margin-top: 28px;
   }
 
-  .availability {
-    margin-top: 16px;
-    max-width: 40em;
-    font-size: 18px;
-    line-height: 1.5;
-  }
-
   .where {
     margin-top: 20px;
+  }
+
+  .identity-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 28px;
+  }
+
+  .identity-row .identity {
+    margin-top: 0;
+  }
+
+  .identity-row :global(.face) {
+    flex: 0 0 88px;
+  }
+
+  .facts {
+    margin-top: 28px;
+    max-width: 36em;
+  }
+
+  .facts :global(.figure) {
+    display: none;
+  }
+
+  .fact-list {
+    margin: 0;
+    border-top: 1.5px solid var(--ink);
+  }
+
+  .fact-list > div {
+    display: grid;
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 12px;
+    align-items: baseline;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .fact-list dd {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  .fact-list a {
+    overflow-wrap: anywhere;
+  }
+
+  .checked {
+    margin-top: 10px;
+    font-size: 12px;
+  }
+
+  /* Wide screens: the portrait and the facts take the empty right of the hero. */
+  @media (min-width: 1100px) {
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 220px;
+      grid-template-rows: auto auto auto auto auto 1fr;
+      column-gap: 56px;
+    }
+
+    .headline {
+      grid-column: 1 / -1;
+    }
+
+    .identity-row,
+    .actions,
+    .lede,
+    .where {
+      grid-column: 1;
+    }
+
+    .facts {
+      grid-column: 2;
+      grid-row: 2 / -1;
+      margin-top: 32px;
+    }
+
+    .identity-row :global(.face) {
+      display: none;
+    }
+
+    .facts :global(.figure) {
+      display: block;
+      width: 220px;
+      margin-bottom: 20px;
+    }
+
+    .fact-list > div {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2px;
+    }
   }
 
   .actions {
