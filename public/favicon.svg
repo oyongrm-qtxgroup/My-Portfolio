@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <style>
-    .p { fill: #F6F6F3 } .i { stroke: #141413 } .m { stroke: #C8322A }
-    @media (prefers-color-scheme: dark) { .p { fill: #131412 } .i { stroke: #ECEBE6 } .m { stroke: #E0604F } }
+    .p { fill: #F6F6F3 } .i { fill: #141413 } .m { stroke: #C8322A }
+    @media (prefers-color-scheme: dark) { .p { fill: #131412 } .i { fill: #ECEBE6 } .m { stroke: #E0604F } }
   </style>
   <rect class="p" width="32" height="32" rx="3"/>
-  <path class="i" stroke-width="2.5" d="M12 10h14M12 16h14M12 22h9"/>
-  <path class="m" stroke-width="2" d="M8 3v26"/>
+  <path class="m" stroke-width="2" d="M6 3v26"/>
+  <text class="i" x="19.5" y="21.5" text-anchor="middle" font-family="'Arial Narrow', Arial, sans-serif" font-weight="700" font-size="14" letter-spacing="-0.5">RO</text>
 </svg>

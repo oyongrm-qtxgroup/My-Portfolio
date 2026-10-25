@@ -224,7 +224,7 @@ Because all work goes through the single branch `ccr-e6bc818b-pfij6d`, **one pul
 - **Files:** `src/content/work/ndis-platform.mdx` (new), `src/content/work/care-plan-drafting.mdx` (removed), `astro.config.mjs`, `scripts/verify.mjs`, `public/og/`, `src/content/roles.yaml`, `src/content/skills.yaml`, `src/pages/index.astro`.
 - **Verified by:** the redirect checked on the preview, sitemap and share card for the new page, the denylist (the client must stay unnamed), standard checks, and your read-through.
 
-### Step 5c: SAP & HR automation depth (S–M, low risk, blocked on facts D) — in review
+### Step 5c: SAP & HR automation depth (S–M, low risk, blocked on facts D) — merged 25 Oct 2026 (#8)
 
 - **Findings:** H-11, H-15.
 - **Changes:**
@@ -235,7 +235,7 @@ Because all work goes through the single branch `ccr-e6bc818b-pfij6d`, **one pul
 - **Files:** `src/content/work/sap-automation.mdx`, `src/content/roles.yaml`, `src/content/skills.yaml`, regenerated PDF.
 - **Verified by:** standard checks and your read-through.
 
-### Step 6: Share images, favicon and remaining polish (S, low risk, not blocked)
+### Step 6: Share images, favicon and remaining polish (S, low risk, not blocked) — in review
 
 - **Findings:** D-22, D-28 (rule width), R-14 (if you've claimed a LinkedIn vanity URL by then).
 - **Changes:**

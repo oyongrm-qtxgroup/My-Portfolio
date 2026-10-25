@@ -209,7 +209,8 @@ button {
   top: 0;
   right: 0;
   bottom: 0;
-  width: 1.5px;
+  /* Whole pixels: 1.5px rounded to 1 or 2 depending on the screen. */
+  width: 2px;
   background: var(--margin);
 }
 

@@ -53,11 +53,21 @@ const vars = `:root{--paper:${t.paper};--ink:${t.ink};--ink2:${t.ink2};--rule:${
         background: var(--margin);
       }
       .mar {
-        padding: 56px 24px 0 56px;
-        font: 500 18px/1.5 'IBM Plex Mono', monospace;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        color: var(--ink2);
+        padding: 48px 24px 0 56px;
+        font-family: 'Archivo Variable', sans-serif;
+        font-stretch: 72%;
+        font-weight: 700;
+        font-size: 64px;
+        line-height: 1;
+        color: var(--ink);
+      }
+      .who {
+        font-family: 'Archivo Variable', sans-serif;
+        font-stretch: 78%;
+        font-weight: 700;
+        font-size: 56px;
+        line-height: 1;
+        color: var(--ink);
       }
       .body {
         display: flex;
@@ -65,28 +75,34 @@ const vars = `:root{--paper:${t.paper};--ink:${t.ink};--ink2:${t.ink2};--rule:${
         padding: 56px 72px 56px 56px;
       }
       .kicker {
+        margin-top: 12px;
         font: 500 22px/1.4 'IBM Plex Mono', monospace;
         letter-spacing: 0.04em;
         text-transform: uppercase;
         color: var(--ink2);
       }
       h1 {
-        margin: 28px 0 0;
+        margin: 24px 0 0;
         font-family: 'Archivo Variable', sans-serif;
         font-stretch: 72%;
         font-weight: 700;
         line-height: 0.95;
         letter-spacing: -0.01em;
-        font-size: 120px;
+        font-size: 104px;
         text-wrap: balance;
       }
       h1.long {
-        font-size: 86px;
+        font-size: 72px;
       }
       .line {
-        margin: 28px 0 0;
-        max-width: 26em;
-        font: 30px/1.35 'Source Serif 4 Variable', Georgia, serif;
+        margin: 20px 0 0;
+        max-width: 28em;
+        font: 28px/1.35 'Source Serif 4 Variable', Georgia, serif;
+      }
+      .stack {
+        margin: 16px 0 0;
+        font: 500 20px/1.4 'IBM Plex Mono', monospace;
+        color: var(--ink2);
       }
       .foot {
         margin-top: auto;
@@ -107,11 +123,13 @@ const vars = `:root{--paper:${t.paper};--ink:${t.ink};--ink2:${t.ink2};--rule:${
   </head>
   <body>
     <div class="card">
-      <div class="mar">Raymundo<br />Oyong</div>
+      <div class="mar" aria-hidden="true">RO</div>
       <div class="body">
+        <div class="who">Raymundo Oyong</div>
         <div class="kicker">{page.kicker}</div>
         <h1 class:list={{ long }}>{page.title}</h1>
         {page.line && <p class="line">{page.line}</p>}
+        {page.stack && <p class="stack">{page.stack}</p>}
         <div class="foot">
           <span>Based in the Philippines · working with QTX, Sydney</span>
           <span class="site">raymundo-oyong.vercel.app</span>
