@@ -2,8 +2,8 @@ import { defineCollection, reference } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-// What I can do, with the evidence for it. `lead` areas get a full block on the
-// home page; `foundation` areas sit in the "How I build" grid.
+// What I can do, with the evidence for it: the rows of the home page's proof grid,
+// `lead` areas set larger.
 const skills = defineCollection({
   loader: file('src/content/skills.yaml'),
   schema: z.object({
@@ -17,9 +17,15 @@ const skills = defineCollection({
         z.object({
           text: z.string(),
           work: reference('work').optional(),
+          // For a proof point with no project page: the Experience row(s) it comes from
+          // (DESIGN_PLAN Step 13). The proof grid's dot links there.
+          where: z.array(reference('roles')).optional(),
         }),
       )
       .min(1),
+    // Proof-grid rings: work where the area was used but isn't written up, from the CV
+    // bullets only. A project id, `qtx` (other QTX work) or `earlier` (earlier roles).
+    used: z.array(z.string()).default([]),
   }),
 });
 

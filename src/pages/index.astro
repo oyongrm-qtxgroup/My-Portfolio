@@ -9,6 +9,7 @@ import { STABLE as portraitUrl } from '../lib/portrait';
 import { getRepos, pushedOn } from '../lib/github';
 import Quote from '../components/Quote.astro';
 import ContactSet from '../components/ContactSet.astro';
+import ProofGrid from '../components/ProofGrid.astro';
 import { getEndorsements, getPrinciples, getProfile, getRoles, getSkills, getWork } from '../lib/content';
 
 const [profile, skills, principles, work, roles, repos, endorsements] = await Promise.all([
@@ -25,10 +26,8 @@ const quotes = endorsements.filter((e) => e.data.home).slice(0, 3);
 const recommendations = new URL('details/recommendations/', profile.links.linkedin).href;
 
 // Work first (docs/FIX_PLAN.md D4): the projects are the evidence, so they come before
-// the capabilities they prove. Each capability links to the project behind its proof.
+// the capabilities they prove (the proof grid links each area to its proof).
 const workById = new Map(work.map((w) => [w.id, w]));
-const projectFor = (proof: { work?: { id: string } }[]) =>
-  proof.map((p) => p.work && workById.get(p.work.id)).find(Boolean);
 
 // The availability line, set as labelled facts beside the portrait. The words are the
 // profile's own, split at "Open to" and the time zone; anything else shows whole.
@@ -160,7 +159,7 @@ const person = {
     <div class="list">
       {
         roles.map((r) => (
-          <div class="role reveal">
+          <div class="role reveal" id={`role-${r.id}`}>
             <Years start={r.data.start} end={r.data.end} class="mono muted" />
             <span class="role-org">{r.data.short}</span>
             <p>
@@ -229,29 +228,7 @@ const person = {
   <MarginRow index={5} ruled id="capabilities" hideLabel>
     <Fragment slot="label">Capabilities</Fragment>
     <h2 class="visually-hidden">Capabilities</h2>
-    <dl class="caps">
-      {
-        skills.map((s) => {
-          const project = projectFor(s.data.proof);
-          return (
-            <div class="cap reveal" id={s.id}>
-              <dt class="title cap-name">{s.data.name}</dt>
-              <dd class="cap-line">
-                {s.data.summary}
-                {project && (
-                  <>
-                    {' '}
-                    <a href={`/work/${project.id}/`} class="cap-link">
-                      {project.data.title} →
-                    </a>
-                  </>
-                )}
-              </dd>
-            </div>
-          );
-        })
-      }
-    </dl>
+    <ProofGrid skills={skills} work={work} />
   </MarginRow>
 
   <MarginRow index={6} ruled id="principles" hideLabel>
@@ -548,39 +525,6 @@ const person = {
     margin-top: -8px;
   }
 
-  .caps {
-    margin: -8px 0 0;
-  }
-
-  .cap {
-    display: grid;
-    grid-template-columns: 260px minmax(0, 1fr);
-    gap: 20px;
-    align-items: baseline;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .cap:last-child {
-    border-bottom: 0;
-  }
-
-  .cap-name {
-    font-size: 24px;
-  }
-
-  .cap-line {
-    margin: 0;
-    max-width: 40em;
-    font-size: 18px;
-    line-height: 1.45;
-  }
-
-  .cap-link {
-    white-space: nowrap;
-    color: var(--accent);
-  }
-
   .principles {
     padding: 0;
     list-style: none;
@@ -689,6 +633,7 @@ const person = {
   }
 
   .role {
+    scroll-margin-top: 80px;
     display: grid;
     grid-template-columns: 96px 150px minmax(0, 1fr);
     gap: 20px;
@@ -770,19 +715,11 @@ const person = {
       font-size: 17px;
     }
 
-    .cap {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 6px;
-    }
-
     .repo {
       grid-template-columns: minmax(0, 1fr);
       grid-template-areas: 'name' 'line' 'meta';
     }
 
-    .cap-line {
-      font-size: 17px;
-    }
   }
 
   /* Narrow phones: the two hero buttons share the row equally. */

@@ -345,6 +345,43 @@ try {
     await ctx.close();
   }
 
+  // Proof grid (DESIGN_PLAN Step 13): every dot links to something that exists, every
+  // case study's "Skills shown" tag lands on a grid row, and the table has headers.
+  {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+    const p = await ctx.newPage();
+    await p.goto(BASE + '/', { waitUntil: 'networkidle' });
+    const grid = await p.evaluate(() => {
+      const table = document.querySelector('.proof-grid table');
+      return {
+        rows: [...document.querySelectorAll('.proof-grid tbody tr')].map((tr) => tr.id),
+        colHeads: table?.querySelectorAll('thead th[scope="col"]').length ?? 0,
+        rowHeads: table?.querySelectorAll('tbody th[scope="row"]').length ?? 0,
+        dots: [...document.querySelectorAll('.proof-grid a.mark')].map((a) => ({
+          href: a.getAttribute('href'),
+          name: a.getAttribute('aria-label'),
+          ok: a.getAttribute('href').startsWith('#') ? !!document.getElementById(a.getAttribute('href').slice(1)) : null,
+        })),
+      };
+    });
+    if (grid.rows.length < 10 || grid.rowHeads !== grid.rows.length || grid.colHeads < 5)
+      failures.push(`proof grid: ${grid.rows.length} rows, ${grid.rowHeads} row headers, ${grid.colHeads} column headers`);
+    for (const d of grid.dots) {
+      if (!/^Shown in /.test(d.name ?? '')) failures.push(`proof grid: dot to ${d.href} has no accessible name`);
+      if (d.ok === false) failures.push(`proof grid: dot to ${d.href} lands nowhere`);
+      if (d.ok === null && (await fetch(BASE + d.href)).status !== 200) failures.push(`proof grid: dot to ${d.href} is broken`);
+    }
+    for (const route of ['/work/jayne-bandy-ai/', '/work/ziaris/', '/work/sap-automation/']) {
+      await p.goto(BASE + route, { waitUntil: 'networkidle' });
+      const tags = await p.$$eval('.tags a', (as) => as.map((a) => a.getAttribute('href')));
+      if (!tags.length) failures.push(`${route}: no "Skills shown" tags`);
+      for (const href of tags)
+        if (!href.startsWith('/#') || !grid.rows.includes(href.slice(2)))
+          failures.push(`${route}: skill tag ${href} is not a proof-grid row`);
+    }
+    await ctx.close();
+  }
+
   // "On this page": each link lands with its heading below the sticky header.
   for (const width of [390, 1440]) {
     const ctx = await browser.newContext({ viewport: { width, height: 844 } });

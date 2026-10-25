@@ -126,12 +126,6 @@
     grid-column: auto !important;
   }
 
-  .cap {
-    grid-template-columns: 190px minmax(0, 1fr) !important;
-    gap: 14px !important;
-    padding: 10px 0 !important;
-  }
-
   /* Case-study header: the meta stays one row of four. */
   .cs-head {
     padding: 8pt 0 4pt !important;
@@ -218,7 +212,7 @@
 
   .tag {
     min-height: 0 !important;
-    font-size: 11pt !important;
+    font-size: 8pt !important;
   }
 
   .closing {
@@ -259,7 +253,7 @@
   .sidenote,
   .work-row,
   .role,
-  .cap,
+  .area,
   .principle,
   .meta,
   li {

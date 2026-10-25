@@ -175,7 +175,7 @@ Because all work goes through the single branch `ccr-e6bc818b-pfij6d`, **one pul
 
 - **Findings:** H-12, D-05, D-15, D-18, D-31, D-14, D-30 (colour), H-23, D-16, D-17, D-19, D-11, D-12, R-12, D-23 (figures), D-25 (quotes and list markers).
 - **Content:**
-  - New order per D4. Capabilities merges `skills.yaml` lead areas and foundations into one line per area, linking to the project that proves it; no proof lists.
+  - New order per D4. Capabilities merges `skills.yaml` lead areas and foundations into one line per area, linking to the project that proves it; no proof lists. *(DESIGN_PLAN Step 13: now a proof grid, one row per area with its one-line summary, the work across, a dot linking to the proof and a ring for work that used the area without writing it up.)*
   - Three principles.
   - New figures strip (see "Calls I made").
   - Each figure and claim appears once on the page; the PR includes a table of where each fact now lives.
