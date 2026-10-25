@@ -47,7 +47,7 @@
   proof:
     - text: Built a Power Automate Desktop bot that enters invoices, reversals and contract locks in SAP, cutting manual SAP processing time by 70–80% at Ortigas Land.
       work: sap-automation
-    - text: Automated government remittance processing with Power Automate and AI document extraction, removing more than 100 hours a month of manual HR work.
+    - text: Automated government remittance processing with Power Automate and AI document extraction, moving more than 100 hours a month of HR keying to the bot, with HR approving every payment.
       work: sap-automation
     - text: A daily job on an NDIS provider’s platform updates worker statuses, flags expired credentials and warns managers before the next ones lapse.
       work: ziaris

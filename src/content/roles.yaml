@@ -54,7 +54,7 @@
   highlights:
     - Led and mentored a four-person development team; introduced structured code reviews and secure development practices.
     - Cut manual SAP processing time by 70–80% with a Power Automate Desktop bot that enters invoices, reversals and contract locks in the SAP desktop client.
-    - Moved 100+ hours a month of manual HR work to a Power Automate bot that processes government remittances using AI document extraction.
+    - Moved 100+ hours a month of manual HR work to a Power Automate bot that prepares government remittances using AI document extraction, with HR approving each payment.
     - Integrated UnionBank UPay as the company’s first online payment channel, with rate limiting and reCAPTCHA protection.
     - Replaced a failing database backup uploader with a Windows service that partitions large files for Amazon S3.
 

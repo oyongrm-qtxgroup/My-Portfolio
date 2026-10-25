@@ -3,11 +3,11 @@ no: '03'
 order: 3
 title: SAP & HR automation
 short: Two Power Automate bots that took repetitive SAP entry and government-remittance processing off people’s desks.
-line: Two Power Automate bots for a property developer. One enters invoices, reversals and contract locks in SAP; the other processes government remittances for HR from the source documents.
+line: Two Power Automate bots for a property developer. One enters invoices, reversals and contract locks in SAP; the other prepares government remittances for HR from the source documents, and HR approves every payment.
 client: Ortigas Land Corporation
-role: Software Developer Officer, leading the dev team
+role: Software Developer Officer, leading a four-person team
 period: 2024 – 2025
-stack: [Power Automate Desktop, Power Automate cloud flows, AI document extraction, SAP ECC 6]
+stack: [Power Automate Desktop, Power Automate cloud flows, AI document extraction, SAP ECC 6]
 status: shipped
 skills: [automation, integrations, leadership]
 ---
@@ -17,27 +17,29 @@ import Section from '../../components/Section.astro';
 
 <Section label="The challenge" ruled>
 
-Two jobs at Ortigas Land took people’s time without needing their judgement. Staff keyed invoices, reversals and contract locks into SAP by hand, and HR spent more than 100 hours a month processing government remittances. Both followed fixed rules, which made them good candidates for a bot.
+Two jobs at Ortigas Land took people’s time without needing their judgement. Staff keyed hundreds of invoices, reversals and contract locks (holds on a property-sale contract while something is pending) into SAP by hand each month, and HR spent more than 100 hours a month processing government remittances: the statutory contributions an employer pays to Philippine government agencies. Both followed fixed rules, which made them good candidates for a bot.
 
 </Section>
 
 <Flow
   label="Fig. 1 SAP entry"
-  caption="The desktop bot works through the same SAP client staff use."
+  caption="The desktop bot works through the same SAP client staff use, and stops for a person when a screen isn’t what it expects."
   steps={[
     { title: 'Entries', note: 'invoices, reversals, contract locks' },
     { title: 'Desktop bot', note: 'Power Automate Desktop', key: true },
     { title: 'SAP', note: 'entered in the desktop client' },
+    { title: 'Exceptions', note: 'unexpected screens only: logged and left for a person' },
   ]}
 />
 
 <Flow
   label="Fig. 2 Remittances"
-  caption="AI extraction reads the documents, so nobody retypes them."
+  caption="AI extraction reads the documents so nobody retypes them; HR approves the figures before anything is paid."
   steps={[
     { title: 'HR documents', note: 'the source records' },
     { title: 'AI extraction', note: 'figures read from each document', key: true },
-    { title: 'Remittance', note: 'processed by Power Automate' },
+    { title: 'HR review', note: 'figures checked and approved' },
+    { title: 'Remittance', note: 'keyed by Power Automate' },
   ]}
 />
 
@@ -45,11 +47,15 @@ Two jobs at Ortigas Land took people’s time without needing their judgement. S
 
 ### Use SAP the way staff do
 
-The SAP bot drives the same desktop client staff use and follows the same steps a person would, so SAP itself didn’t have to change to be automated.
+The SAP bot drives the same desktop client staff use and follows the same steps a person would, so SAP itself didn’t have to change to be automated. When a screen isn’t what the bot expects, it stops, logs the item and leaves it for a person instead of guessing.
 
-### Read the documents instead of retyping them
+### Read the documents, then a person approves
 
-The remittance bot uses AI document extraction to read the figures from HR’s source documents, and Power Automate carries the remittance through from there.
+The remittance bot uses AI document extraction to read the figures from HR’s source documents and does the keying. HR reviews the extracted figures and approves them before anything is paid, so the bot saves the typing, not the judgement.
+
+### How the savings were measured
+
+Staff timed the manual process before the bots went live. Afterwards, the bots’ run logs and the manual time that remained gave the comparison behind both figures.
 
 ### Lead the team that builds them
 
@@ -59,6 +65,6 @@ I led a four-person development team and introduced structured code reviews and 
 
 <Section label="The result" ruled>
 
-Manual SAP processing time fell by 70–80%, and more than 100 hours a month of HR work moved from people to the remittance bot.
+Manual SAP processing time fell by 70–80% across hundreds of entries a month, and more than 100 hours a month of HR keying moved to the remittance bot, with HR still approving every payment.
 
 </Section>
