@@ -4,9 +4,15 @@
 import Base from '../layouts/Base.astro';
 import MarginRow from '../components/MarginRow.astro';
 import { getProfile } from '../lib/content';
+import { PRIVACY_UPDATED } from '../lib/pages';
 
 const profile = await getProfile();
-const updated = '24 October 2026';
+const updated = PRIVACY_UPDATED.toLocaleDateString('en-AU', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
 ---
 
 <Base

@@ -1,6 +1,9 @@
 // Every public, indexable page: one list for the sitemap and the share images.
 import { getProfile, getSkills, getWork } from './content';
 
+/** The privacy notice's "Last updated" (shown on the page and in the sitemap). */
+export const PRIVACY_UPDATED = new Date('2026-10-24T00:00:00Z');
+
 export interface PublicPage {
   /** URL path with a trailing slash. */
   path: string;
@@ -13,6 +16,8 @@ export interface PublicPage {
   stack?: string;
   /** false: no card of its own; the page shares the home card (DESIGN_PLAN call 8). */
   card?: boolean;
+  /** When the content last changed: the sitemap's lastmod. */
+  updated: Date;
 }
 
 export async function getPublicPages(): Promise<PublicPage[]> {
@@ -24,6 +29,7 @@ export async function getPublicPages(): Promise<PublicPage[]> {
       kicker: profile.title,
       title: profile.headline.join(' '),
       stack: skills.filter((s) => s.data.tier === 'lead').map((s) => s.data.name).join(' · '),
+      updated: profile.updated,
     },
     ...work.map((w) => ({
       path: `/work/${w.id}/`,
@@ -32,6 +38,7 @@ export async function getPublicPages(): Promise<PublicPage[]> {
       title: w.data.title,
       line: w.data.short,
       stack: w.data.stack.slice(0, 4).join(' · '),
+      updated: w.data.updated,
     })),
     {
       path: '/cv/',
@@ -39,6 +46,7 @@ export async function getPublicPages(): Promise<PublicPage[]> {
       kicker: 'Curriculum vitae',
       title: profile.cv.title,
       line: 'Experience, skills, education and certifications.',
+      updated: profile.updated,
     },
     {
       path: '/privacy/',
@@ -46,6 +54,7 @@ export async function getPublicPages(): Promise<PublicPage[]> {
       kicker: 'Site notice',
       title: 'Privacy',
       card: false,
+      updated: PRIVACY_UPDATED,
     },
   ];
 }

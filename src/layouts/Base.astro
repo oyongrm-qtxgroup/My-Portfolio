@@ -18,6 +18,8 @@ interface Props {
   noindex?: boolean;
   /** Structured data (schema.org) for this page, rendered as JSON-LD. */
   jsonLd?: Record<string, unknown>;
+  /** "article" for the case studies (DESIGN_PLAN Step 17). */
+  ogType?: 'website' | 'article';
   /** The page ends in a ContactSet, so the footer drops its contact links (DESIGN_PLAN call 1). */
   slimFooter?: boolean;
 }
@@ -28,6 +30,7 @@ const {
   noindex = false,
   jsonLd,
   slimFooter = false,
+  ogType = 'website',
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -42,7 +45,7 @@ const image = new URL(await ogImageFor(Astro.url.pathname), Astro.site);
     <title>{title}</title>
     <meta name="description" content={description} />
     {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content="Raymundo Oyong" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />

@@ -274,6 +274,12 @@ button {
   color: var(--ink-2);
 }
 
+/* The 404's mark: an error, so margin red (DESIGN_PLAN DS7). */
+.stamp[data-status='no-entry'] {
+  color: var(--margin);
+  border-width: 2px;
+}
+
 /* ── Portrait: the tone for the active theme (Portrait.astro) ── */
 
 .portrait-night {

@@ -482,6 +482,54 @@ try {
     await ctx.close();
   }
 
+  // Structured data (DESIGN_PLAN Step 17): JSON-LD parses; the home Person and WebSite,
+  // and each case study's Article (by that Person) and BreadcrumbList, carry their
+  // required fields; og:type matches; the sitemap gives every page a lastmod.
+  {
+    const ctx = await browser.newContext();
+    const p = await ctx.newPage();
+    const graphOf = async (route) => {
+      await p.goto(BASE + route, { waitUntil: 'domcontentloaded' });
+      const raw = await p.$$eval('script[type="application/ld+json"]', (ss) => ss.map((x) => x.textContent));
+      const og = await p.$eval('meta[property="og:type"]', (m) => m.content);
+      const nodes = raw.flatMap((r) => {
+        try {
+          const j = JSON.parse(r);
+          return j['@graph'] ?? [j];
+        } catch {
+          failures.push(`${route}: JSON-LD does not parse`);
+          return [];
+        }
+      });
+      return { nodes, og, byType: (t) => nodes.find((n) => n['@type'] === t) };
+    };
+    const missing = (route, node, keys) => {
+      for (const k of keys) if (node?.[k] === undefined) failures.push(`${route}: ${node?.['@type'] ?? 'node'} has no ${k}`);
+    };
+    const home = await graphOf('/');
+    const person = home.byType('Person');
+    if (!person) failures.push('/: no Person');
+    missing('/', person, ['@id', 'name', 'jobTitle', 'url', 'image', 'sameAs', 'alumniOf', 'hasOccupation']);
+    missing('/', home.byType('WebSite'), ['@id', 'url', 'name']);
+    if (home.og !== 'website') failures.push(`/: og:type ${home.og}`);
+    for (const route of ['/work/jayne-bandy-ai/', '/work/ziaris/', '/work/sap-automation/']) {
+      const g = await graphOf(route);
+      const art = g.byType('Article');
+      if (!art) failures.push(`${route}: no Article`);
+      missing(route, art, ['headline', 'author', 'about', 'dateModified', 'image', 'mainEntityOfPage']);
+      if (art && art.author?.['@id'] !== person?.['@id']) failures.push(`${route}: Article author is not the home Person`);
+      const crumbs = g.byType('BreadcrumbList')?.itemListElement ?? [];
+      if (crumbs.length < 2 || crumbs.some((c, i) => c.position !== i + 1 || !c.item))
+        failures.push(`${route}: BreadcrumbList incomplete`);
+      if (g.og !== 'article') failures.push(`${route}: og:type ${g.og}`);
+    }
+    const sitemap = await (await fetch(BASE + '/sitemap.xml')).text();
+    const urls = sitemap.match(/<url>.*?<\/url>/gs) ?? [];
+    if (!urls.length || urls.some((u) => !/<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/.test(u)))
+      failures.push('sitemap: a page has no lastmod');
+    await ctx.close();
+  }
+
   // "On this page": each link lands with its heading below the sticky header.
   for (const width of [390, 1440]) {
     const ctx = await browser.newContext({ viewport: { width, height: 844 } });

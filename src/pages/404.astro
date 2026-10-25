@@ -1,24 +1,33 @@
 ---
 import Base from '../layouts/Base.astro';
 import MarginRow from '../components/MarginRow.astro';
+import Stamp from '../components/Stamp.astro';
+import WorkRow from '../components/WorkRow.astro';
+import { getWork } from '../lib/content';
+
+const work = await getWork();
 ---
 
 <Base title="Page not found — Raymundo Oyong" noindex>
   <MarginRow>
     <Fragment slot="label">404 <br />Not found</Fragment>
     <div class="missing">
-      <h1 class="display">Page not found.</h1>
-      <div class="text">
-        <p>
-          There’s no page at <code class="mono" id="missing-path">this address</code>. These are
-          the places most links lead to:
-        </p>
-        <ul class="mono exits">
-          <li><a href="/#work" class="accent target">Selected work →</a></li>
-          <li><a href="/cv/" class="accent target">CV →</a></li>
-          <li><a href="/#contact" class="accent target">Contact →</a></li>
-        </ul>
+      <div class="head">
+        <h1 class="display">Page not found.</h1>
+        <!-- Pressed beside the heading once; static under reduced motion. -->
+        <span class="no-entry"><Stamp status="no-entry" /></span>
       </div>
+      <p class="text">
+        There’s no page at <code class="mono" id="missing-path">this address</code>. The work is
+        where most links lead:
+      </p>
+    </div>
+  </MarginRow>
+  <MarginRow ruled hideLabel>
+    <Fragment slot="label">Selected <br />work</Fragment>
+    <h2 class="visually-hidden">Selected work</h2>
+    <div class="list">
+      {work.map((w, i) => <WorkRow work={w} index={i} />)}
     </div>
   </MarginRow>
 </Base>
@@ -32,11 +41,14 @@ import MarginRow from '../components/MarginRow.astro';
 
 <style>
   .missing {
+    padding: 40px 0 48px;
+  }
+
+  .head {
     display: flex;
     flex-wrap: wrap;
-    align-items: baseline;
-    gap: 24px 48px;
-    padding: 40px 0 80px;
+    align-items: center;
+    gap: var(--space-4) var(--space-8);
   }
 
   h1 {
@@ -44,28 +56,18 @@ import MarginRow from '../components/MarginRow.astro';
     line-height: 0.9;
   }
 
+  .no-entry :global(.stamp) {
+    padding: 6px 14px;
+    font-size: 18px;
+  }
+
   .text {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    margin-top: var(--space-7);
     max-width: 30em;
     font-size: 19px;
   }
 
-  .exits {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 28px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .exits a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
+  .list {
+    margin-top: -8px;
   }
 </style>

@@ -56,6 +56,8 @@ const work = defineCollection({
     stack: z.array(z.string()).min(1),
     status: z.enum(['live', 'shipped', 'in-progress', 'handed-over']),
     skills: z.array(reference('skills')).min(1),
+    // When the page last changed: the sitemap's lastmod and the Article's dateModified.
+    updated: z.coerce.date(),
   }),
 });
 

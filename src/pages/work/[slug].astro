@@ -7,6 +7,8 @@ import StackList from '../../components/StackList.astro';
 import Quote from '../../components/Quote.astro';
 import Glyph from '../../components/Glyph.astro';
 import ContactSet from '../../components/ContactSet.astro';
+import { articleGraph } from '../../lib/schema';
+import { ogImageFor } from '../../lib/pages';
 import { getEndorsements, getProfile, getSkills, getWork, type Work } from '../../lib/content';
 
 export async function getStaticPaths() {
@@ -31,9 +33,19 @@ const [allSkills, profile, endorsements] = await Promise.all([getSkills(), getPr
 // At most one recommendation on a project page: one that names this project (DS5).
 const endorsement = endorsements.find((e) => e.data.work?.id === work.id);
 const skills = w.skills.flatMap((ref) => allSkills.filter((s) => s.id === ref.id));
+const site = Astro.site!;
+const jsonLd = articleGraph(site, {
+  url: new URL(Astro.url.pathname, site),
+  title: w.title,
+  description: w.line,
+  about: w.short,
+  updated: w.updated,
+  image: new URL(await ogImageFor(Astro.url.pathname), site),
+  authorName: profile.name,
+});
 ---
 
-<Base title={`${w.title} — Raymundo Oyong`} description={w.line} slimFooter>
+<Base title={`${w.title} — Raymundo Oyong`} description={w.line} slimFooter ogType="article" jsonLd={jsonLd}>
   <MarginRow index={0}>
     <Fragment slot="label">
       No. {w.no} <br />Project
