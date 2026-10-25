@@ -30,7 +30,7 @@ These change the locked decisions in `docs/REDESIGN_PLAN.md` §1–4 and `docs/c
 | D12 | Visual | Hero actions; one-column layout up to about 900 px; employer, date and stat labels in sentence case at 14–15 px; **blue only for links**; no red edge line on phones. | §4 Layout, System sheet mono role and accent token | D-04, D-17, D-19, D-14, D-30, D-11 |
 | D13 | CV layout | **ATS fixes plus light type changes**, single column kept, no "Selected outcomes" strip. | CVPage1/2 artboards (small changes) | R-07, D-20, D-21 |
 | D14 | AI numbers | **None can be published.** The case studies say so plainly and rest on system facts. | none | R-03, H-01, D-23 |
-| D15 | AI system facts | **Cleared to publish:** model and vendor names, evaluation method, data handling. **Not cleared:** screenshots, demo number, recordings. | §2 #6 (screenshots) stays allowed but unused | H-02, H-07, H-10, D-06 |
+| D15 | AI system facts | **Cleared to publish:** model and vendor names, evaluation method, data handling. **Not cleared:** screenshots, demo number, recordings. **Added 25 Oct 2026 (DESIGN_PLAN DS9):** invented, labelled illustrations are allowed (the illustrative call on Jayne Bandy AI, the worked shift on Ziaris): written from scratch, invented names, times and practice, never drawn from recordings, test calls or the licensed script library. | §2 #6 (screenshots) stays allowed but unused | H-02, H-07, H-10, D-06 |
 | D16 | Caller identity | Jayne Bandy AI matches the **caller's number and name**. Wording follows that; details come from the facts sheet. | none | H-08 |
 | D17 | Ortigas team | **"Led a four-person development team"** on the site, CV and case study. | none | R-11, H-20 |
 | D18 | Team facts | Supplied through the facts sheet (§4). | none | H-04 |

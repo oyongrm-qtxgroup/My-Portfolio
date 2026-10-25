@@ -107,6 +107,14 @@ try {
         });
         for (const l of lists) failures.push(`${tag}: ${l}`);
 
+        // Illustrations are invented (DS9): nothing in them may look like a phone number.
+        const phoneLike = await page.evaluate(() =>
+          [...document.querySelectorAll('.transcript, [data-ledger]')]
+            .map((el) => el.textContent.replace(/\b(19|20)\d{2}\b/g, ''))
+            .find((t) => /\+?\d[\d ()-]{8,}\d/.test(t)),
+        );
+        if (phoneLike) failures.push(`${tag}: something that looks like a phone number is in an illustration`);
+
         // Figures: margin red only on failure paths (DS7), never on a box or plain edge.
         const red = await page.evaluate(() => {
           const margin = getComputedStyle(document.documentElement).getPropertyValue('--margin').trim().toLowerCase();

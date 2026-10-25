@@ -14,6 +14,7 @@ skills: [voice-ai, integrations, reliability, leadership]
 
 import Figure from '../../components/Figure.astro';
 import FigRef from '../../components/FigRef.astro';
+import Transcript from '../../components/Transcript.astro';
 import Section from '../../components/Section.astro';
 
 <Section label="The challenge" ruled>
@@ -44,6 +45,26 @@ A dental receptionist can’t answer the phone while checking a patient in, and 
       { from: 'sorry', to: 'callback', kind: 'fail' },
     ],
   }}
+/>
+
+<Transcript
+  label="Example call"
+  heading="Illustrative call · invented names, times and practice"
+  turns={[
+    { who: 'agent', text: 'Good morning, Sample Dental. You’re speaking with the practice’s AI assistant, and this call may be recorded. How can I help?', note: 'Callers are told it’s an AI at the start' },
+    { who: 'caller', text: 'Hi, I’d like to book a check-up. Next Tuesday, if you can.' },
+    { tool: true, text: 'find patient (caller’s number) → 1 record', note: 'The caller’s number finds the record' },
+    { who: 'agent', text: 'I can help with that. Before I do, can I confirm your name?' },
+    { who: 'caller', text: 'Jordan Moreno.', note: 'Confirms the caller’s name before booking' },
+    { tool: true, text: 'find free slots (day: Tue 3 Nov) → 9:30 am, 2:15 pm', note: '“Next Tuesday” resolved from today’s date' },
+    { who: 'agent', text: 'Thanks, Jordan. Next Tuesday, the 3rd of November, I have 9:30 in the morning or 2:15 in the afternoon.', note: 'The tool result, not the model, decides the slot' },
+    { who: 'caller', text: '9:30, please.' },
+    { tool: true, text: 'book (Tue 3 Nov, 9:30 am) → slot no longer free' },
+    { who: 'agent', text: 'I’m sorry, that time was taken while we were talking. I’ve asked the team to call you back today to find another time. Is this number the best one to reach you on?' },
+    { tool: true, text: 'request callback (slot taken)', note: 'When a booking fails: an apology and a callback' },
+    { who: 'caller', text: 'Yes, that’s fine.' },
+    { who: 'agent', text: 'Thanks, Jordan. The team will call you back today.' },
+  ]}
 />
 
 <Section label="The approach" ruled>

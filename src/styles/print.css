@@ -135,6 +135,65 @@
     padding: 10px 0 !important;
   }
 
+  /* Case-study header: the meta stays one row of four. */
+  .cs-head {
+    padding: 8pt 0 4pt !important;
+  }
+
+  .meta {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    margin-top: 16pt !important;
+  }
+
+  .meta > div {
+    padding: 8pt 10pt 2pt !important;
+    border-bottom: 0 !important;
+    border-right: 1px solid var(--rule) !important;
+  }
+
+  .meta > div:first-child {
+    padding-left: 0 !important;
+  }
+
+  .meta > div:last-child,
+  .meta > .built-with {
+    grid-column: auto !important;
+    border-right: 0 !important;
+  }
+
+  .meta dd {
+    font-size: 10pt !important;
+  }
+
+  /* The illustrative call: compact, notes beside their turn. */
+  .turn {
+    grid-template-columns: minmax(0, 1fr) 150px !important;
+    gap: 2pt 14pt !important;
+    padding: 3pt 0 !important;
+  }
+
+  .said {
+    display: grid !important;
+    grid-template-columns: 52px minmax(0, 1fr) !important;
+    font-size: 10pt !important;
+    line-height: 1.4 !important;
+  }
+
+  .speaker {
+    display: inline !important;
+    font-size: 7.5pt !important;
+  }
+
+  .tool-line {
+    padding-left: 64px !important;
+    font-size: 8pt !important;
+  }
+
+  .turn-note {
+    padding-top: 2pt !important;
+    font-size: 8pt !important;
+  }
+
   /* Keep things whole across pages. */
   figure,
   .sidenote,
