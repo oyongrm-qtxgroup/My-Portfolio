@@ -119,7 +119,7 @@ const profile = defineCollection({
           notes: z.array(z.string()).default([]),
         }),
       ),
-      certifications: z.array(z.object({ name: z.string(), date: z.string() })),
+      certifications: z.array(z.object({ name: z.string(), date: z.string(), url: z.url().optional() })),
     }),
   }),
 });

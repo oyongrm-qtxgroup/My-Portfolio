@@ -81,6 +81,9 @@ main:
         year: '2018'
         notes:
           - 'Thesis: Android augmented-reality game built in Unity with C#.'
+          - 'Award: Best Thesis Presenter.'
+          - 'Competition: 1st Runner Up in App and Running 2017.'
     certifications:
       - name: 'Microsoft Certified: Azure Developer Associate'
         date: February 2026
+        url: https://learn.microsoft.com/api/credentials/share/en-us/RaymundoOyong-1121/4BB36B8CAC786989?sharingId=74C0E9E896D0968C
