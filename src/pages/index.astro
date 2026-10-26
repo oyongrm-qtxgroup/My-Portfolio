@@ -41,6 +41,9 @@ const checked = new Date(`${profile.availabilityChecked}-01T00:00:00Z`).toLocale
   timeZone: 'UTC',
 });
 
+// The P.S. row's link: Jinky's print shop on Facebook.
+const SHOP = 'https://www.facebook.com/theoyongs.inkprint';
+
 // schema.org for search engines: the Person and the WebSite (src/lib/schema.ts).
 const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
 ---
@@ -246,6 +249,20 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
         <ContactForm email={profile.email} />
       </div>
       <ContactSet class="contact-side" />
+    </div>
+  </MarginRow>
+
+  {/* A postscript after the sign-off: Jinky's print shop, which runs on Craft-Track. */}
+  <MarginRow index={8} id="ps" class="ps-row" hideLabel>
+    <Fragment slot="label">P.S.</Fragment>
+    <h2 class="visually-hidden">P.S.</h2>
+    <div class="ps">
+      <p class="ps-text">
+        My wife, Jinky, runs <strong class="ps-shop">The Oyongs Inkprint</strong>: custom shirts, mugs, stickers,
+        invitations and print jobs, made to order. Her orders and stock run on{' '}
+        <a href={`${profile.links.github}/Craft-Track`}>Craft-Track</a>, an app I built for the shop.
+      </p>
+      <a href={SHOP} class="mono ps-link">Visit the shop on Facebook<span aria-hidden="true">&nbsp;↗</span></a>
     </div>
   </MarginRow>
 </Base>
@@ -674,6 +691,50 @@ const jsonLd = homeGraph(Astro.site!, profile, roles, skills);
     margin-top: var(--space-5);
     max-width: 36em;
     font-size: var(--type-body-l);
+  }
+
+  /* The P.S.: a quiet last row after the sign-off, its label in the margin's red. */
+  :global(.ps-row > .mar) {
+    color: var(--margin);
+    font-weight: 500;
+  }
+
+  :global(.ps-row > .body) {
+    padding-bottom: var(--space-6);
+  }
+
+  .ps {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2) 48px;
+  }
+
+  .ps-text {
+    flex: 1 1 520px;
+    max-width: 38em;
+    font-size: var(--type-body-m);
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  .ps-shop {
+    font-weight: 600;
+  }
+
+  .ps-text a {
+    white-space: nowrap;
+  }
+
+  .ps-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-underline-offset: 4px;
+    white-space: nowrap;
   }
 
   @media (max-width: 900px) {
