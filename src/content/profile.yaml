@@ -44,7 +44,7 @@ main:
       - name: Craft-Track
         line: An offline Windows app for a small craft business, covering orders, customers, product costs, stock alerts and spending. C#, WPF and SQLite.
   # Bump when the content changes; the footer's "Updated" date.
-  updated: 2026-10-25
+  updated: 2026-10-26
   # Outcomes only: never hours logged, tasks closed or tickets counted. `work` is the
   # case study each figure links to.
   figures:
