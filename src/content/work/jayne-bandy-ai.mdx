@@ -9,7 +9,7 @@ role: Lead engineer, leading one or two developers
 period: Apr 2026 – now
 stack: [Twilio, ElevenLabs, GPT-5.5, Supabase, Stripe, CareStack, Core Practice, Dentally]
 status: live
-updated: 2026-10-25
+updated: 2026-11-27
 skills: [voice-ai, integrations, reliability, leadership]
 ---
 
@@ -80,6 +80,8 @@ A dental receptionist can’t answer the phone while checking a patient in, and 
 
 The agent follows a licensed library of dental-practice scripts. Each practice gets one voice that stays the same from call to call, turn-taking that stops the agent talking over people, and the real date and time on every call, so “next Tuesday” means the right day.
 
+A practice on the premium tier can have a voice trained for it. When the first trained voice came out quiet and unclear, the voice model was not the cause: the retraining had never picked up the cleaned recordings. A fresh voice built from the cleaned files passed its check on the first try.
+
 <FigRef n={2} />
 
 ### One script, three booking systems
@@ -96,6 +98,18 @@ CareStack, Core Practice and Dentally sit behind a single receptionist script an
 
 Practices ask for script changes in plain English. Before a change goes live, it runs through four or five scripted scenarios and is compared with past calls; an LLM judge scores each transcript against the expected outcome, and an admin reads the results before approving it. Every version can be restored.
 
+### What a practice sees
+
+Each practice’s dashboard shows what its calls led to. For every booking, the practice’s own system reports whether the patient attended, did not show or cancelled, and each call carries its running cost. When the dashboards were rebuilt, earlier calls were loaded in and one clinic’s totals were checked by hand against the raw records.
+
+### When a provider fails
+
+<Noted notes={['An alert at 80% of the credit limit']}>
+
+Failure alerts and a 15-minute health check catch an outage at an AI provider. They did not catch a different failure: the voice provider’s account ran out of credit, and for over an hour callers to one practice could not get through. I traced where the credit had gone, the account moved to a larger plan, and an alert now fires at 80% of the credit limit, with the remaining credit shown to admins.
+
+</Noted>
+
 ### Data handling
 
 <Noted notes={['Callers are told it’s an AI at the start']}>
@@ -106,12 +120,12 @@ Call transcripts and logs are stored in Supabase; recordings stay with ElevenLab
 
 ### What I built
 
-I took over a working prototype in April 2026 and lead its development with one or two other developers. Since then I’ve built the three practice-system integrations, the review workflow, failure alerts with a 15-minute health check, and billing.
+I took over a working prototype in April 2026 and lead its development with one or two other developers. Since then I’ve built the three practice-system integrations, the review workflow, failure alerts with a 15-minute health check and a credit alert, the practice dashboards, custom voice training, and billing.
 
 </Section>
 
 <Section label="The result" ruled>
 
-Jayne Bandy AI is live, answering and booking calls in practices’ own systems. A failure at an AI provider now raises an alert within minutes instead of being noticed by a practice. Usage figures belong to QTX and aren’t published.
+Jayne Bandy AI is live, answering and booking calls in practices’ own systems. A failure at an AI provider now raises an alert within minutes instead of being noticed by a practice, and a credit limit raises one before it is reached. Usage figures belong to QTX and aren’t published.
 
 </Section>

@@ -9,34 +9,37 @@
   title: Senior AI Software Engineer
   start: January 2026
   current: true
-  summary: Lead engineer on Jayne Bandy AI and Ziaris; currently building SmartCP, AI care-plan drafting for an aged-care provider, and RL Finance for a retirement-village operator.
+  summary: Lead engineer on Jayne Bandy AI and Ziaris; technical lead on SmartCP, AI care-plan drafting now in production for an aged-care provider; currently building RL Finance for a retirement-village operator.
   projects:
     - heading: AI phone receptionist for dental practices (Jayne Bandy AI), lead engineer since April 2026
       bullets:
-        - 'Lead engineering of the live receptionist: voice quality, practice-system integrations and billing.'
         - Integrated three practice-management systems (CareStack, Core Practice, Dentally) behind one receptionist script, matching callers to patient records by phone number and name.
         - Designed a review workflow that tests every script change against scripted scenarios and past calls, scored by an LLM judge, before admin approval, with version history and restore.
-        - Added failure alerts and a 15-minute health check, so an AI-provider outage now raises an alert instead of going unnoticed.
-        - Launched automatic trials, a premium tier with custom voices, Stripe subscription sync and per-country demo numbers.
+        - Added failure alerts, a 15-minute health check and an alert at 80% of the voice provider’s credit limit.
+        - Rebuilt practice dashboards to show, from the practice’s own system, whether each booked patient attended.
+        - Launched automatic trials, Stripe subscription sync, per-country demo numbers and custom trained voices.
     - heading: Ziaris, workforce and care platform for a National Disability Insurance Scheme (NDIS) provider
       bullets:
         - Built rostering, SCHADS award pay rates and penalties, timesheets, invoicing by funding type, and MYOB payroll and sales-journal export.
         - Rebuilt payment reconciliation so the system suggests a match for each payment line and Finance approves it; no invoice closes automatically.
-        - Restricted every user to the records in their reach (own, team, site or program), enforced with row-level security in the database.
-        - Built an Azure OpenAI assistant that answers staff questions inside the platform.
+        - Restricted every user to the records in their reach (own, team, site or program) with row-level security.
+        - Moved the platform into the client’s own Azure subscription and took it live on its own domain; a rehearsed data move caught four problems first, including one that would have stopped everyone signing in.
+        - Built leave management that routes each request along the reporting line, a MYOB AccountRight sync that re-sends any leave a payroll push has wiped, and NDIS bulk claim files the NDIS portal accepts.
     - heading: SmartCP, AI care-plan drafting for an aged-care provider; technical lead
       bullets:
         - Specified a sprint for the development team and built AI drafting in which every statement cites its source page, with contradictions raised for a clinician to review.
-        - Reduced the time per drafting action from 6.5 seconds to about 1 second by replacing a new direct database connection on every action with Supabase’s pooled HTTPS data API.
+        - Reduced each drafting action from 6.5 seconds to about 1 second by switching to Supabase’s pooled data API.
+        - Shipped SmartCP to production in the provider’s own Azure subscription, with AI processing kept in Australia.
+        - Built a twice-daily pull of clients, notes and incidents from the provider’s care system across 40 databases.
+        - Cut accessibility issues across every screen from 487 to 29 and the main page download by about 70%.
     - heading: RL Finance, finance system for a retirement-village operator
       bullets:
         - Building a deferred management fee engine with Consumer Price Index (CPI) increases behind an approval step, matched to the client’s own spreadsheet to the cent and kept as an automated test.
-        - Delivered direct-debit files, period locking, and group profit-and-loss, balance-sheet and trial-balance reports across entities.
+        - Delivered direct-debit files, group profit-and-loss, balance-sheet and trial-balance reports across entities, and a month lock per entity with separate lock and unlock permissions and an audit trail.
     - heading: Workable, QTX’s in-house operations platform
       bullets:
         - Added six modules, including certification tracking synced from Microsoft Learn, 30/60/90-day onboarding and key performance indicator (KPI) reviews.
         - Resolved recurring database-connection exhaustion by removing unfiltered real-time subscriptions.
-        - Automated reporting and operational checks with Python scripts.
     - heading: SEED, QTX’s SaaS that brings specialised AI into the work a team already does
       bullets:
         - Built AI agents for contract management and document chat using retrieval-augmented generation (RAG), with tenant isolation and a standalone e-signature flow.
@@ -50,10 +53,10 @@
   end: December 2025
   summary: Led a four-person development team, integrated the company’s first online payment channel, and automated SAP entry and HR remittances with two Power Automate bots.
   highlights:
-    - Led and mentored a four-person development team; introduced structured code reviews and secure development practices.
+    - Led and mentored a four-person development team; introduced code reviews and secure development practices.
     - Cut manual SAP processing time by 70–80% with a Power Automate Desktop bot that enters invoices, reversals and contract locks in the SAP desktop client.
     - Moved 100+ hours a month of manual HR work to a Power Automate bot that prepares government remittances using AI document extraction, with HR approving each payment.
-    - Integrated UnionBank UPay as the company’s first online payment channel, with rate limiting and reCAPTCHA protection.
+    - Integrated UnionBank UPay as the company’s first online payment channel, with rate limiting and reCAPTCHA.
     - Replaced a failing database backup uploader with a Windows service that partitions large files for Amazon S3.
 
 - id: ortigas-senior-associate
@@ -79,7 +82,7 @@
   summary: Built the company’s first digital IT ticketing system and automated daily reports through SharePoint.
   highlights:
     - Developed the company’s first digital IT ticketing system.
-    - Integrated SharePoint with in-house applications to automate daily accomplishment reports; administered Tableau.
+    - Integrated SharePoint with in-house applications to automate daily reports; administered Tableau.
 
 - id: oclp
   org: OCLP Holdings Inc.

@@ -718,7 +718,8 @@ try {
     await ctx.close();
   }
 
-  // Print: case studies fit on three A4 pages, printed from Night (paper colours).
+  // Print: case studies fit on four A4 pages (three until the Nov 2026 content refresh
+  // added sections to two of them), printed from Night (paper colours).
   {
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
     await ctx.addInitScript(() => localStorage.setItem('theme', 'night'));
@@ -733,7 +734,7 @@ try {
       if (ink !== 'rgb(20, 20, 19)') failures.push(`print ${route}: text prints as ${ink}, not paper ink`);
       const pdf = await p.pdf({ format: 'A4', preferCSSPageSize: true });
       const pages = (pdf.toString('latin1').match(/\/Type\s*\/Page(?!s)/g) ?? []).length;
-      if (pages > 3) failures.push(`print ${route}: ${pages} A4 pages (budget 3)`);
+      if (pages > 4) failures.push(`print ${route}: ${pages} A4 pages (budget 4)`);
       if (outDir) writeFileSync(join(outDir, `print-${route.split('/')[2]}.pdf`), pdf);
       await p.emulateMedia({ media: 'screen' });
     }

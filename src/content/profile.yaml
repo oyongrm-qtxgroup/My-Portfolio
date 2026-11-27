@@ -44,7 +44,7 @@ main:
       - name: Craft-Track
         line: An offline Windows app for a small craft business, covering orders, customers, product costs, stock alerts and spending. C#, WPF and SQLite.
   # Bump when the content changes; the footer's "Updated" date.
-  updated: 2026-10-26
+  updated: 2026-11-27
   # Outcomes only: never hours logged, tasks closed or tickets counted. `work` is the
   # case study each figure links to.
   figures:
@@ -65,15 +65,15 @@ main:
     site: raymundo-oyong.vercel.app
     skills:
       - label: AI
-        items: Large language model (LLM) prompt design and evaluation, retrieval-augmented generation (RAG), AI agents, voice agents (ElevenLabs, Twilio), Azure Document Intelligence, Azure OpenAI
+        items: Large language model (LLM) prompt design and evaluation, retrieval-augmented generation (RAG), AI agents, voice agents and custom voice training (ElevenLabs, Twilio), Azure Document Intelligence, Azure OpenAI
       - label: Automation
         items: RPA with Power Automate (desktop and cloud flows), SAP ECC 6 (Basis, FI-CO, MM), SharePoint
       - label: Platforms
-        items: Supabase (PostgreSQL, row-level security, Edge Functions), Azure Functions, MS SQL Server, Vercel, Stripe
+        items: Supabase (PostgreSQL, row-level security, Edge Functions), Azure (Functions, private networking), MS SQL Server, Vercel, Stripe
       - label: Languages
         items: TypeScript, React, C# and .NET, SQL, Python
       - label: Integrations
-        items: CareStack, Core Practice, Dentally, MYOB, Westpac, Microsoft Entra ID, Microsoft Learn, LinkedIn and Meta Ads, Amazon SES
+        items: CareStack, Core Practice, Dentally, MYOB AccountRight, NDIS bulk claim files, Westpac, Microsoft Entra ID, Microsoft Learn, LinkedIn and Meta Ads, Amazon SES
     education:
       - school: STI College Meycauayan
         place: Bulacan, Philippines
