@@ -21,10 +21,10 @@
     - heading: Ziaris, workforce and care platform for a National Disability Insurance Scheme (NDIS) provider
       bullets:
         - Built rostering, SCHADS award pay rates and penalties, timesheets, invoicing by funding type, and MYOB payroll and sales-journal export.
-        - Rebuilt payment reconciliation so the system suggests a match for each payment line and Finance approves it; no invoice closes automatically.
+        - 'Rebuilt payment reconciliation: the system suggests a match for each line and Finance approves it.'
         - Restricted every user to the records in their reach (own, team, site or program) with row-level security.
         - Moved the platform into the client’s own Azure subscription and took it live on its own domain; a rehearsed data move caught four problems first, including one that would have stopped everyone signing in.
-        - Built leave management that routes each request along the reporting line, a MYOB AccountRight sync that re-sends any leave a payroll push has wiped, and NDIS bulk claim files the NDIS portal accepts.
+        - Built leave management synced to MYOB AccountRight, and NDIS bulk claim files the NDIS portal accepts.
     - heading: SmartCP, AI care-plan drafting for an aged-care provider; technical lead
       bullets:
         - Specified a sprint for the development team and built AI drafting in which every statement cites its source page, with contradictions raised for a clinician to review.
@@ -42,7 +42,7 @@
         - Resolved recurring database-connection exhaustion by removing unfiltered real-time subscriptions.
     - heading: SEED, QTX’s SaaS that brings specialised AI into the work a team already does
       bullets:
-        - Built AI agents for contract management and document chat using retrieval-augmented generation (RAG), with tenant isolation and a standalone e-signature flow.
+        - Built AI agents for contract management and document chat using retrieval-augmented generation (RAG), with tenant isolation.
 
 - id: ortigas-officer
   org: Ortigas Land Corporation
