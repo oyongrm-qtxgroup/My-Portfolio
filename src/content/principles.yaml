@@ -26,3 +26,12 @@
     A finance team already knows the right answer, and it’s usually in a spreadsheet. I ask for it
     early, match it to the cent, and keep it as an automated test, so a disagreement about numbers
     becomes a test that passes or fails.
+
+- id: rehearse-the-move
+  order: 4
+  title: Rehearse the move before you make it.
+  skill: cloud
+  body: >-
+    Before a live system moves, I move a copy of it first and try to use it. Rehearsing Ziaris’s
+    move to the client’s own Azure caught four problems, one of which would have stopped everyone
+    signing in on the day. Each was fixed before anyone depended on the new system.

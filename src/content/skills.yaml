@@ -15,9 +15,9 @@
     they can’t. I also build the tooling around them, so a change to what the agent says is tested
     before a caller hears it.
   proof:
-    - text: Lead engineer on Jayne Bandy AI, a live AI receptionist that answers and books calls for dental practices.
+    - text: Lead engineer on Jayne Bandy AI, a live AI receptionist whose one script books into three practice systems (CareStack, Core Practice and Dentally), finds callers by the number they ring from and confirms their name before changing anything.
       work: jayne-bandy-ai
-    - text: One receptionist script books into three practice systems (CareStack, Core Practice and Dentally), finds callers by the number they ring from and confirms their name before changing anything.
+    - text: Trained a custom voice for the receptionist from cleaned recordings, after tracing a quiet, unclear first version to a retraining that had never picked up the cleaned files.
       work: jayne-bandy-ai
     - text: Every script change runs against scripted scenarios and past calls, scored by an LLM judge, before an admin approves it, and any earlier version can be restored.
       work: jayne-bandy-ai
@@ -37,6 +37,8 @@
     - text: Technical lead on SmartCP, care-plan drafting for an aged-care provider, where every sentence in a draft cites the page it came from and contradictions become review items for a clinician.
       where: [qtx]
     - text: Cut each drafting action from 6.5 seconds to about 1 second by switching to a pooled database connection, not by changing the model.
+      where: [qtx]
+    - text: Built SmartCP’s link to the provider’s care-management system across 40 databases, a twice-daily pull of clients, progress notes and incidents that matches them to existing clients without duplicates and leaves unclear matches for a person to decide.
       where: [qtx]
     - text: Built AI agents on SEED, QTX’s SaaS that brings specialised AI into the work a team already does, for contract management and document chat, with each client’s data kept apart and off-topic questions refused to keep running costs down.
       where: [qtx]
@@ -96,6 +98,8 @@
       where: [ortigas-officer]
     - text: Web APIs that open SAP data to third-party applications; Stripe subscriptions, MYOB exports, and OAuth 2.0 connections to dental practice systems.
       where: [ortigas-senior-associate, qtx]
+    - text: Ziaris exports NDIS bulk claim files that the NDIS portal accepts, and its leave sync re-checks MYOB AccountRight on every run and re-sends any leave a payroll push has wiped.
+      work: ziaris
 
 - id: security
   order: 7
@@ -108,6 +112,8 @@
       work: ziaris
     - text: Replaced API keys with OAuth 2.0 and an audit log for a practice-system integration; CPI-based fee increases in RL Finance go through an approval step and leave a full audit trail.
       where: [qtx]
+    - text: Ziaris runs in the client’s own Azure subscription with only the web app reachable from the internet, and a signed care plan keeps a fixed copy of what was signed that can never be changed.
+      work: ziaris
   used: [earlier]
 
 - id: reliability
@@ -121,9 +127,28 @@
       where: [qtx]
     - text: Replaced a failing backup uploader at Ortigas Land with a Windows service that splits large database backups for Amazon S3.
       where: [ortigas-officer]
+    - text: After a voice provider’s account ran out of credit and callers could not get through, added an alert at 80% of the credit limit and showed the remaining credit to admins.
+      work: jayne-bandy-ai
+
+- id: cloud
+  order: 9
+  tier: foundation
+  name: Cloud & releases
+  summary: Systems moved onto a client’s own cloud with the move rehearsed first, and released through checks that can be rolled back.
+  pitch: >-
+    I move systems onto a client’s own cloud without surprises on the day. The move is rehearsed on
+    a copy of the live data, every change passes automated checks before it deploys, and a release
+    can be rolled back.
+  proof:
+    - text: Moved Ziaris into the client’s own Azure subscription and took it live on its own domain, after a full rehearsal of the data move caught four problems, including one that would have stopped everyone signing in.
+      work: ziaris
+    - text: Ziaris’s production changes only through an approved request that deploys itself after automated checks; a release drill and a rollback drill both passed before go-live, and a check signs in after each release to confirm the live data is there.
+      work: ziaris
+    - text: SmartCP runs in production in the aged-care provider’s own Azure subscription, and its AI service processes client notes in Australia only.
+      where: [qtx]
 
 - id: leadership
-  order: 9
+  order: 10
   tier: foundation
   name: Technical leadership
   summary: Small teams led through code review and specifications people can build from.
@@ -135,7 +160,7 @@
       where: [qtx]
 
 - id: clients
-  order: 10
+  order: 11
   tier: foundation
   name: Working with clients
   summary: Work directly with the people who will use the system, from the first conversation to sign-off.
@@ -144,4 +169,6 @@
     - text: Matched RL Finance’s deferred management fee to the finance team’s own spreadsheet to the cent, then kept their example as an automated test.
       where: [qtx]
     - text: Wrote the customer acceptance-test scripts for RL Finance, covering billing, statements, fees, sales, reports and permissions.
+      where: [qtx]
+    - text: Wrote the illustrated test guide for Ziaris’s participant forms, then followed it end to end on the test site using nothing else, so the client’s testers can work without a developer beside them.
       where: [qtx]

@@ -1,15 +1,17 @@
-# Handoff — 25 Oct 2026
+# Handoff — 27 Nov 2026
 
 ## Where things stand
 
 - **Launched.** `main` holds the Astro 7 rebuild (merged as `add74fe`, PR #1) and production serves it at https://raymundo-oyong.vercel.app. Production deploys automatically from `main`; to roll back, use Vercel's instant rollback to the previous production deployment.
 - **Design is approved and built:** the "engineering logbook" look (paper/night/auto themes, red margin line, condensed Archivo headings, Source Serif body, Plex Mono labels, stamps). See `docs/design/` and `/system/`. Keep it.
 - **Design plan done.** [`docs/DESIGN_PLAN.md`](DESIGN_PLAN.md) (approved 25 Oct 2026) is fully merged: Step 0 in #11, Steps 1–18 in #12, with the three recommendations (writers' consent 25 Oct 2026) and the four public repos. Still open, the owner's call: the Jayne Bandy AI test-call transcripts aren't de-identified; the LinkedIn headline differs from the site's title; portpeek's app id is `group.qtx.portpeek`.
+- **Content refresh, 27 Nov 2026:** skills, experience, principles and the Ziaris and Jayne Bandy AI pages were updated from the work done since 26 Oct (owner’s answers, 27 Nov 2026): Ziaris live in the client’s own Azure, SmartCP in production in the provider’s own Azure with AI processing in Australia, the voice-credit outage told without names, and the figures 40 databases, 487 to 29, about 70% and four problems caught. A new foundation area, **Cloud & releases**, and a fourth principle were added. The printed case studies now have a four-page budget.
+- **Next:** a SmartCP case study, then a redesign in a new direction the owner chose on 27 Nov 2026 (working name Voiceprint; colours still to be picked). The logbook look above stays until that lands.
 - **Post-launch fixes:** an independent review (recruiter, hiring manager, designer) produced the fix plan in [`docs/FIX_PLAN.md`](FIX_PLAN.md), approved by the owner on 24 Oct 2026. It is worked one pull request per step, one at a time, each with a Vercel preview; nothing merges to `main` without the owner's OK. Its §1 lists the decisions that replace parts of `docs/REDESIGN_PLAN.md` §1–4; each step updates those docs as it lands.
 
 ## Content model
 
-- `src/content/skills.yaml`: 3 lead skills + 7 foundations, each with proof points (outcomes only).
+- `src/content/skills.yaml`: 3 lead skills + 8 foundations, each with proof points (outcomes only).
 - `src/content/principles.yaml`: "How I work" principles.
 - `src/content/work/*.mdx`: 3 project pages (Jayne Bandy AI, Ziaris, SAP & HR automation). Care-plan drafting (SmartCP) is a line in the QTX role; its old URL redirects home.
 - `src/content/roles.yaml`: career rows and every CV bullet.

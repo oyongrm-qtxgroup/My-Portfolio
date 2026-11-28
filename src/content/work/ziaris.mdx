@@ -7,10 +7,10 @@ line: A workforce and care platform for a disability-support provider. Each shif
 client: A disability-support provider (NDIS)
 role: Lead engineer, with one or two developers
 period: 2026 – now
-stack: [TypeScript, React, Supabase, PostgreSQL row-level security, MYOB, Azure OpenAI]
+stack: [TypeScript, React, Supabase, PostgreSQL row-level security, Azure, MYOB, Azure OpenAI]
 status: live
-updated: 2026-10-25
-skills: [architecture, security, integrations, leadership]
+updated: 2026-11-27
+skills: [architecture, security, integrations, cloud, leadership]
 ---
 
 import Figure from '../../components/Figure.astro';
@@ -69,6 +69,8 @@ Each person’s reach comes from their role (worker, coordinator, manager or Fin
 
 </Noted>
 
+Care plans are signed on screen. The first signature keeps a fixed copy of what was signed, and no signature can be changed afterwards.
+
 <FigRef n={2} />
 
 ### Reconciliation Finance approves
@@ -79,18 +81,36 @@ Finance uploads the bank file, the platform suggests which invoice each line bel
 
 </Noted>
 
+### Leave that reaches payroll
+
+<Noted notes={['Every sync re-checks MYOB']}>
+
+Leave requests follow the reporting line to the right approver. Testing the MYOB AccountRight sync with the client’s Accounts team showed that a payroll timesheet push in MYOB wipes leave already sent, so every sync now checks MYOB again and re-sends what is missing, and tells Accounts if MYOB refuses. Nothing flows until Accounts sets a start date.
+
+</Noted>
+
 ### Built to fail safely
 
-A daily job flags workers whose credentials have expired, so they can’t be rostered, and warns managers before the next ones lapse. Finance signs off sample pay runs before each release.
+A daily job flags workers whose credentials have expired, so they can’t be rostered, and warns managers before the next ones lapse. Finance signs off sample pay runs before each release. When invoice emails stopped arriving, the cause was a mail filter holding them as suspected phishing, because the sender name and the reply address were on different domains; invoices now send, and take replies, on one address.
+
+### Moved to the client’s own cloud
+
+<Noted notes={['The move was rehearsed on a copy of the live data', 'A rollback was drilled before go-live']}>
+
+Ziaris now runs in the client’s own Azure subscription, on its own domain. Only the web app is reachable from the internet; everything that holds data sits in a private network. I rehearsed the move on a copy of the live data first, and the rehearsal caught four problems, including one that would have stopped everyone signing in.
+
+Production changes only through an approved request, which deploys itself once the automated checks pass. A release and a rollback were both drilled before go-live, and after each release a check signs in and confirms the live data is there.
+
+</Noted>
 
 ### What I built
 
-I lead Ziaris and built most of it with one or two other developers: rostering, award-based pay, timesheets, invoicing by funding type, the MYOB exports, reconciliation, row-level security, and a staff assistant that answers questions with Azure OpenAI.
+I lead Ziaris and built most of it with one or two other developers: rostering, award-based pay, timesheets, invoicing by funding type, NDIS bulk claim files that the NDIS portal accepts, the MYOB exports, leave management, reconciliation, row-level security, the move to Azure, and a staff assistant that answers questions with Azure OpenAI.
 
 </Section>
 
 <Section label="The result" ruled>
 
-Ziaris is live. Rostering, timesheets and invoicing moved from spreadsheets into one system; each shift’s pay comes from the configured award rules instead of being worked out by hand; payroll and invoices reach MYOB without re-keying; and Finance approves suggested payment matches instead of matching them by hand.
+Ziaris is live in the client’s own Azure subscription. Rostering, timesheets and invoicing moved from spreadsheets into one system; each shift’s pay comes from the configured award rules instead of being worked out by hand; payroll and invoices reach MYOB without re-keying; and Finance approves suggested payment matches instead of matching them by hand.
 
 </Section>
