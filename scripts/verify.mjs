@@ -16,7 +16,7 @@ const axeSource = readFileSync(require.resolve('axe-core/axe.min.js'), 'utf8');
 
 const PORT = 4329;
 const BASE = `http://localhost:${PORT}`;
-const ROUTES = ['/', '/work/jayne-bandy-ai/', '/work/sap-automation/', '/work/ziaris/', '/cv/', '/privacy/', '/system/', '/no-such-page'];
+const ROUTES = ['/', '/work/jayne-bandy-ai/', '/work/sap-automation/', '/work/smartcp/', '/work/ziaris/', '/cv/', '/privacy/', '/system/', '/no-such-page'];
 // 320 px is WCAG reflow (a 1280 px window at 400% zoom); 390 also covers 200% zoom.
 const WIDTHS = [320, 390, 768, 1024, 1440, 1920];
 const THEMES = ['paper', 'night'];
@@ -320,6 +320,7 @@ try {
       ['/work/jayne-bandy-ai/', '.closing'],
       ['/work/ziaris/', '.closing'],
       ['/work/sap-automation/', '.closing'],
+      ['/work/smartcp/', '.closing'],
     ]) {
       await p.goto(BASE + route, { waitUntil: 'networkidle' });
       const counts = await p.evaluate((sel) => {
@@ -371,7 +372,7 @@ try {
       if (d.ok === false) failures.push(`proof grid: dot to ${d.href} lands nowhere`);
       if (d.ok === null && (await fetch(BASE + d.href)).status !== 200) failures.push(`proof grid: dot to ${d.href} is broken`);
     }
-    for (const route of ['/work/jayne-bandy-ai/', '/work/ziaris/', '/work/sap-automation/']) {
+    for (const route of ['/work/jayne-bandy-ai/', '/work/ziaris/', '/work/sap-automation/', '/work/smartcp/']) {
       await p.goto(BASE + route, { waitUntil: 'networkidle' });
       const tags = await p.$$eval('.tags a', (as) => as.map((a) => a.getAttribute('href')));
       if (!tags.length) failures.push(`${route}: no "Skills shown" tags`);
@@ -512,7 +513,7 @@ try {
     missing('/', person, ['@id', 'name', 'jobTitle', 'url', 'image', 'sameAs', 'alumniOf', 'hasOccupation']);
     missing('/', home.byType('WebSite'), ['@id', 'url', 'name']);
     if (home.og !== 'website') failures.push(`/: og:type ${home.og}`);
-    for (const route of ['/work/jayne-bandy-ai/', '/work/ziaris/', '/work/sap-automation/']) {
+    for (const route of ['/work/jayne-bandy-ai/', '/work/ziaris/', '/work/sap-automation/', '/work/smartcp/']) {
       const g = await graphOf(route);
       const art = g.byType('Article');
       if (!art) failures.push(`${route}: no Article`);
@@ -725,7 +726,7 @@ try {
     await ctx.addInitScript(() => localStorage.setItem('theme', 'night'));
     const p = await ctx.newPage();
     await p.goto(BASE + '/', { waitUntil: 'networkidle' });
-    for (const route of ['/work/jayne-bandy-ai/', '/work/sap-automation/', '/work/ziaris/']) {
+    for (const route of ['/work/jayne-bandy-ai/', '/work/sap-automation/', '/work/smartcp/', '/work/ziaris/']) {
       await p.goto(BASE + route, { waitUntil: 'networkidle' });
       await p.evaluate(() => document.fonts.ready);
       await p.emulateMedia({ media: 'print' });

@@ -37,6 +37,23 @@ export const figures: Record<string, FigSpec> = {
       { from: 'bot', to: 'person', kind: 'fail', label: 'unexpected screen' },
     ],
   },
+  smartcp: {
+    nodes: [
+      { id: 'records', title: 'Records', note: 'assessments, letters and notes, scanned forms included', at: [0, 0] },
+      { id: 'read', title: 'AI reading', note: 'facts by clinical domain, each linked to its page', kind: 'model', n: 1, at: [1, 0] },
+      { id: 'draft', title: 'Draft', note: 'every statement links to its source', kind: 'model', at: [2, 0] },
+      { id: 'review', title: 'Clinician decides', note: 'approves, returns or rejects', kind: 'person', n: 2, at: [3, 0] },
+      { id: 'plan', title: 'Approved plan', note: 'with the decision recorded', at: [4, 0] },
+      { id: 'items', title: 'Review item', note: 'for a clinician to decide', kind: 'person', at: [1, 1] },
+    ],
+    edges: [
+      { from: 'records', to: 'read' },
+      { from: 'read', to: 'draft' },
+      { from: 'draft', to: 'review' },
+      { from: 'review', to: 'plan' },
+      { from: 'read', to: 'items', kind: 'fail', label: 'evidence disagrees or is missing' },
+    ],
+  },
   'ziaris': {
     nodes: [
       { id: 'roster', title: 'Roster', note: 'worker, participant, site', at: [0, 0] },
@@ -74,6 +91,7 @@ export const glyphFor: Record<string, string> = {
   'jayne-bandy-ai': 'jayne-bandy-ai',
   ziaris: 'ziaris-reconciliation',
   'sap-automation': 'sap-automation',
+  smartcp: 'smartcp',
 };
 
 /** A short fingerprint of a spec, so a test can match a glyph to its figure. */
