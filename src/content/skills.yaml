@@ -35,11 +35,11 @@
     smoothed over, so a reviewer can check a draft quickly and sign it with confidence.
   proof:
     - text: Technical lead on SmartCP, care-plan drafting for an aged-care provider, where every sentence in a draft cites the page it came from and contradictions become review items for a clinician.
-      where: [qtx]
+      work: smartcp
     - text: Cut each drafting action from 6.5 seconds to about 1 second by switching to a pooled database connection, not by changing the model.
-      where: [qtx]
+      work: smartcp
     - text: Built SmartCP’s link to the provider’s care-management system across 40 databases, a twice-daily pull of clients, progress notes and incidents that matches them to existing clients without duplicates and leaves unclear matches for a person to decide.
-      where: [qtx]
+      work: smartcp
     - text: Built AI agents on SEED, QTX’s SaaS that brings specialised AI into the work a team already does, for contract management and document chat, with each client’s data kept apart and off-topic questions refused to keep running costs down.
       where: [qtx]
   used: [sap-automation]
@@ -145,7 +145,7 @@
     - text: Ziaris’s production changes only through an approved request that deploys itself after automated checks; a release drill and a rollback drill both passed before go-live, and a check signs in after each release to confirm the live data is there.
       work: ziaris
     - text: SmartCP runs in production in the aged-care provider’s own Azure subscription, and its AI service processes client notes in Australia only.
-      where: [qtx]
+      work: smartcp
 
 - id: leadership
   order: 10

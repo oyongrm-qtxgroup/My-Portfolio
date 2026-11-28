@@ -1,0 +1,141 @@
+---
+no: '03'
+order: 3
+title: SmartCP
+short: Drafts aged-care plans from a client’s own records, with every sentence linked to the page it came from.
+line: Care-plan drafting for an aged-care provider. It drafts each plan from the client’s own records, links every statement to its source, and sends contradictions to a clinician instead of smoothing them over.
+client: An aged-care provider
+role: Technical lead
+period: Oct 2026 – now
+stack: [Azure OpenAI, Azure, Microsoft Entra ID, TypeScript, React]
+status: in-progress
+updated: 2026-11-28
+skills: [document-ai, security, cloud, integrations, leadership]
+---
+
+import Figure from '../../components/Figure.astro';
+import { figures } from '../../lib/figures';
+import FigRef from '../../components/FigRef.astro';
+import Ledger from '../../components/Ledger.astro';
+import Noted from '../../components/Noted.astro';
+import Section from '../../components/Section.astro';
+
+<Section label="The challenge" ruled>
+
+Aged-care staff write each client’s care plan from a stack of assessments, letters and notes. An AI can draft one in under a minute, but a draft is only useful if a clinician can check it quickly and trust what they sign.
+
+</Section>
+
+<Figure
+  label="Fig. 1 From records to a plan"
+  caption="The model reads and drafts; a clinician decides. Evidence that disagrees or is missing becomes a review item instead of being smoothed over."
+  spec={figures['smartcp']}
+/>
+
+<Ledger
+  label="Worked example"
+  heading="Illustrative review item · no real client or document"
+  lines={[
+    { stage: 'Evidence', text: 'A letter says the client walks unaided; a later assessment records a walking frame', out: 'two sources' },
+    { stage: 'Review item', text: 'Raised as a contradiction, with both passages quoted and linked', out: 'needs a decision' },
+    { stage: 'Clinician', text: 'Acknowledges it and writes the correction', out: 'decision recorded' },
+    { stage: 'Draft', text: 'The correction goes into the plan word for word and carries over to the next draft', out: 'not asked twice' },
+    { stage: 'Approval', text: 'A second reviewer approves; the one who wrote the correction can’t', out: 'approved plan' },
+  ]}
+/>
+
+<Figure
+  label="Fig. 2 Every release"
+  caption="Production is released only from a version that has already run on the test environment, and a release that fails its health check puts the previous version back by itself."
+  spec={{
+    nodes: [
+      { id: 'change', title: 'Approved change', note: 'reviewed before it is merged', kind: 'person', at: [0, 0] },
+      { id: 'test', title: 'Test environment', note: 'the version must run here first', at: [1, 0] },
+      { id: 'release', title: 'Production release', note: 'inside the provider’s own Azure', n: 3, at: [2, 0] },
+      { id: 'check', title: 'Health check', note: 'after every release', at: [3, 0] },
+      { id: 'back', title: 'Previous version', note: 'put back automatically', at: [3, 1] },
+    ],
+    edges: [
+      { from: 'change', to: 'test' },
+      { from: 'test', to: 'release' },
+      { from: 'release', to: 'check' },
+      { from: 'check', to: 'back', kind: 'fail', label: 'check fails' },
+    ],
+  }}
+/>
+
+<Section label="The approach" ruled>
+
+<FigRef n={1} />
+
+### Evidence first
+
+<Noted notes={['Every statement links to its source']}>
+
+SmartCP reads a client’s assessments, letters and notes, scanned forms included, and files what it finds as facts by clinical domain, each linked to the page it came from. Every statement in a draft then links to the document page, quoted passage or assessment answer behind it. Contradictions, gaps and undated or unreadable evidence become review items. Nothing is resolved silently.
+
+</Noted>
+
+<FigRef n={2} />
+
+### A clinician decides
+
+<Noted notes={['Whoever drafted a plan can’t approve it']}>
+
+A reviewer approves a draft, returns it or rejects it, and each decision is recorded with who made it and when. Gaps and contradictions are decided one at a time, while repetitive items such as undated documents can be acknowledged together. A decision carries over to the next draft, so nobody makes it twice. Whoever drafted a plan can’t approve it, and neither can a reviewer whose own wording is in it.
+
+</Noted>
+
+### Tested at the size it will run
+
+<Noted notes={['900 made-up clients, no real records']}>
+
+Drafting runs on the server, so a draft keeps going if someone reloads or closes the tab. Before the provider’s own testing I loaded 900 made-up clients with full records, and every page stopped loading: the app fetched all records at once and the response had grown too large. It now loads only what its lists, dashboard and registers need, about 6 MB where it had been about 36 MB. With the 900 clients back in, every page loaded and the dashboard matched the expected figure on all 560 values.
+
+</Noted>
+
+An audit of every screen for accessibility and tablet use cut the issues found from 487 to 29; the 29 are one brand colour the provider keeps on purpose. The main page download is about 70% smaller.
+
+<FigRef n={3} />
+
+### In the provider’s own cloud
+
+<Noted notes={['No AI key is stored anywhere', 'A failed release rolls itself back']}>
+
+SmartCP runs in the provider’s own Azure subscription, in Australia. Staff sign in with the provider’s Microsoft accounts, and only people assigned to the app get in. The database and file storage sit in a private network, and the app reaches Azure OpenAI through Azure’s own identity, so no AI key is stored anywhere.
+
+Production is released only from a version that has already run on the test environment. Each release ends with a health check and rolls itself back if the check fails; it has done so once, and production was back on the previous version in under two minutes. A rollback and a database restore were both rehearsed before any real records went in.
+
+</Noted>
+
+### Connected to the provider’s care system
+
+<Noted notes={['Unclear matches go to a person']}>
+
+The provider keeps clients, progress notes and incidents in a care-management system spread across 40 databases. SmartCP pulls them in twice a day and matches each client to the one it already holds. A client is never duplicated, an unclear match is listed for a person to decide, and a database whose clients stop matching is paused instead of guessed at. The pull is being switched on one database at a time.
+
+</Noted>
+
+### How it’s evaluated
+
+A draft is never the final word: a clinician reviews every one. Before the provider’s testing, a trial on production with made-up clients timed each step, up to the largest upload we could construct: 20 files and 200 pages.
+
+### Data handling
+
+<Noted notes={['AI processing stays in Australia']}>
+
+Client notes are processed by Azure OpenAI in Australia, inside the provider’s own subscription. No real client records were used in testing: walkthroughs ran on de-identified documents and load tests on made-up clients. The provider’s administrator enters the connection keys for its other systems; they are stored encrypted, never shown again, and never reach QTX.
+
+</Noted>
+
+### What I built
+
+I’m the technical lead. I wrote the developer specifications for the second sprint from the signed proposal and the provider’s requirements, and built the review workflow, the load testing and its fix, the production environment and release process, the link to the care-management system and the accessibility audit.
+
+</Section>
+
+<Section label="The result" ruled>
+
+SmartCP runs in production in the provider’s own Azure subscription. A cited draft takes 25 to 45 seconds, against the provider’s target of five to ten minutes, and each action takes about 1 second where it took 6.5, after a pooled database connection replaced a new one on every action. A reviewer checks a draft by following links instead of rereading the records. The provider’s acceptance testing comes next, so there are no figures from daily use yet.
+
+</Section>
